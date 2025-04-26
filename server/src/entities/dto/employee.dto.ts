@@ -1,9 +1,10 @@
 import {
     IsString,
     IsNotEmpty,
-    IsEmail, IsNumber
+    IsEmail, IsNumber, IsEnum
 } from 'class-validator';
 import {Exclude, Expose} from "class-transformer";
+import {RoleEnum} from "@entities/enums";
 
 
 export class CreateEmployeeDto {
@@ -24,6 +25,11 @@ export class CreateEmployeeDto {
     @IsString()
     @IsNotEmpty()
     password!: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @IsEnum(RoleEnum)
+    roleName!: RoleEnum;
 }
 
 

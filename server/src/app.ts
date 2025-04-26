@@ -8,7 +8,7 @@ import morgan from "morgan";
 import compression from "compression";
 import helmet from "helmet";
 import cors from "cors";
-import logger from "@utils/logger";
+import loggerUtility from "@utils/logger.utility";
 import routes from "@routes/index";
 import {ErrorHandler} from "@middlewares/errorHanlder.middleware";
 
@@ -16,7 +16,7 @@ const app: Application = express();
 app
     .use(bodyParser.json({ strict: true }))
     .use(bodyParser.urlencoded({ extended: true }))
-    .use(morgan("combined", { stream: logger.stream }))
+    .use(morgan("combined", { stream: loggerUtility.stream }))
     .use(compression())
     .use(helmet())
     .use(cors())

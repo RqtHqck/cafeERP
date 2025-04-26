@@ -1,5 +1,5 @@
 import {EmployeeService} from "@services//employee.service";
-import logger from "@utils/logger";
+import loggerUtility from "@utils/logger.utility";
 import {LoginDto, RegisterDto} from "@entities/dto/auth.dto";
 import {Transaction} from "sequelize";
 
@@ -14,22 +14,24 @@ export class AuthService {
 
     async register(dto: RegisterDto, options: {transaction: Transaction}): Promise<any> {
 
-        logger.info("AuthService::register")
+        loggerUtility.info("AuthService::register")
     }
 
 
     async login(dto: LoginDto, options: {transaction: Transaction}): Promise<any> {
-        logger.info("AuthService::login")
+        loggerUtility.info("AuthService::login")
     }
 
 
     async logout(): Promise<any> {
-        logger.info("AuthService::logout")
+        loggerUtility.info("AuthService::logout")
     }
 
 
     async refresh(): Promise<any> {
-        logger.info("AuthService::refresh")
+        loggerUtility.info("AuthService::refresh")
     }
+
+
 
 }

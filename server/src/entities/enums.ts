@@ -1,9 +1,9 @@
 export enum RoleEnum {
     ADMIN='admin',
     CLEANER = "cleaner",
-    COOK = "Повар",
-    CASHIER = "Кассир",
-    MANAGER = "Менеджер",
+    COOK = "cook",
+    CASHIER = "cashier",
+    MANAGER = "manager",
 }
 
 export enum StatusEnum {

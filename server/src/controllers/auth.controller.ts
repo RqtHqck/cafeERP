@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import {AuthService} from "@services/auth.service";
 import {RegisterDto, LoginDto} from "@entities//dto/auth.dto";
-import db from "@utils/sequelize";
+import db from "@utils/sequelize.utility";
 
 export class AuthController {
     

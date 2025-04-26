@@ -25,6 +25,7 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
     @Column
     declare id: number;
 
+
     @Unique
     @AllowNull(false)
     @Column({

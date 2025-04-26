@@ -1,4 +1,4 @@
-import logger from '@utils/logger';
+import loggerUtility from '@utils/logger.utility';
 import {Dialect} from "sequelize";
 import path from "path";
 
@@ -34,7 +34,7 @@ const dbConfig: IDbConfig = {
         acquire: 30000,
         idle: 10000,
     },
-    logging: (msg: string) => logger.info(msg),
+    logging: (msg: string) => loggerUtility.info(msg),
     models: [path.resolve(__dirname, '../models')],
 }
 
