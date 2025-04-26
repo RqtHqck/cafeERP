@@ -1,0 +1,24 @@
+# node
+node_modules
+npm-debug.log
+
+# dotenv
+.env
+.env.*
+!.env.example
+
+# build artifacts
+dist
+build
+coverage
+
+# system files
+.DS_Store
+Thumbs.db
+
+# git
+.git
+.gitignore
+
+# dockerignore itself
+.dockerignore

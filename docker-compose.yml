@@ -1,0 +1,40 @@
+services:
+  server:
+    container_name: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./server:/server
+      - /server/node_modules:/server/node_modules
+    env_file:
+      - ./server/.env.prod
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  db:
+    container_name: db
+    image: postgres:15.2
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - ./server/.env.prod
+    restart: unless-stopped
+    networks:
+      - app-network
+
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge
+    name: app-network
