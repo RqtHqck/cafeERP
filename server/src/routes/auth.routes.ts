@@ -1,21 +1,13 @@
 import { Router } from 'express';
 import {AuthController} from "@controllers/auth.controller";
 import {validateBodyDto} from "@middlewares/validation/validateDto.middleware";
-import {LoginDto, RegisterDto} from "@entities/dto/auth.dto";
+import {LoginDto} from "@entities/dto/auth.dto";
 import {AuthService} from "@services/auth.service";
 const authRoutes = Router();
 
 
 const authService = new AuthService();
 const authController = new AuthController(authService);
-
-
-// POST /auth/register
-authRoutes.post('/register',
-    validateBodyDto(RegisterDto),
-    authController.register.bind(authController)
-);
-
 
 // POST /auth/login
 authRoutes.post('/login',

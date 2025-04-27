@@ -1,3 +1,5 @@
+import {RoleEnum} from "@entities/enums";
+
 export interface IEmployee {
     id?: number;
     firstName: string;
@@ -14,6 +16,13 @@ export interface IRole {
 }
 
 export interface AuthPayload {
-    id: string;
+    employeeId: number;
     email: string;
+    roleId: number;
+}
+
+export interface IToken {
+    id?: number;
+    employeeId: number;
+    refreshToken: string;
 }

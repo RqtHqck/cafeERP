@@ -3,24 +3,18 @@ import jwt from 'jsonwebtoken';
 import {AuthPayload} from "@entities/interfaces";
 
 
-export const GenerateSalt = async () => {
-    return await bcrypt.genSalt()
+export const generateSalt = async (): Promise<string> => {
+    return bcrypt.genSalt()
 }
 
 
-export const GeneratePassword = async (password: string, salt: string) => {
-
-    return await bcrypt.hash(password, salt);
+export const generatePassword = async (password: string, salt: string): Promise<string> => {
+    return bcrypt.hash(password, salt);
 
 }
 
-export const ValidatePassword = async (enteredPassword: string, savedPassword: string, salt: string) => {
 
-    return await GeneratePassword(enteredPassword, salt) === savedPassword;
-}
-
-export const GenerateSignature = async (payload: AuthPayload) => {
-
-    return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '90d'});
-
+export const validatePassword = async (enteredPassword: string, savedPassword: string, salt: string): Promise<boolean> => {
+    const generatedPassword = await generatePassword(enteredPassword, salt);  // Ждем результат асинхронной операции
+    return generatedPassword === savedPassword;  // Просто возвращаем результат сравнения
 }

@@ -30,6 +30,10 @@ export default class ApiError extends Error {
         return new ApiError(400, message, "VALIDATION_ERROR", details, originalError);
     }
 
+    static tokenError(message?: string, originalError?: unknown) {
+        return new ApiError(400, message || "Token error occurred.", "TOKEN_ERROR", [], originalError);
+    }
+
     static databaseModelError(message?: string, originalError?: unknown) {
         return new ApiError(500, message || "Database model error.", "DATABASE_MODEL_ERROR", [], originalError);
     }

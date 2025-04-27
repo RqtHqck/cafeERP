@@ -4,7 +4,7 @@ import {CreateEmployeeDto} from "@entities/dto/employee.dto";
 import {IEmployee, IRole} from "@entities/interfaces";
 import {RoleRepository} from "@repositories/role.repository";
 import ApiError from "@errors/ApiError";
-import {GeneratePassword, GenerateSalt} from "@utils/password.utility";
+import {generatePassword, generateSalt} from "@utils/password.utility";
 
 export class AdminService {
 
@@ -32,8 +32,8 @@ export class AdminService {
                 return;
             }
 
-            const hashSalt = await GenerateSalt();
-            const passwordHash = await GeneratePassword(process.env.ADMIN_PASSWORD as string, hashSalt);
+            const hashSalt = await generateSalt();
+            const passwordHash = await generatePassword(process.env.ADMIN_PASSWORD as string, hashSalt);
 
             const adminEmployee: IEmployee = {
                 firstName:"admin",
@@ -51,29 +51,4 @@ export class AdminService {
             throw ApiError.databaseError("Error create admin employee", err)
         }
     }
-
-    async createEmployee(createEmployeeDto: CreateEmployeeDto) {
-        logger.info("AdminService::createEmployee")
-
-        const role = await this._roleRepository.findOne({ name: createEmployeeDto.roleName });
-        if (!role) {
-            throw ApiError.notFoundError(`Role '${createEmployeeDto.roleName}' not found`);
-        }
-
-        const hashSalt = await GenerateSalt();
-        const passwordHash = await GeneratePassword(createEmployeeDto.password, hashSalt);
-
-        const employeeObj: IEmployee = {
-            firstName: createEmployeeDto.firstName,
-            lastName: createEmployeeDto.lastName,
-            passwordHash: passwordHash,
-            hashSalt: hashSalt,
-            email: createEmployeeDto.email,
-            roleId: role.id!
-        }
-        const filter = { email: createEmployeeDto.email }
-
-        return await this._employeeRepository.create(employeeObj, filter);
-    }
-
 }

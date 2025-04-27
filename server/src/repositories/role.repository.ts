@@ -15,12 +15,12 @@ export class RoleRepository {
             const role = await this._db.Role.findOne({
                 where: filter
             });
-            return role ? role : null
+            return role;
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;
             }
-            throw ApiError.databaseError("Error find roles", err);
+            throw ApiError.databaseError("Error find role", err);
         }
     }
 
