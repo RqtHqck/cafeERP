@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import {AuthService} from "@services/auth.service";
-import {RegisterDto, LoginDto} from "@entities//dto/auth.dto";
+import {LoginDto} from "@entities//dto/auth.dto";
 import db from "@utils/sequelize.utility";
+import logger from "@utils/logger";
 
 export class AuthController {
     
@@ -12,32 +13,21 @@ export class AuthController {
     }
 
 
-    async register(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const transaction = await db.sequelize.transaction();
-
-        try {
-            const registerDto: RegisterDto = req.body;
-            const { accessToken } = await this.authService.register(registerDto, { transaction });
-            await transaction.commit();
-            return res
-                .status(201)
-                .json({ accessToken: accessToken });
-        } catch (error) {
-            await transaction.rollback();
-            next(error);
-        }
-    }
-
-
     async login(req: Request, res: Response, next: NextFunction): Promise<any> {
+        logger.info("AuthController::login");
         const transaction = await db.sequelize.transaction();
 
         try {
-            const loginDto: LoginDto = req.body;
-            const { accessToken } = await this.authService.login(loginDto, { transaction });
+            const loginDto = <LoginDto>req.body;
+            const { accessToken, refreshToken } = await this.authService.login(loginDto, { transaction });
             await transaction.commit();
             return res
                 .status(200)
+                .cookie('refreshToken', refreshToken, {
+                    maxAge: 180 * 1000,
+                    httpOnly: true,
+                    sameSite: 'strict',
+                })
                 .json({ accessToken: accessToken });
         } catch (error) {
             await transaction.rollback();
