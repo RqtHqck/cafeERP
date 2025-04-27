@@ -1,22 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
 import {CreateEmployeeDto, EmployeeDto} from "@entities/dto/employee.dto";
-import {AdminService} from "@services/admin.service";
 import {plainToInstance} from "class-transformer";
+import {EmployeeService} from "@services/employee.service";
 
 export class AdminController {
 
-    private _adminService: AdminService;
+    private _employeeService: EmployeeService;
 
 
-    constructor(adminService: AdminService) {
-        this._adminService = new AdminService();
+    constructor(adminService: EmployeeService) {
+        this._employeeService = new EmployeeService();
     }
 
 
     async createEmployee(req: Request, res: Response, next: NextFunction): Promise<any> {
         try {
             const createEmployeeDto = <CreateEmployeeDto>req.body
-            const employee = await this._adminService.createEmployee(createEmployeeDto);
+            const employee = await this._employeeService.createEmployee(createEmployeeDto);
 
             const responseEmployee = plainToInstance(EmployeeDto, employee, {
                 excludeExtraneousValues: true,

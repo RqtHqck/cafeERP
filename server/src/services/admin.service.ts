@@ -51,29 +51,4 @@ export class AdminService {
             throw ApiError.databaseError("Error create admin employee", err)
         }
     }
-
-    async createEmployee(createEmployeeDto: CreateEmployeeDto) {
-        logger.info("AdminService::createEmployee")
-
-        const role = await this._roleRepository.findOne({ name: createEmployeeDto.roleName });
-        if (!role) {
-            throw ApiError.notFoundError(`Role '${createEmployeeDto.roleName}' not found`);
-        }
-
-        const hashSalt = await GenerateSalt();
-        const passwordHash = await GeneratePassword(createEmployeeDto.password, hashSalt);
-
-        const employeeObj: IEmployee = {
-            firstName: createEmployeeDto.firstName,
-            lastName: createEmployeeDto.lastName,
-            passwordHash: passwordHash,
-            hashSalt: hashSalt,
-            email: createEmployeeDto.email,
-            roleId: role.id!
-        }
-        const filter = { email: createEmployeeDto.email }
-
-        return await this._employeeRepository.create(employeeObj, filter);
-    }
-
 }
