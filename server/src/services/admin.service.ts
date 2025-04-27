@@ -4,7 +4,7 @@ import {CreateEmployeeDto} from "@entities/dto/employee.dto";
 import {IEmployee, IRole} from "@entities/interfaces";
 import {RoleRepository} from "@repositories/role.repository";
 import ApiError from "@errors/ApiError";
-import {GeneratePassword, GenerateSalt} from "@utils/password.utility";
+import {generatePassword, generateSalt} from "@utils/password.utility";
 
 export class AdminService {
 
@@ -32,8 +32,8 @@ export class AdminService {
                 return;
             }
 
-            const hashSalt = await GenerateSalt();
-            const passwordHash = await GeneratePassword(process.env.ADMIN_PASSWORD as string, hashSalt);
+            const hashSalt = await generateSalt();
+            const passwordHash = await generatePassword(process.env.ADMIN_PASSWORD as string, hashSalt);
 
             const adminEmployee: IEmployee = {
                 firstName:"admin",

@@ -4,7 +4,7 @@ import {RoleRepository} from "@repositories/role.repository";
 import {CreateEmployeeDto} from "@entities/dto/employee.dto";
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
-import {GeneratePassword, GenerateSalt} from "@utils/password.utility";
+import {generatePassword, generateSalt} from "@utils/password.utility";
 import {IEmployee} from "@entities/interfaces";
 
 export class EmployeeService {
@@ -17,6 +17,13 @@ export class EmployeeService {
         this._roleRepository = new RoleRepository();
     }
 
+
+    async findOne(filter: object) {
+        logger.info("EmployeeService::findOne")
+        return await this._employeeRepository.findOne(filter);
+    }
+
+
     async createEmployee(createEmployeeDto: CreateEmployeeDto) {
         logger.info("AdminService::createEmployee")
 
@@ -25,8 +32,8 @@ export class EmployeeService {
             throw ApiError.notFoundError(`Role '${createEmployeeDto.roleName}' not found`);
         }
 
-        const hashSalt = await GenerateSalt();
-        const passwordHash = await GeneratePassword(createEmployeeDto.password, hashSalt);
+        const hashSalt = await generateSalt();
+        const passwordHash = await generatePassword(createEmployeeDto.password, hashSalt);
 
         const employeeObj: IEmployee = {
             firstName: createEmployeeDto.firstName,

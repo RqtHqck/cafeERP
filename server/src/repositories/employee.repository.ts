@@ -33,10 +33,9 @@ export class EmployeeRepository {
     async findOne(filter: object): Promise<IEmployee | null> {
         try{
             logger.info(`EmployeeRepository::findOne filter: ${JSON.stringify(filter)}`)
-            const employee = await this._db.Employee.findOne({
+            return await this._db.Employee.findOne({
                 where: filter
             });
-            return employee;
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;

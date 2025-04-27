@@ -2,14 +2,17 @@ import { Request, Response, NextFunction } from 'express';
 import {CreateEmployeeDto, EmployeeDto} from "@entities/dto/employee.dto";
 import {plainToInstance} from "class-transformer";
 import {EmployeeService} from "@services/employee.service";
+import {AdminService} from "@services/admin.service";
 
 export class AdminController {
 
     private _employeeService: EmployeeService;
+    private _adminService: AdminService;
 
+    constructor(adminService: AdminService, employeeService: EmployeeService) {
+        this._employeeService = employeeService;
+        this._adminService = adminService;
 
-    constructor(adminService: EmployeeService) {
-        this._employeeService = new EmployeeService();
     }
 
 
