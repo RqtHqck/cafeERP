@@ -1,20 +1,29 @@
 import app from "./app";
-import loggerUtility from '@utils/logger.utility'
+import logger from '@utils/logger'
 import db from '@utils/sequelize.utility'
+import {RoleService} from "@services/role.service";
+import {AdminService} from "@services/admin.service";
 
 
 (async () => {
     try {
         // DB
+        const roleService = new RoleService();
+        const adminService = new AdminService();
+
         await db.sequelize.authenticate({ logging: true });
-        db.sequelize.sync({ force: false, logging: true }).then(async () => {
-            loggerUtility.info("Database synchronized");
-        });
+        await db.sequelize.sync({ force: true, logging: true })
+        logger.info("Database synchronized");
+
+        await roleService.createMany();
+        await adminService.createEmployeeAdmin();
+
         // SERVER
         app.listen(process.env.PORT, () => {
-            loggerUtility.info(`Server started on http://localhost:${process.env.PORT}`);
+            logger.info(`Server started on http://localhost:${process.env.PORT}`);
         });
     } catch (error) {
-        loggerUtility.error(error);
+        logger.error(error);
+        process.exit(1);
     }
 })();

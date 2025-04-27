@@ -1,7 +1,7 @@
 const { createLogger, format, transports } = require("winston");
 
 // Logger configuration
-const loggerUtility = createLogger({
+const logger = createLogger({
   level: process.env.NODE_ENV === "prod" ? "info" : "debug",
   format: format.combine(
     format.timestamp(),
@@ -29,10 +29,10 @@ const loggerUtility = createLogger({
 });
 
 // Using morgan stream
-loggerUtility.stream = {
+logger.stream = {
   write: function (message: any): void {
-    loggerUtility.info({ message: message.trim() }); // Exclude string message providing
+    logger.info({ message: message.trim() }); // Exclude string message providing
   },
 };
 
-export default loggerUtility;
+export default logger;

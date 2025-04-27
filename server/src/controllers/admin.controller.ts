@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import db from "@utils/sequelize.utility";
-import {EmployeeService} from "@services/employee.service";
-import {CreateEmployeeDto} from "@entities/dto/employee.dto";
+import {CreateEmployeeDto, EmployeeDto} from "@entities/dto/employee.dto";
 import {AdminService} from "@services/admin.service";
+import {plainToInstance} from "class-transformer";
 
 export class AdminController {
 
@@ -18,9 +17,14 @@ export class AdminController {
         try {
             const createEmployeeDto = <CreateEmployeeDto>req.body
             const employee = await this._adminService.createEmployee(createEmployeeDto);
+
+            const responseEmployee = plainToInstance(EmployeeDto, employee, {
+                excludeExtraneousValues: true,
+            });
+
             return res
                 .status(201)
-                .json(employee)
+                .json(responseEmployee)
         } catch (error) {
             next(error);
         }

@@ -1,5 +1,5 @@
 import {EmployeeRepository} from "@repositories/employee.repository";
-import loggerUtility from "@utils/logger.utility";
+import logger from "@utils/logger";
 import {CreateEmployeeDto} from "@entities/dto/employee.dto";
 import {IEmployee, IRole} from "@entities/interfaces";
 import {RoleRepository} from "@repositories/role.repository";
@@ -18,35 +18,42 @@ export class AdminService {
 
 
     async createEmployeeAdmin() {
-        loggerUtility.info("TasksService::createEmployeeAdmin")
+        try {
+            logger.info("AdminService::createEmployeeAdmin")
 
-        const role = await this._roleRepository.findOne({ name: "admin" });
-        if (!role) {
-            throw ApiError.notFoundError("'ADMIN' role not found");
+            const role = await this._roleRepository.findOne({ name: "admin" });
+            if (!role) {
+                throw ApiError.notFoundError("'ADMIN' role not found");
+            }
+
+            const admin = await this._employeeRepository.findOne({ email: process.env.ADMIN_EMAIL as string, roleId: role.id });
+            if (admin) {
+                logger.info("Admin exists");
+                return;
+            }
+
+            const hashSalt = await GenerateSalt();
+            const passwordHash = await GeneratePassword(process.env.ADMIN_PASSWORD as string, hashSalt);
+
+            const adminEmployee: IEmployee = {
+                firstName:"admin",
+                lastName: "admin",
+                passwordHash: passwordHash,
+                hashSalt: hashSalt,
+                email: process.env.ADMIN_EMAIL as string,
+                roleId: role.id!
+            }
+            const filter = { email: adminEmployee.email }
+
+            await this._employeeRepository.create(adminEmployee, filter);
+            return
+        } catch (err) {
+            throw ApiError.databaseError("Error create admin employee", err)
         }
-
-        const admin = await this._employeeRepository.findOne({ roleId: role.id });
-        if (admin) {
-            throw ApiError.conflictError("Admin is exists");
-        }
-
-        const hashSalt = await GenerateSalt();
-        const passwordHash = await GeneratePassword(process.env.ADMIN_PASSWORD as string, hashSalt);
-
-        const adminEmployee: IEmployee = {
-            firstName:"admin",
-            lastName: "admin",
-            passwordHash: passwordHash,
-            hashSalt: hashSalt,
-            email: "admin@gmail.com",
-            roleId: role.id!
-        }
-
-        return await this._employeeRepository.create(adminEmployee, {});
     }
 
     async createEmployee(createEmployeeDto: CreateEmployeeDto) {
-        loggerUtility.info("TasksService::createEmployee")
+        logger.info("AdminService::createEmployee")
 
         const role = await this._roleRepository.findOne({ name: createEmployeeDto.roleName });
         if (!role) {
@@ -56,7 +63,6 @@ export class AdminService {
         const hashSalt = await GenerateSalt();
         const passwordHash = await GeneratePassword(createEmployeeDto.password, hashSalt);
 
-
         const employeeObj: IEmployee = {
             firstName: createEmployeeDto.firstName,
             lastName: createEmployeeDto.lastName,
@@ -65,8 +71,9 @@ export class AdminService {
             email: createEmployeeDto.email,
             roleId: role.id!
         }
-        return await this._employeeRepository.create(employeeObj, {});
+        const filter = { email: createEmployeeDto.email }
 
+        return await this._employeeRepository.create(employeeObj, filter);
     }
 
 }

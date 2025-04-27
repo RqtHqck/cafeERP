@@ -1,4 +1,4 @@
-import loggerUtility from "@utils/logger.utility";
+import logger from "@utils/logger";
 import {Op} from "sequelize";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
@@ -9,9 +9,9 @@ export class EmployeeRepository {
     constructor(private _db: any = db) { }
 
 
-    async create(obj: IEmployee, filter: object | {}) {
+    async create(obj: IEmployee, filter: object) {
         try{
-            loggerUtility.info(`EmployeeRepository::create dto: ${JSON.stringify(obj)}, filter: ${JSON.stringify(filter)}`);
+            logger.info(`EmployeeRepository::create dto: ${JSON.stringify(obj)}, filter: ${JSON.stringify(filter)}`);
 
             const [employee, created] = await this._db.Employee.findOrCreate({
                 where: filter,
@@ -19,7 +19,7 @@ export class EmployeeRepository {
             });
 
             if (!created) {
-                throw ApiError.conflictError(`Employee ${JSON.stringify(obj)} exists`);
+                throw ApiError.conflictError(`Employee with email: ${obj.email} exists`);
             }
             return employee;
         } catch(err) {
@@ -31,14 +31,13 @@ export class EmployeeRepository {
     }
 
 
-
-    async findOne(filter: object | {}): Promise<IEmployee | null> {
+    async findOne(filter: object): Promise<IEmployee | null> {
         try{
-            loggerUtility.info(`EmployeeRepository::findOne filter: ${JSON.stringify(filter)}`)
-            const employee = await this._db.Status.findOne({
+            logger.info(`EmployeeRepository::findOne filter: ${JSON.stringify(filter)}`)
+            const employee = await this._db.Employee.findOne({
                 where: filter
             });
-            return employee != null ? employee : null;
+            return employee;
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;

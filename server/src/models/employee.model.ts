@@ -26,7 +26,6 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
     declare id: number;
 
 
-    @Unique
     @AllowNull(false)
     @Column({
         type: DataType.STRING(255),
@@ -39,7 +38,6 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
     declare firstName: string;
 
 
-    @Unique
     @AllowNull(false)
     @Column({
         type: DataType.STRING(255),
@@ -52,6 +50,7 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
     declare lastName: string;
 
 
+    @Unique
     @AllowNull(false)
     @NotNull
     @Column({

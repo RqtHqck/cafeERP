@@ -1,4 +1,4 @@
-import loggerUtility from "@utils/logger.utility";
+import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
 import {RoleEnum} from "@entities/enums";
@@ -12,7 +12,7 @@ export class RoleRepository {
 
     async findOne(filter: object | {}): Promise<IRole | null> {
         try{
-            loggerUtility.info(`RoleRepository::findOne filter: ${JSON.stringify(filter)}`)
+            logger.info(`RoleRepository::findOne filter: ${JSON.stringify(filter)}`)
             const role = await this._db.Role.findOne({
                 where: filter
             });
@@ -21,7 +21,22 @@ export class RoleRepository {
             if (err instanceof ApiError) {
                 throw err;
             }
-            throw ApiError.databaseError("Error find status", err);
+            throw ApiError.databaseError("Error find roles", err);
+        }
+    }
+
+
+
+    async createMany(createRoles: IRole[]) {
+        try{
+            logger.info(`RoleRepository::createMany dto ${JSON.stringify(createRoles)}`);
+            // If exists ignore
+            await this._db.Role.bulkCreate(createRoles, { ignoreDuplicates: true });
+        } catch(err) {
+            if (err instanceof ApiError) {
+                throw err;
+            }
+            throw ApiError.databaseError("Error create roles", err);
         }
     }
 }
