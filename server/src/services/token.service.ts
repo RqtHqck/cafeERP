@@ -25,9 +25,21 @@ export class TokenService {
     }
 
 
-    async verifyToken(token: string): Promise<any> {
-        return jwt.verify(token, process.env.JWT_SECRET as string);
+    async verifyToken(token: string): Promise<AuthPayload> {
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
+        } catch (err) {
+            throw ApiError.tokenError(`Error when trying to decode token: ${token}`, err);
+        }
+        const payload: AuthPayload = {
+            employeeId: decoded.employeeId,
+            email: decoded.email,
+            roleId: decoded.roleId,
+        }
+        return payload
     }
+
 
 
     async generateAndSaveAuthTokens(payload: AuthPayload, options?: {transaction: Transaction}): Promise<{ accessToken: string, refreshToken: string }>  {

@@ -3,18 +3,22 @@ import logger from "@utils/logger";
 import {LoginDto} from "@entities/dto/auth.dto";
 import {Transaction} from "sequelize";
 import ApiError from "@errors/ApiError";
-import {generatePassword, generateSalt, validatePassword} from "@utils/password.utility";
+import {validatePassword} from "@utils/password.utility";
 import {TokenService} from "@services/token.service";
+import {TokenRepository} from "@repositories/token.repository";
 
 
 export class AuthService {
 
     private _employeeService: EmployeeService;
     private _tokenService: TokenService;
+    private _tokenRepository: TokenRepository;
+
 
     constructor() {
         this._employeeService = new EmployeeService();
         this._tokenService = new TokenService();
+        this._tokenRepository = new TokenRepository();
     }
 
 
@@ -46,7 +50,7 @@ export class AuthService {
         logger.info("AuthService::logout")
 
         if (!refreshToken) {
-            throw ApiError.forbiddenError('Refresh token not provided')
+            throw ApiError.forbiddenError('RefreshToken not provided')
         }
         await this._tokenService.removeToken(refreshToken, options);
     }
@@ -54,6 +58,25 @@ export class AuthService {
 
     async refresh(refreshToken: string, options?: {transaction: Transaction}): Promise<any> {
         logger.info("AuthService::refresh")
+
+        if (!refreshToken) {
+            throw ApiError.forbiddenError('RefreshToken not provided')
+        }
+
+        const payload = await this._tokenService.verifyToken(refreshToken);
+        const existRefresh = await this._tokenRepository.findOne({ refreshToken });
+        if (!existRefresh || !payload) {
+            throw ApiError.forbiddenError('RefreshToken not provided or incorrect')
+        }
+
+        // Generate tokens = { access, refresh }
+        const tokens = await this._tokenService.generateAndSaveAuthTokens({
+            employeeId: payload.employeeId!,
+            email: payload.email!,
+            roleId: payload.roleId!
+        }, options)
+
+        return tokens
     }
 
 
