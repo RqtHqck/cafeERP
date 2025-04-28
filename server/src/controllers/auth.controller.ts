@@ -24,7 +24,7 @@ export class AuthController {
             return res
                 .status(200)
                 .cookie('refreshToken', refreshToken, {
-                    maxAge: 180 * 1000,
+                    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
                     httpOnly: true,
                     sameSite: 'strict',
                 })
@@ -37,24 +37,39 @@ export class AuthController {
 
 
     async logout(req: Request, res: Response, next: NextFunction): Promise<any> {
+        logger.info("AuthController::logout");
+        const transaction = await db.sequelize.transaction();
+
         try {
-            const accessToken = await this.authService.logout();
+            const { refreshToken } = req.cookies;
+            await this.authService.logout(refreshToken, { transaction });
+            await transaction.commit();
             return res
-                .status(200)
-                .json({ accessToken: accessToken });
+                .status(204)
+                .cookie('refreshToken', '', { maxAge: 0 })
+                .json()
         } catch (error) {
+            await transaction.rollback();
             next(error);
         }
     }
 
 
     async refresh(req: Request, res: Response, next: NextFunction): Promise<any> {
+        logger.info("AuthController::refresh");
+        const transaction = await db.sequelize.transaction();
 
         try {
-            const { accessToken } = await this.authService.refresh();
+            const { refreshToken } = req.cookies;
+            const tokens = await this.authService.refresh(refreshToken, { transaction });
             return res
                 .status(200)
-                .json({ accessToken: accessToken });
+                .cookie('refreshToken', tokens.refreshToken, {
+                    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+                    httpOnly: true,
+                    sameSite: 'strict',
+                })
+                .json({ accessToken: tokens.accessToken });
         } catch (error) {
             next(error);
         }

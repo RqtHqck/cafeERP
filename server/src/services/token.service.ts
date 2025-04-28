@@ -25,7 +25,20 @@ export class TokenService {
     }
 
 
-    async saveToken(employeeId: number, refreshToken: string, options?: {transaction: Transaction}): Promise<any>  {
+    async verifyToken(token: string): Promise<any> {
+        return jwt.verify(token, process.env.JWT_SECRET as string);
+    }
+
+
+    async generateAndSaveAuthTokens(payload: AuthPayload, options?: {transaction: Transaction}): Promise<{ accessToken: string, refreshToken: string }>  {
+        const accessToken = await this.generateToken(payload, parseInt(process.env.JWT_EXPIRESIN_ACCESS as string, 10));
+        const refreshToken = await this.generateToken(payload, parseInt(process.env.JWT_EXPIRESIN_REFRESH as string, 10));
+        await this.saveToken(payload.employeeId, refreshToken, options);
+        return { accessToken, refreshToken };
+    }
+
+
+    async saveToken(employeeId: number, refreshToken: string, options?: {transaction: Transaction}): Promise<void>  {
         logger.info("TokenService::saveToken")
 
         const employeeToken = await this._tokenRepository.findOne({ employeeId })
@@ -47,26 +60,12 @@ export class TokenService {
     }
 
 
-    async generateAndSaveAuthTokens(payload: AuthPayload, options?: {transaction: Transaction}): Promise<{ accessToken: string, refreshToken: string }>  {
-        const accessToken = await this.generateToken(payload, parseInt(process.env.JWT_EXPIRESIN_ACCESS as string, 10));
-        const refreshToken = await this.generateToken(payload, parseInt(process.env.JWT_EXPIRESIN_REFRESH as string, 10));
-        await this.saveToken(payload.employeeId, refreshToken, options);
-        return { accessToken, refreshToken };
+    async removeToken(refreshToken: string, options?: {transaction: Transaction}): Promise<void>  {
+        logger.info("TokenService::removeToken")
+
+        await this._tokenRepository.destroy(
+            {refreshToken}, options
+        )
+        return;
     }
-
-
-    async verifyToken(token: string): Promise<any> {
-        return jwt.verify(token, `${process.env.JWT_SECRET}`);
-    }
-
-
-    GenerateSignature(payload: AuthPayload): string {
-        return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '90d'});
-    }
-
-
-    VerifySignature(payload: AuthPayload): string {
-        return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '90d'});
-    }
-
 }

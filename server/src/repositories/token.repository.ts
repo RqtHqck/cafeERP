@@ -43,7 +43,10 @@ export class TokenRepository {
         try{
             logger.info(`TokenRepository::destroy filter: ${JSON.stringify(filter)}`);
 
-            return await this._db.Token.destroy({ where: filter, ...options });
+            return await this._db.Token.destroy({
+                where: filter,
+                options
+            });
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;

@@ -15,7 +15,6 @@ export class AuthService {
     constructor() {
         this._employeeService = new EmployeeService();
         this._tokenService = new TokenService();
-
     }
 
 
@@ -43,12 +42,17 @@ export class AuthService {
     }
 
 
-    async logout(): Promise<any> {
+    async logout(refreshToken: string, options?: {transaction: Transaction}): Promise<any> {
         logger.info("AuthService::logout")
+
+        if (!refreshToken) {
+            throw ApiError.forbiddenError('Refresh token not provided')
+        }
+        await this._tokenService.removeToken(refreshToken, options);
     }
 
 
-    async refresh(): Promise<any> {
+    async refresh(refreshToken: string, options?: {transaction: Transaction}): Promise<any> {
         logger.info("AuthService::refresh")
     }
 
