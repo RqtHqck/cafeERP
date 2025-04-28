@@ -10,7 +10,6 @@
     "start:prod": "cross-env NODE_ENV=prod tsc --project tsconfig.json && cross-env NODE_ENV=prod node dist/server.js",
     "start:diagnostic": "cross-env NODE_ENV=dev tsc --project tsconfig.json --diagnostics && cross-env NODE_ENV=dev node --trace-deprecation --trace-warnings dist/server.js"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RqtHqck/cafeERP.git"
@@ -30,6 +29,9 @@
     "control"
   ],
   "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/passport-jwt": "^4.0.1",
+    "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "compression": "^1.8.0",
@@ -41,7 +43,10 @@
     "helmet": "^8.1.0",
     "http-errors": "^2.0.0",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.5",
@@ -50,12 +55,15 @@
   },
   "devDependencies": {
     "@types/compression": "^1.7.5",
+    "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/joi": "^17.2.3",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.14.0",
     "@types/pg": "^8.11.10",
+    "cookie-parser": "^1.4.7",
     "cross-env": "^7.0.3",
     "module-alias": "^2.2.3",
     "nodemon": "^3.1.9",

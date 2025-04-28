@@ -1,22 +1,28 @@
-import {StatusEnum} from "@entities/enums";
+import {RoleEnum} from "@entities/enums";
 
-export interface ITask {
+export interface IEmployee {
     id?: number;
-    title: string;
-    description: string;
-    comment?: string;
-    statusId: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    passwordHash: string;
+    hashSalt: string;
+    roleId: number;
 }
 
-export interface ITaskUpdate extends Partial<ITask> {}
-
-export interface IStatus {
+export interface IRole {
     id?: number;
-    name: StatusEnum;
+    name: string;
 }
 
-export interface IGetAllRequestFilter {
-    date?: Date;
-    dateFrom?: Date;
-    dateTo?: Date;
+export interface AuthPayload {
+    employeeId: number;
+    email: string;
+    roleId: number;
+}
+
+export interface IToken {
+    id?: number;
+    employeeId: number;
+    refreshToken: string;
 }

@@ -1,5 +1,8 @@
 import { Sequelize } from "sequelize-typescript";
 import dbConfig from "@config/dbConfig";
+import Role from "@models/role.model";
+import Employee from "@models/employee.model";
+import Token from "@models/token.model";
 
 
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
@@ -14,6 +17,9 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
 
 const db = {
     sequelize,
+    Role,
+    Employee,
+    Token
 };
 
 export default db;
