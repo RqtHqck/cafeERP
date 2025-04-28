@@ -38,7 +38,7 @@ export class TokenService {
     }
 
 
-    async saveToken(employeeId: number, refreshToken: string, options?: {transaction: Transaction}): Promise<any>  {
+    async saveToken(employeeId: number, refreshToken: string, options?: {transaction: Transaction}): Promise<void>  {
         logger.info("TokenService::saveToken")
 
         const employeeToken = await this._tokenRepository.findOne({ employeeId })
@@ -56,6 +56,16 @@ export class TokenService {
             employeeId: employeeId,
             refreshToken: refreshToken,
         }, { employeeId }, options)
+        return;
+    }
+
+
+    async removeToken(refreshToken: string, options?: {transaction: Transaction}): Promise<void>  {
+        logger.info("TokenService::removeToken")
+
+        await this._tokenRepository.destroy(
+            {refreshToken}, options
+        )
         return;
     }
 }
