@@ -14,8 +14,9 @@ const employeeService = new EmployeeService();
 passport.use(
     new JwtStrategy(options, async (payloads: any, done: any ) => {
         try {
-            console.log('payloads', payloads);
-            logger.info('is', payloads)
+            logger.info('JwtStrategyMiddleware...');
+            logger.info(`Payload: ${payloads}`);
+
             const employeeCandidate = await employeeService.findOne({
                  email: payloads.email
             });
