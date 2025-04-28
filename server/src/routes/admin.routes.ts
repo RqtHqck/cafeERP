@@ -14,7 +14,7 @@ const adminController = new AdminController(adminService, employeeService);
 
 const adminRouter = Router();
 
-// POST /admin/
+// POST /admin/createEmployee
 adminRouter.post('/createEmployee',
     passport.authenticate("jwt", { session: false }),
     validateBodyDto(CreateEmployeeDto),

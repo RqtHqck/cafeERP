@@ -8,6 +8,7 @@ import morgan from "morgan";
 import compression from "compression";
 import helmet from "helmet";
 import cors from "cors";
+import passport from "@middlewares/passport.middleware";
 import logger from "@utils/logger";
 import routes from "@routes/index";
 import {ErrorHandler} from "@middlewares/errorHanlder.middleware";
@@ -21,6 +22,7 @@ app
     .use(helmet())
     .use(cors())
     .use(loggingBefore)
+    .use(passport.initialize())
     .use('/api/v1/', routes)
     .use(loggingAfter)
     .use(ErrorHandler);

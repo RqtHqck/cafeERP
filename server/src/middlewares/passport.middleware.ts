@@ -12,14 +12,20 @@ const options: StrategyOptions = {
 const employeeService = new EmployeeService();
 
 passport.use(
-    new JwtStrategy(options, async (payloads: AuthPayload, done: VerifiedCallback ):Promise<void> => {
+    new JwtStrategy(options, async (payloads: any, done: any ) => {
         try {
+            console.log('payloads', payloads);
+            logger.info('is', payloads)
             const employeeCandidate = await employeeService.findOne({
                  email: payloads.email
             });
 
             if (!employeeCandidate) {
                 return done(null, false, { message: 'User not found' });
+            }
+
+            if (employeeCandidate.roleId !== payloads.roleId) {
+                return done(null, false, { message: 'Access denied' });
             }
 
             const payload: AuthPayload = {
