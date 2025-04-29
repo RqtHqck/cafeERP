@@ -12,7 +12,7 @@ import {AdminService} from "@services/admin.service";
         const adminService = new AdminService();
 
         await db.sequelize.authenticate({ logging: true });
-        await db.sequelize.sync({ force: false, logging: true })
+        await db.sequelize.sync({ force: true, logging: true })
         logger.info("Database synchronized");
 
         await roleService.createMany();

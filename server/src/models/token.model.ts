@@ -4,7 +4,7 @@ import {
     Model,
     DataType,
     PrimaryKey,
-    AllowNull, AutoIncrement, ForeignKey, BelongsTo
+    AllowNull, AutoIncrement, ForeignKey, BelongsTo, Unique
 } from 'sequelize-typescript';
 import Employee from "@models/employee.model";
 import {InferAttributes, InferCreationAttributes, NonAttribute} from "sequelize";
@@ -34,6 +34,7 @@ class Token extends Model<InferAttributes<Token>, InferCreationAttributes<Token>
     employeeId!: number;
 
 
+    @Unique
     @AllowNull(false)
     @Column({
         type: DataType.STRING,

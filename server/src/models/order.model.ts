@@ -29,7 +29,6 @@ class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>
     declare id: number;
 
 
-    @Unique
     @AllowNull(false)
     @Column({
         type: DataType.STRING(255),

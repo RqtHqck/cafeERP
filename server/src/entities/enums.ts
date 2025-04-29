@@ -25,14 +25,12 @@ export enum CategoryEnum {
     LUNCH = 'lunch'
 }
 
-
 export enum ItemUnitEnum {
-    GRAMS = 'grams',
-    KILOGRAMS = 'kilograms',
-    MILLILITRES = 'millilitres',
-    PIECES = 'pieces',
+    GRAMS = 'g',
+    KILOGRAMS = 'kg',
+    MILLILITRES = 'ml',
+    PIECES = 'pc',
 }
-
 
 export default {
     RoleEnum,
