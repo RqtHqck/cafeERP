@@ -46,7 +46,7 @@ export class AdminService {
             const filter = { email: adminEmployee.email }
 
             await this._employeeRepository.create(adminEmployee, filter);
-            return
+            return;
         } catch (err) {
             throw ApiError.databaseError("Error create admin employee", err)
         }
