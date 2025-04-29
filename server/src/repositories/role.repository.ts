@@ -9,13 +9,11 @@ export class RoleRepository {
     constructor(private _db: any = db) { }
 
 
-    async findOne(filter: object | {}): Promise<IRole | null> {
+    async findOne(filter: object = {}): Promise<IRole | null> {
+        logger.info(`RoleRepository::findOne filter: ${JSON.stringify(filter)}`)
+
         try{
-            logger.info(`RoleRepository::findOne filter: ${JSON.stringify(filter)}`)
-            const role = await this._db.Role.findOne({
-                where: filter
-            });
-            return role;
+            return await this._db.Role.findOne(filter);
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;
@@ -25,10 +23,10 @@ export class RoleRepository {
     }
 
 
-
     async createMany(createRoles: IRole[]) {
+        logger.info(`RoleRepository::createMany dto ${JSON.stringify(createRoles)}`);
+
         try{
-            logger.info(`RoleRepository::createMany dto ${JSON.stringify(createRoles)}`);
             // If exists ignore
             await this._db.Role.bulkCreate(createRoles, { ignoreDuplicates: true });
         } catch(err) {

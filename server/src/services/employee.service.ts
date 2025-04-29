@@ -18,16 +18,10 @@ export class EmployeeService {
     }
 
 
-    async findOne(filter: object) {
-        logger.info("EmployeeService::findOne")
-        return await this._employeeRepository.findOne(filter);
-    }
-
-
     async createEmployee(createEmployeeDto: CreateEmployeeDto) {
         logger.info("AdminService::createEmployee")
 
-        const role = await this._roleRepository.findOne({ name: createEmployeeDto.roleName });
+        const role = await this._roleRepository.findOne({ where: { name: createEmployeeDto.roleName } });
         if (!role) {
             throw ApiError.notFoundError(`Role '${createEmployeeDto.roleName}' not found`);
         }
@@ -43,8 +37,10 @@ export class EmployeeService {
             email: createEmployeeDto.email,
             roleId: role.id!
         }
-        const filter = { email: createEmployeeDto.email }
 
-        return await this._employeeRepository.create(employeeObj, filter);
+        return await this._employeeRepository.findOrCreate({
+            where: {email: createEmployeeDto.email},
+            defaults: employeeObj
+        });
     }
 }
