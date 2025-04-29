@@ -4,16 +4,14 @@ import {
     Model,
     DataType,
     PrimaryKey,
-    AllowNull, AutoIncrement, ForeignKey, BelongsTo
+    AllowNull, AutoIncrement, ForeignKey, BelongsTo, Unique
 } from 'sequelize-typescript';
 import Employee from "@models/employee.model";
-import {InferAttributes, InferCreationAttributes} from "sequelize";
+import {InferAttributes, InferCreationAttributes, NonAttribute} from "sequelize";
+
 
 @Table({
     timestamps: true,
-    paranoid: false,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
     tableName: 'tokens',
     modelName: 'Token',
 })
@@ -36,6 +34,7 @@ class Token extends Model<InferAttributes<Token>, InferCreationAttributes<Token>
     employeeId!: number;
 
 
+    @Unique
     @AllowNull(false)
     @Column({
         type: DataType.STRING,
@@ -49,7 +48,7 @@ class Token extends Model<InferAttributes<Token>, InferCreationAttributes<Token>
             foreignKey: 'employeeId', targetKey: 'id'
         }
     )
-    employee!: Employee;
+    employee!: NonAttribute<Employee>;
 }
 
 export default Token;

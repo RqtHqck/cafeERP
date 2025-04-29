@@ -7,13 +7,13 @@ import {
     AllowNull, AutoIncrement,
     Unique, HasMany
 } from 'sequelize-typescript';
-import {InferAttributes, InferCreationAttributes} from "sequelize";
+import {InferAttributes, InferCreationAttributes, NonAttribute} from "sequelize";
 import {RoleEnum} from "@entities/enums";
 import Employee from "@models/employee.model";
 
+
 @Table({
     timestamps: false,
-    paranoid: false,
     tableName: 'roles',
     modelName: 'Role',
 })
@@ -23,6 +23,7 @@ class Role extends Model<InferAttributes<Role>, InferCreationAttributes<Role>> {
     @Column
     declare id: number;
 
+
     @Unique
     @AllowNull(false)
     @Column({
@@ -30,10 +31,11 @@ class Role extends Model<InferAttributes<Role>, InferCreationAttributes<Role>> {
     })
     declare name: RoleEnum;
 
+
     @HasMany(() => Employee, {
         foreignKey: 'role_id'
     })
-    declare employees: Employee[]
+    declare employees: NonAttribute<Employee[]>;
 }
 
 export default Role;

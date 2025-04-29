@@ -39,8 +39,7 @@ export class TokenService {
         }
         return payload
     }
-
-
+    
 
     async generateAndSaveAuthTokens(payload: AuthPayload, options?: {transaction: Transaction}): Promise<{ accessToken: string, refreshToken: string }>  {
         const accessToken = await this.generateToken(payload, parseInt(process.env.JWT_EXPIRESIN_ACCESS as string, 10));
