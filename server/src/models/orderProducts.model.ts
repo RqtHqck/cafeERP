@@ -3,7 +3,7 @@ import {
     Column,
     Model,
     AllowNull,
-    ForeignKey, PrimaryKey, AutoIncrement,
+    ForeignKey, PrimaryKey, AutoIncrement, DataType, Default,
 } from "sequelize-typescript";
 import Order from "@models/order.model";
 import Product from "@models/product.model";
@@ -15,7 +15,7 @@ import {InferAttributes, InferCreationAttributes} from "sequelize";
     tableName: "order_products",
     modelName: "OrderProduct",
 })
-class OrderProducts extends Model<InferAttributes<OrderProducts>, InferCreationAttributes<OrderProducts>> {
+class OrderProduct extends Model<InferAttributes<OrderProduct>, InferCreationAttributes<OrderProduct>> {
 
     @PrimaryKey
     @AutoIncrement
@@ -37,6 +37,14 @@ class OrderProducts extends Model<InferAttributes<OrderProducts>, InferCreationA
         field: "product_id",
     })
     productId!: number;
+
+
+    @AllowNull(false)
+    @Column({
+        type: DataType.INTEGER,
+        defaultValue: 1
+    })
+    declare quantity: number;
 }
 
-export default OrderProducts;
+export default OrderProduct;

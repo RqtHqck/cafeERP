@@ -36,7 +36,7 @@ class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>
         field: 'customer_name',
         validate: {
             notEmpty: true,
-            max: 255
+            len: [1, 255]
         },
     })
     declare customerName: string;
@@ -45,6 +45,9 @@ class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>
     @AllowNull(false)
     @Column({
         type: DataType.FLOAT,
+        validate: {
+            min: 0.01
+        }
     })
     declare price: number;
 

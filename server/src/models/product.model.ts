@@ -34,7 +34,7 @@ class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Pr
         type: DataType.STRING(255),
         validate: {
             notEmpty: true,
-            max: 255
+            len: [1, 255]
         },
     })
     declare name: string;
@@ -54,6 +54,9 @@ class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Pr
     @AllowNull(false)
     @Column({
         type: DataType.FLOAT,
+        validate: {
+            min: 0.01
+        }
     })
     declare price: number;
 

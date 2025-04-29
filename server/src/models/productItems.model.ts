@@ -3,9 +3,9 @@ import {
     Column,
     Model,
     AllowNull,
-    ForeignKey, PrimaryKey, AutoIncrement,
+    ForeignKey, PrimaryKey, AutoIncrement, BelongsTo,
 } from "sequelize-typescript";
-import {InferAttributes, InferCreationAttributes} from "sequelize";
+import {InferAttributes, InferCreationAttributes, NonAttribute} from "sequelize";
 import Product from "@models/product.model";
 import Item from "@models/item.model";
 
@@ -37,6 +37,13 @@ class ProductItems extends Model<InferAttributes<ProductItems>, InferCreationAtt
         field: "product_id",
     })
     productId!: number;
+
+    @BelongsTo(() => Product)
+    product!: NonAttribute<Product>;
+
+    @BelongsTo(() => Item)
+    item!: NonAttribute<Item>;
+
 }
 
 export default ProductItems;

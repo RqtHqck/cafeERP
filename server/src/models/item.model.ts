@@ -31,7 +31,7 @@ class Item extends Model<InferAttributes<Item>, InferCreationAttributes<Item>> {
         type: DataType.STRING(255),
         validate: {
             notEmpty: true,
-            max: 255
+            len: [1, 255]
         },
     })
     declare name: string;
