@@ -6,15 +6,16 @@ import {
     PrimaryKey,
     AllowNull,
     AutoIncrement,
-     NotNull, ForeignKey, BelongsTo, Unique
+    NotNull, ForeignKey, BelongsTo, Unique, HasMany
 } from 'sequelize-typescript';
 import Role from "@models/role.model";
-import {InferAttributes, InferCreationAttributes} from "sequelize";
+import {InferAttributes, InferCreationAttributes, NonAttribute} from "sequelize";
+import Order from "@models/order.model";
+import Product from "@models/product.model";
 
 
 @Table({
-    timestamps: false,
-    paranoid: false,
+    timestamps: true,
     tableName: 'employees',
     modelName: 'Employee',
 })
@@ -52,7 +53,6 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
 
     @Unique
     @AllowNull(false)
-    @NotNull
     @Column({
         type: DataType.STRING,
     })
@@ -60,7 +60,6 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
 
 
     @AllowNull(false)
-    @NotNull
     @Column({
         type: DataType.STRING,
         field: 'password_hash'
@@ -69,7 +68,6 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
 
 
     @AllowNull(false)
-    @NotNull
     @Column({
         type: DataType.STRING,
         field: 'hash_salt'
@@ -78,7 +76,6 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
 
 
     @AllowNull(false)
-    @NotNull
     @ForeignKey(() => Role)
     @Column({
         type: DataType.INTEGER,
@@ -91,7 +88,13 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
         foreignKey: 'role_id',
         targetKey: 'id'
     })
-    declare role: Role;
+    declare role: NonAttribute<Role>;
+
+    @HasMany(() => Order, {
+        foreignKey: 'employee_id'
+    })
+    declare orders: NonAttribute<Order[]>;
+
 }
 
 export default Employee;
