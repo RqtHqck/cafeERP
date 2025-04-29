@@ -8,17 +8,14 @@ export class EmployeeRepository {
     constructor(private _db: any = db) { }
 
 
-    async create(obj: IEmployee, filter: object) {
-        try{
-            logger.info(`EmployeeRepository::create dto: ${JSON.stringify(obj)}, filter: ${JSON.stringify(filter)}`);
+    async findOrCreate(options: object) {
+        logger.info(`EmployeeRepository::create options: ${JSON.stringify(options)}`);
 
-            const [employee, created] = await this._db.Employee.findOrCreate({
-                where: filter,
-                defaults: obj
-            });
+        try{
+            const [employee, created] = await this._db.Employee.findOrCreate(options);
 
             if (!created) {
-                throw ApiError.conflictError(`Employee with email: ${obj.email} exists`);
+                throw ApiError.conflictError(`Employee is exists`);
             }
             return employee;
         } catch(err) {
@@ -30,12 +27,11 @@ export class EmployeeRepository {
     }
 
 
-    async findOne(filter: object): Promise<IEmployee | null> {
+    async findOne(filter: object = {}): Promise<IEmployee | null> {
+        logger.info(`EmployeeRepository::findOne filter: ${JSON.stringify(filter)}`)
+
         try{
-            logger.info(`EmployeeRepository::findOne filter: ${JSON.stringify(filter)}`)
-            return await this._db.Employee.findOne({
-                where: filter
-            });
+            return await this._db.Employee.findOne(filter);
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;

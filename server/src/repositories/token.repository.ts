@@ -9,13 +9,11 @@ export class TokenRepository {
     constructor(private _db: any = db) { }
 
 
-    async findOne(filter: object): Promise<IToken | null> {
+    async findOne(filter: object = {}): Promise<IToken | null> {
+        logger.info(`TokenRepository::findOne filter: ${JSON.stringify(filter)}`)
+
         try{
-            logger.info(`TokenRepository::findOne filter: ${JSON.stringify(filter)}`)
-            const token = await this._db.Token.findOne({
-                where: filter
-            });
-            return token;
+            return await this._db.Token.findOne(filter);
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;
@@ -26,9 +24,9 @@ export class TokenRepository {
 
 
     async create(obj: IToken, options?: {transaction: Transaction}): Promise<any> {
-        try{
-            logger.info(`TokenRepository::create dto: ${JSON.stringify(obj)}`);
+        logger.info(`TokenRepository::create`);
 
+        try{
             return await this._db.Token.create(obj, options);
         } catch(err) {
             if (err instanceof ApiError) {
@@ -39,14 +37,11 @@ export class TokenRepository {
     }
 
 
-    async destroy(filter: object, options?: {transaction: Transaction}): Promise<any> {
-        try{
-            logger.info(`TokenRepository::destroy filter: ${JSON.stringify(filter)}`);
+    async destroy(options: object): Promise<any> {
+        logger.info(`TokenRepository::destroy`);
 
-            return await this._db.Token.destroy({
-                where: filter,
-                options
-            });
+        try{
+            return await this._db.Token.destroy(options);
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;
@@ -57,13 +52,11 @@ export class TokenRepository {
 
 
     async update(updateObj: IToken, filter?: object, options?: {transaction: Transaction}): Promise<any> {
+        logger.info(`TokenRepository::update dto: ${JSON.stringify(updateObj)}, filters: ${JSON.stringify(filter)}`);
+
         try{
-            logger.info(`TokenRepository::update dto: ${JSON.stringify(updateObj)}, filters: ${JSON.stringify(filter)}`);
             const [affectedCount] = await this._db.Token.update(
-                updateObj, {
-                    where: filter,
-                },
-                options
+                updateObj, filter, options
             );
 
             logger.info(`Affected fields count: ${affectedCount}`);

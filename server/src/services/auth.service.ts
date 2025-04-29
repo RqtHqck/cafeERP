@@ -1,4 +1,3 @@
-import {EmployeeService} from "@services//employee.service";
 import logger from "@utils/logger";
 import {LoginDto} from "@entities/dto/auth.dto";
 import {Transaction} from "sequelize";
@@ -6,17 +5,18 @@ import ApiError from "@errors/ApiError";
 import {validatePassword} from "@utils/password.utility";
 import {TokenService} from "@services/token.service";
 import {TokenRepository} from "@repositories/token.repository";
+import {EmployeeRepository} from "@repositories/employee.repository";
 
 
 export class AuthService {
 
-    private _employeeService: EmployeeService;
+    private _employeeRepository: EmployeeRepository;
     private _tokenService: TokenService;
     private _tokenRepository: TokenRepository;
 
 
     constructor() {
-        this._employeeService = new EmployeeService();
+        this._employeeRepository = new EmployeeRepository();
         this._tokenService = new TokenService();
         this._tokenRepository = new TokenRepository();
     }
@@ -25,7 +25,7 @@ export class AuthService {
     async login(dto: LoginDto, options?: {transaction: Transaction}): Promise<any> {
         logger.info("AuthService::login")
 
-        const employee = await this._employeeService.findOne({ email: dto.email });
+        const employee = await this._employeeRepository.findOne({where: { email: dto.email }});
 
         if (!employee) {
             throw ApiError.conflictError(`Employee with email ${ dto.email } exists`);
@@ -52,7 +52,11 @@ export class AuthService {
         if (!refreshToken) {
             throw ApiError.forbiddenError('RefreshToken not provided')
         }
-        await this._tokenService.removeToken(refreshToken, options);
+        await this._tokenRepository.destroy({
+            where: { refreshToken },
+            transaction: options?.transaction
+        });
+
     }
 
 
@@ -64,7 +68,8 @@ export class AuthService {
         }
 
         const payload = await this._tokenService.verifyToken(refreshToken);
-        const existRefresh = await this._tokenRepository.findOne({ refreshToken });
+        const existRefresh = await this._tokenRepository.findOne({ where: { refreshToken }});
+
         if (!existRefresh || !payload) {
             throw ApiError.forbiddenError('RefreshToken not provided or incorrect')
         }

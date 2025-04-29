@@ -56,27 +56,21 @@ export class TokenService {
 
         if (!employeeToken) {
             await this._tokenRepository.create({
-                employeeId: employeeId,
-                refreshToken: refreshToken,
+                employeeId,
+                refreshToken
             }, options)
-            return;
+        } else {
+            employeeToken.refreshToken = refreshToken
+
+            await this._tokenRepository.update(
+                {
+                    employeeId,
+                    refreshToken
+                },
+                { where: { employeeId } },
+                options
+            )
         }
-
-        employeeToken.refreshToken = refreshToken
-        await this._tokenRepository.update({
-            employeeId: employeeId,
-            refreshToken: refreshToken,
-        }, { employeeId }, options)
-        return;
-    }
-
-
-    async removeToken(refreshToken: string, options?: {transaction: Transaction}): Promise<void>  {
-        logger.info("TokenService::removeToken")
-
-        await this._tokenRepository.destroy(
-            {refreshToken}, options
-        )
         return;
     }
 }

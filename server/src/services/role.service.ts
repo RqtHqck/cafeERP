@@ -12,12 +12,6 @@ export class RoleService {
     }
 
 
-    async findOne(filter: any) {
-        logger.info("RoleService::findOne")
-        return await this._roleRepository.findOne(filter);
-    }
-
-
     async createMany() {
         logger.info("RoleService::createMany")
         const allowedRoleNames = [...Object.values(RoleEnum)]

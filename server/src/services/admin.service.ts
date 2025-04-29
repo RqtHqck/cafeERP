@@ -21,12 +21,17 @@ export class AdminService {
         try {
             logger.info("AdminService::createEmployeeAdmin")
 
-            const role = await this._roleRepository.findOne({ name: "admin" });
+            const role = await this._roleRepository.findOne({ where: { name: "admin" } });
             if (!role) {
                 throw ApiError.notFoundError("'ADMIN' role not found");
             }
 
-            const admin = await this._employeeRepository.findOne({ email: process.env.ADMIN_EMAIL as string, roleId: role.id });
+            const admin = await this._employeeRepository.findOne({
+                where: {
+                    email: process.env.ADMIN_EMAIL as string,
+                    roleId: role.id
+                }
+            });
             if (admin) {
                 logger.info("Admin exists");
                 return;
@@ -43,9 +48,11 @@ export class AdminService {
                 email: process.env.ADMIN_EMAIL as string,
                 roleId: role.id!
             }
-            const filter = { email: adminEmployee.email }
 
-            await this._employeeRepository.create(adminEmployee, filter);
+            await this._employeeRepository.findOrCreate({
+                where: { email: adminEmployee.email },
+                defaults: adminEmployee
+            });
             return;
         } catch (err) {
             throw ApiError.databaseError("Error create admin employee", err)
