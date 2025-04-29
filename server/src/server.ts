@@ -3,12 +3,14 @@ import logger from '@utils/logger'
 import db from '@utils/sequelize.utility'
 import {RoleService} from "@services/role.service";
 import {AdminService} from "@services/admin.service";
+import {CategoryService} from "@services/category.service";
 
 
 (async () => {
     try {
         // DB
         const roleService = new RoleService();
+        const categoryService = new CategoryService();
         const adminService = new AdminService();
 
         await db.sequelize.authenticate({ logging: true });
@@ -16,6 +18,7 @@ import {AdminService} from "@services/admin.service";
         logger.info("Database synchronized");
 
         await roleService.createMany();
+        await categoryService.createMany();
         await adminService.createEmployeeAdmin();
 
         // SERVER

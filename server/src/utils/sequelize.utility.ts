@@ -3,6 +3,13 @@ import dbConfig from "@config/dbConfig";
 import Role from "@models/role.model";
 import Employee from "@models/employee.model";
 import Token from "@models/token.model";
+import Category from "@models/category.model";
+import Order from "@models/order.model";
+import Product from "@models/product.model";
+import Item from "@models/item.model";
+import Payment from "@models/payment.model";
+import ProductItems from "@models/productItems.model";
+import OrderProduct from "@models/orderProducts.model";
 
 
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
@@ -19,7 +26,14 @@ const db = {
     sequelize,
     Role,
     Employee,
-    Token
+    Token,
+    Category,
+    Order,
+    Product,
+    Item,
+    Payment,
+    OrderProduct,
+    ProductItems
 };
 
 export default db;

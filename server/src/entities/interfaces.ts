@@ -15,6 +15,12 @@ export interface IRole {
     name: string;
 }
 
+export interface ICategory {
+    id?: number;
+    name: string;
+}
+
+
 export interface AuthPayload {
     employeeId: number;
     email: string;
