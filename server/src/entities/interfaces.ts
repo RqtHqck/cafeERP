@@ -20,7 +20,6 @@ export interface ICategory {
     name: string;
 }
 
-
 export interface AuthPayload {
     employeeId: number;
     email: string;
@@ -32,3 +31,13 @@ export interface IToken {
     employeeId: number;
     refreshToken: string;
 }
+
+export interface IItem {
+    id?: number;
+    name: string;
+    unit: string;
+    quantity: number;
+    cost: number;
+}
+
+export interface IItemUpdate extends Partial<IItem> {}
