@@ -21,11 +21,6 @@ export class EmployeeService {
     async createEmployee(createEmployeeDto: CreateEmployeeDto) {
         logger.info("EmployeeService::createEmployee")
 
-        const role = await this._roleRepository.findOne({ where: { name: createEmployeeDto.roleName } });
-        if (!role) {
-            throw ApiError.notFoundError(`Role '${createEmployeeDto.roleName}' not found`);
-        }
-
         const hashSalt = await generateSalt();
         const passwordHash = await generatePassword(createEmployeeDto.password, hashSalt);
 
@@ -35,7 +30,7 @@ export class EmployeeService {
             passwordHash: passwordHash,
             hashSalt: hashSalt,
             email: createEmployeeDto.email,
-            roleId: role.id!
+            roleId: createEmployeeDto.roleId
         }
 
         return await this._employeeRepository.findOrCreate({
