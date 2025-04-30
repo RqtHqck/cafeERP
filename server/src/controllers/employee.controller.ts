@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import {AdminService} from "@services/admin.service";
 import {EmployeeService} from "@services/employee.service";
 import {CreateEmployeeDto, EmployeeDto} from "@entities/dto/employee.dto";
 import {plainToInstance} from "class-transformer";
@@ -9,11 +8,9 @@ import {ItemService} from "@services/item.service";
 export class EmployeeController {
 
     private _employeeService: EmployeeService;
-    private _itemService: ItemService;
 
-    constructor(itemService: ItemService, employeeService: EmployeeService) {
+    constructor(employeeService: EmployeeService) {
         this._employeeService = employeeService;
-        this._itemService = itemService;
     }
 
 
@@ -29,62 +26,6 @@ export class EmployeeController {
             return res
                 .status(201)
                 .json(responseEmployee)
-        } catch (error) {
-            next(error);
-        }
-    }
-
-
-    async addItem(req: Request, res: Response, next: NextFunction): Promise<any> {
-        try {
-            const addItemDto = <AddItemDto>req.body
-            const item = await this._itemService.addItems(addItemDto);
-
-            const responseItem = plainToInstance(ItemDto, item, {
-                excludeExtraneousValues: true,
-            });
-
-            return res
-                .status(201)
-                .json(responseItem)
-        } catch (error) {
-            next(error);
-        }
-    }
-
-
-    async addManyItems(req: Request, res: Response, next: NextFunction): Promise<any> {
-        try {
-            const addItemDto = <AddItemDto[]>req.body
-            const items = await this._itemService.addManyItems(addItemDto);
-
-            const responseItems = plainToInstance(ItemDto, items, {
-                excludeExtraneousValues: true,
-            });
-
-            return res
-                .status(201)
-                .json(responseItems)
-        } catch (error) {
-            next(error);
-        }
-    }
-
-
-    async patchUpdateItem(req: Request, res: Response, next: NextFunction): Promise<any> {
-        try {
-            const id = parseInt(req.params.id as string, 10);
-
-            const addItemDto = <AddItemDto>req.body
-            const item = await this._itemService.updateItem(id, addItemDto);
-
-            const responseItem = plainToInstance(ItemDto, item, {
-                excludeExtraneousValues: true,
-            });
-
-            return res
-                .status(201)
-                .json(responseItem)
         } catch (error) {
             next(error);
         }
