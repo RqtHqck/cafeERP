@@ -27,6 +27,7 @@ import {ItemService} from "@services/item.service";
 import {RoleEnum} from "@entities/enums";
 import {AddItemDto, UpdateItemDto} from "@entities/dto/item.dto";
 import {validateParamsId} from "@middlewares/validation/validateId.middleware";
+import {validateBodyArrayDto} from "@middlewares/validation/validateDtoArray.middleware";
 
 
 const itemService = new ItemService();
@@ -36,8 +37,9 @@ const employeeController = new EmployeeController(itemService, employeeService);
 
 const adminRouter = Router();
 
-// POST /admin/createEmployee
-adminRouter.post('/createEmployee',
+// --------------------EMPLOYEE------------------------------------|
+// POST /employee/createEmployee
+adminRouter.post('/employee/createEmployee',
     passport.authenticate("jwt", { session: false }),
     roleAccessMiddleware([RoleEnum.ADMIN]),
     validateBodyDto(CreateEmployeeDto),
@@ -45,8 +47,9 @@ adminRouter.post('/createEmployee',
 );
 
 
-// POST /admin/addItem
-adminRouter.post('/addItem',
+// --------------------ITEM------------------------------------|
+// POST /item/addItem
+adminRouter.post('/item/addItem',
     passport.authenticate("jwt", { session: false }),
     roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER]),
     validateBodyDto(AddItemDto),
@@ -54,8 +57,17 @@ adminRouter.post('/addItem',
 );
 
 
-// PUT /admin/updateItem/:id
-adminRouter.put('/updateItem/:id',
+// POST /items/addManyItem
+adminRouter.post('/items/addManyItems',
+    passport.authenticate("jwt", { session: false }),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER]),
+    validateBodyArrayDto(AddItemDto),
+    employeeController.addManyItems.bind(employeeController)
+);
+
+
+// PUT /item/updateItem/:id
+adminRouter.patch('/item/updateItem/:id',
     passport.authenticate("jwt", { session: false }),
     roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER]),
     validateParamsId(),

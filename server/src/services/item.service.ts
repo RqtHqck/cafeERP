@@ -26,7 +26,6 @@ export class ItemService {
             name: addItemDto.name,
             unit: addItemDto.unit,
             quantity: addItemDto.quantity,
-            minThreshold: addItemDto.minThreshold,
             cost: addItemDto.cost
         }
 
@@ -37,6 +36,20 @@ export class ItemService {
     }
 
 
+    async addManyItems(addItemsDto: AddItemDto[]) {
+        logger.info("ItemService::addManyItems")
+
+        const items: IItem[] = addItemsDto.map((item) => ({
+            name: item.name,
+            unit: item.unit,
+            quantity: item.quantity,
+            cost: item.cost
+        }))
+
+        return await this._itemRepository.addMany(items);
+    }
+
+
     async updateItem(id: number, updateItemDto: UpdateItemDto) {
         logger.info("ItemService::addItem")
 
@@ -44,7 +57,6 @@ export class ItemService {
             name: updateItemDto.name,
             unit: updateItemDto.unit,
             quantity: updateItemDto.quantity,
-            minThreshold: updateItemDto.minThreshold,
             cost: updateItemDto.cost
         }
 

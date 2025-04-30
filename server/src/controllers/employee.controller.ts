@@ -53,6 +53,24 @@ export class EmployeeController {
     }
 
 
+    async addManyItems(req: Request, res: Response, next: NextFunction): Promise<any> {
+        try {
+            const addItemDto = <AddItemDto[]>req.body
+            const items = await this._itemService.addManyItems(addItemDto);
+
+            const responseItems = plainToInstance(ItemDto, items, {
+                excludeExtraneousValues: true,
+            });
+
+            return res
+                .status(201)
+                .json(responseItems)
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
     async patchUpdateItem(req: Request, res: Response, next: NextFunction): Promise<any> {
         try {
             const id = parseInt(req.params.id as string, 10);

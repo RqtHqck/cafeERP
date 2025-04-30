@@ -54,14 +54,6 @@ class Item extends Model<InferAttributes<Item>, InferCreationAttributes<Item>> {
     @AllowNull(false)
     @Column({
         type: DataType.FLOAT,
-        field: 'min_threshold'
-    })
-    declare minThreshold: number;
-
-
-    @AllowNull(false)
-    @Column({
-        type: DataType.FLOAT,
     })
     declare cost: number;
 }

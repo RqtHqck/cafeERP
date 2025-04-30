@@ -44,7 +44,21 @@ export class ItemRepository {
     }
 
 
-    async update(updateObj: IItemUpdate, options?: object) {
+    async addMany(items: IItem[], options: object = {}) {
+        // try{
+            logger.info(`ItemRepository::createMany dto ${JSON.stringify(items)}`);
+            // If exists ignore
+            await this._db.Item.bulkCreate(items, options);
+        // } catch(err) {
+        //     if (err instanceof ApiError) {
+        //         throw err;
+        //     }
+        //     throw ApiError.databaseError("Error create items", err);
+        // }
+    }
+
+
+    async update(updateObj: IItemUpdate,  options: object = {}) {
         logger.info(`ItemRepository::update dto: ${JSON.stringify(updateObj)}`)
 
         try{

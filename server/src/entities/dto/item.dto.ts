@@ -18,10 +18,6 @@ export class AddItemDto {
 
     @IsNumber()
     @IsNotEmpty()
-    minThreshold!: number;
-
-    @IsNumber()
-    @IsNotEmpty()
     cost!: number;
 }
 
@@ -39,10 +35,6 @@ export class UpdateItemDto {
     @IsNumber()
     @IsNotEmpty()
     quantity?: number;
-
-    @IsNumber()
-    @IsNotEmpty()
-    minThreshold?: number;
 
     @IsNumber()
     @IsNotEmpty()
@@ -70,11 +62,6 @@ export class ItemDto {
     @IsNumber()
     @IsNotEmpty()
     quantity!: number;
-
-    @Exclude()
-    @IsNumber()
-    @IsNotEmpty()
-    minThreshold!: number;
 
     @Exclude()
     @IsNumber()

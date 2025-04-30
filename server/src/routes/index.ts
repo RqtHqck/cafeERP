@@ -7,6 +7,6 @@ const router = Router();
 
 router
     .use('/auth', authRoutes)
-    .use('/employee', employeeRoutes)
+    .use('/employees', employeeRoutes)
 
 export default router;

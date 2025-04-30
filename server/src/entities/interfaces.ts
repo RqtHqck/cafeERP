@@ -37,7 +37,6 @@ export interface IItem {
     name: string;
     unit: string;
     quantity: number;
-    minThreshold: number;
     cost: number;
 }
 
