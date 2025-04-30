@@ -3,15 +3,18 @@ import {CreateEmployeeDto, EmployeeDto} from "@entities/dto/employee.dto";
 import {plainToInstance} from "class-transformer";
 import {EmployeeService} from "@services/employee.service";
 import {AdminService} from "@services/admin.service";
+import {AddItemDto, ItemDto} from "@entities/dto/item.dto";
+import {ItemService} from "@services/item.service";
+import ApiError from "@errors/ApiError";
 
 export class AdminController {
 
     private _employeeService: EmployeeService;
-    private _adminService: AdminService;
+    private _itemService: ItemService;
 
-    constructor(adminService: AdminService, employeeService: EmployeeService) {
+    constructor(itemService: ItemService, employeeService: EmployeeService) {
         this._employeeService = employeeService;
-        this._adminService = adminService;
+        this._itemService = itemService;
 
     }
 
@@ -32,4 +35,43 @@ export class AdminController {
             next(error);
         }
     }
+
+
+    async addItem(req: Request, res: Response, next: NextFunction): Promise<any> {
+        try {
+            const addItemDto = <AddItemDto>req.body
+            const item = await this._itemService.addItems(addItemDto);
+
+            const responseItem = plainToInstance(ItemDto, item, {
+                excludeExtraneousValues: true,
+            });
+
+            return res
+                .status(201)
+                .json(responseItem)
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+    async patchUpdateItem(req: Request, res: Response, next: NextFunction): Promise<any> {
+        try {
+            const id = parseInt(req.params.id as string, 10);
+
+            const addItemDto = <AddItemDto>req.body
+            const item = await this._itemService.updateItem(id, addItemDto);
+
+            const responseItem = plainToInstance(ItemDto, item, {
+                excludeExtraneousValues: true,
+            });
+
+            return res
+                .status(201)
+                .json(responseItem)
+        } catch (error) {
+            next(error);
+        }
+    }
+
 }

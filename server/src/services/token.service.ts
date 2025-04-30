@@ -52,15 +52,14 @@ export class TokenService {
     async saveToken(employeeId: number, refreshToken: string, options?: {transaction: Transaction}): Promise<void>  {
         logger.info("TokenService::saveToken")
 
-        const employeeToken = await this._tokenRepository.findOne({ employeeId })
-
+        const employeeToken = await this._tokenRepository.findOne({ where: { employeeId } })
+        console.log(employeeToken)
         if (!employeeToken) {
             await this._tokenRepository.create({
                 employeeId,
                 refreshToken
             }, options)
         } else {
-            employeeToken.refreshToken = refreshToken
 
             await this._tokenRepository.update(
                 {
