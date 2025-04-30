@@ -1,4 +1,4 @@
-import {IsEmail, IsEnum, IsNotEmpty, IsNumber, IsString} from "class-validator";
+import {IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
 import {ItemUnitEnum} from "@entities/enums";
 import {Exclude, Expose} from "class-transformer";
 
@@ -25,19 +25,19 @@ export class AddItemDto {
 export class UpdateItemDto {
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     name?: string;
 
-    @IsNotEmpty()
     @IsEnum(ItemUnitEnum)
+    @IsOptional()
     unit?: ItemUnitEnum;
 
     @IsNumber()
-    @IsNotEmpty()
+    @IsOptional()
     quantity?: number;
 
     @IsNumber()
-    @IsNotEmpty()
+    @IsOptional()
     cost?: number;
 }
 
