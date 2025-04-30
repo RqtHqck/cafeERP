@@ -1,7 +1,6 @@
 import {EmployeeRepository} from "@repositories/employee.repository";
 import logger from "@utils/logger";
-import {CreateEmployeeDto} from "@entities/dto/employee.dto";
-import {IEmployee, IRole} from "@entities/interfaces";
+import {IEmployee} from "@entities/interfaces";
 import {RoleRepository} from "@repositories/role.repository";
 import ApiError from "@errors/ApiError";
 import {generatePassword, generateSalt} from "@utils/password.utility";
