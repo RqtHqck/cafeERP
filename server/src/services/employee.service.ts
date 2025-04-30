@@ -19,7 +19,7 @@ export class EmployeeService {
 
 
     async createEmployee(createEmployeeDto: CreateEmployeeDto) {
-        logger.info("AdminService::createEmployee")
+        logger.info("EmployeeService::createEmployee")
 
         const role = await this._roleRepository.findOne({ where: { name: createEmployeeDto.roleName } });
         if (!role) {

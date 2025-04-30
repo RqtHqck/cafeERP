@@ -15,7 +15,7 @@ passport.use(
     new JwtStrategy(options, async (payloads: any, done: any ) => {
         try {
             logger.info('JwtStrategyMiddleware...');
-            logger.info(`Payload: ${payloads}`);
+            logger.info(`Payload: ${JSON.stringify(payloads)}`);
 
             const employeeCandidate = await employeeRepository.findOne({
                 where: { email: payloads.email }
