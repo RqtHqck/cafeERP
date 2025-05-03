@@ -20,10 +20,19 @@ export class ProductRepository {
             return product;
 
         } catch(err) {
-            if (err instanceof ApiError) {
-                throw err;
-            }
             throw ApiError.databaseError("Error create products", err);
+        }
+    }
+
+
+    async getAll(filters: object = {}) {
+        logger.info(`ProductRepository::getAll ${JSON.stringify(filters)}`);
+
+        try{
+            return await this._db.Product.findAll(filters);
+
+        } catch(err) {
+            throw ApiError.databaseError("Error find all products", err);
         }
     }
 

@@ -35,4 +35,21 @@ export class ProductController {
     }
 
 
+    async getProductsWithFilters(req: Request, res: Response, next: NextFunction): Promise<any> {
+
+        try {
+            const filters = req.query;
+            const products = await this._productService.getProducts();
+
+            const responseProducts = plainToInstance(ProductDto, products, {
+                excludeExtraneousValues: true,
+            });
+
+            return res
+                .status(200)
+                .json(responseProducts)
+        } catch (error) {
+            next(error);
+        }
+    }
 }

@@ -1,25 +1,36 @@
-
 import logger from "@utils/logger";
-import {IItem, IProduct, IProductItem, IProductItemDto} from "@entities/interfaces";
+import {IProduct, IProductItem, IProductItemDto} from "@entities/interfaces";
 import {ProductRepository} from "@repositories/product.repository";
 import {AddProductDto} from "@entities/dto/product.dto";
 import {Transaction} from "sequelize";
 import {ProductItemRepository} from "@repositories/productItem.repository";
+import {CategoryRepository} from "@repositories/category.repository";
+import ApiError from "@errors/ApiError";
 
 
 export class ProductService {
 
     private _productRepository: ProductRepository;
     private _productItemRepository: ProductItemRepository;
+    private _categoryRepository: CategoryRepository;
 
     constructor() {
         this._productRepository = new ProductRepository();
         this._productItemRepository = new ProductItemRepository();
+        this._categoryRepository = new CategoryRepository();
+
     }
 
 
     async addProduct(addProductDto: AddProductDto, options?: {transaction: Transaction}) {
         logger.info("ProductService::addProduct")
+
+        // Check if category exists
+        const category = await this._categoryRepository.findByPk(addProductDto.categoryId);
+        console.log(category)
+        if (!category) {
+            throw ApiError.badRequestError(`Category with id=${addProductDto.categoryId} not found`);
+        }
 
         const product: IProduct = {
             name: addProductDto.name,
@@ -57,5 +68,12 @@ export class ProductService {
 
         await this._productItemRepository.createMany(productItems, options)
 
+    }
+
+
+    async getProducts(filters: object = {}) {
+        logger.info(`ProductService::getRawProducts`)
+
+        return await this._productRepository.getAll(filters);
     }
 }

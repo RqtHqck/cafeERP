@@ -12,12 +12,20 @@ const productController = new ProductController(productService);
 
 const productRoutes = Router();
 
-// POST /item/addOne
+// POST /products/
 productRoutes.post('/',
     passport.authenticate("jwt", { session: false }),
     roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER]),
     validateBodyDto(AddProductDto),
     productController.addProduct.bind(productController)
+);
+
+
+// GET /products/
+productRoutes.get('/',
+    passport.authenticate("jwt", { session: false }),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER]),
+    productController.getProductsWithFilters.bind(productController)
 );
 
 export default productRoutes;
