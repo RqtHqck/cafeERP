@@ -9,7 +9,7 @@ import logger from "@utils/logger";
 export const roleAccessMiddleware = (allowedRoles: RoleEnum[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            logger.info('ifAdminOrManagerMiddleware...')
+            logger.info('roleAccessMiddleware...')
             logger.info(`allowedRoles: [${Object.values(allowedRoles)}]`)
             const userPayload = req.user as AuthPayload;
             const roleRepository = new RoleRepository();

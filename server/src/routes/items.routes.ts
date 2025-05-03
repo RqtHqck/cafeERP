@@ -15,15 +15,13 @@ const itemController = new ItemController(itemService);
 
 const itemsRoutes = Router();
 
-// --------------------ITEM------------------------------------|
-// POST /item/addOne
+// POST /items/addOne
 itemsRoutes.post('/addOne',
     passport.authenticate("jwt", { session: false }),
     roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER]),
     validateBodyDto(AddItemDto),
     itemController.addOneItem.bind(itemController)
 );
-
 
 // POST /items/addMany
 itemsRoutes.post('/addMany',
@@ -32,7 +30,6 @@ itemsRoutes.post('/addMany',
     validateBodyArrayDto(AddItemDto),
     itemController.addManyItems.bind(itemController)
 );
-
 
 // PUT /items/:id
 itemsRoutes.patch('/:id',

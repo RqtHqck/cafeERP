@@ -9,20 +9,6 @@ export class ItemRepository {
     constructor(private _db: any = db) { }
 
 
-    async createMany(createItems: IItem[]) {
-        logger.info(`ItemRepository::createMany dto ${JSON.stringify(createItems)}`);
-
-        try{
-            await this._db.Item.bulkCreate(createItems, { ignoreDuplicates: true });
-        } catch(err) {
-            if (err instanceof ApiError) {
-                throw err;
-            }
-            throw ApiError.databaseError("Error create items", err);
-        }
-    }
-
-
     async add(options: object) {
         logger.info(`ItemRepository::add dto ${JSON.stringify(options)}`);
 
@@ -45,16 +31,16 @@ export class ItemRepository {
 
 
     async addMany(items: IItem[], options: object = {}) {
-        // try{
+        try{
             logger.info(`ItemRepository::createMany dto ${JSON.stringify(items)}`);
             // If exists ignore
             await this._db.Item.bulkCreate(items, options);
-        // } catch(err) {
-        //     if (err instanceof ApiError) {
-        //         throw err;
-        //     }
-        //     throw ApiError.databaseError("Error create items", err);
-        // }
+        } catch(err) {
+            if (err instanceof ApiError) {
+                throw err;
+            }
+            throw ApiError.databaseError("Error create items", err);
+        }
     }
 
 

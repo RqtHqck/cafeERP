@@ -32,15 +32,15 @@ const employeeService = new EmployeeService();
 
 const employeeController = new EmployeeController(employeeService);
 
-const adminRouter = Router();
+const employeeRoutes = Router();
 
 // --------------------EMPLOYEE------------------------------------|
 // POST /employee/createEmployee
-adminRouter.post('/',
+employeeRoutes.post('/',
     passport.authenticate("jwt", { session: false }),
     roleAccessMiddleware([RoleEnum.ADMIN]),
     validateBodyDto(CreateEmployeeDto),
     employeeController.createEmployee.bind(employeeController)
 );
 
-export default adminRouter;
+export default employeeRoutes;
