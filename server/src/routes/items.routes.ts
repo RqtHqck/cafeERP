@@ -40,5 +40,13 @@ itemsRoutes.patch('/:id',
     itemController.patchUpdateItem.bind(itemController)
 );
 
+
+// GET /items/
+itemsRoutes.get('/',
+    passport.authenticate("jwt", { session: false }),
+    itemController.getAllItems.bind(itemController)
+);
+
+
 export default itemsRoutes;
 

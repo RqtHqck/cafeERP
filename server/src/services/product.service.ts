@@ -72,7 +72,7 @@ export class ProductService {
 
 
     async getProducts(filters: object = {}) {
-        logger.info(`ProductService::getRawProducts`)
+        logger.info(`ProductService::getProducts`)
 
         return await this._productRepository.getAll(filters);
     }

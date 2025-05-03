@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import {plainToInstance} from "class-transformer";
 import {AddItemDto, ItemDto} from "@entities/dto/item.dto";
 import {ItemService} from "@services/item.service";
+import {ProductDto} from "@entities/dto/product.dto";
 
 export class ItemController {
 
@@ -62,6 +63,25 @@ export class ItemController {
             return res
                 .status(201)
                 .json(responseItem)
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+    async getAllItems(req: Request, res: Response, next: NextFunction): Promise<any> {
+
+        try {
+            const filters = req.query;
+            const items = await this._itemService.getItems();
+
+            const responseItems = plainToInstance(ProductDto, items, {
+                excludeExtraneousValues: true,
+            });
+
+            return res
+                .status(200)
+                .json(responseItems)
         } catch (error) {
             next(error);
         }

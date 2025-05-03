@@ -67,4 +67,10 @@ export class ItemService {
                 returning: true, },
         );
     }
+
+    async getItems(filters: object = {}) {
+        logger.info(`ItemService::getItems`)
+
+        return await this._itemRepository.getAll(filters);
+    }
 }

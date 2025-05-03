@@ -1,7 +1,7 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
-import {IItem, IItemUpdate, IRole} from "@entities/interfaces";
+import {IItem, IItemUpdate} from "@entities/interfaces";
 
 
 export class ItemRepository {
@@ -61,7 +61,19 @@ export class ItemRepository {
             if (err instanceof ApiError) {
                 throw err;
             }
-            throw ApiError.databaseError(`Error update item `, err);
+            throw ApiError.databaseError(`Error update item`, err);
+        }
+    }
+
+
+    async getAll(filters: object = {}) {
+        logger.info(`ItemRepository::getAll ${JSON.stringify(filters)}`);
+
+        try{
+            return await this._db.Item.findAll(filters);
+
+        } catch(err) {
+            throw ApiError.databaseError("Error find all items", err);
         }
     }
 }

@@ -35,7 +35,7 @@ export class ProductController {
     }
 
 
-    async getProductsWithFilters(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getAllProducts(req: Request, res: Response, next: NextFunction): Promise<any> {
 
         try {
             const filters = req.query;

@@ -24,8 +24,7 @@ productRoutes.post('/',
 // GET /products/
 productRoutes.get('/',
     passport.authenticate("jwt", { session: false }),
-    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER]),
-    productController.getProductsWithFilters.bind(productController)
+    productController.getAllProducts.bind(productController)
 );
 
 export default productRoutes;
