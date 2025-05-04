@@ -67,4 +67,17 @@ export class ItemService {
                 returning: true, },
         );
     }
+
+    async getItems(filters: object = {}) {
+        logger.info(`ItemService::getItems`)
+
+        return await this._itemRepository.findAll(filters);
+    }
+
+
+    async getByPk(id: number) {
+        logger.info(`ItemService::getById`)
+
+        return await this._itemRepository.findByPk(id);
+    }
 }

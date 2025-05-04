@@ -1,12 +1,26 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
-import {IRole} from "@entities/interfaces";
+import {ICategory, IRole} from "@entities/interfaces";
 
 
 export class RoleRepository {
 
     constructor(private _db: any = db) { }
+
+
+    async findByPk(id: number): Promise<IRole | null> {
+        logger.info(`RoleRepository::findByPk id: ${JSON.stringify(id)}`)
+
+        try{
+            return await this._db.Category.findByPk(id);
+        } catch(err) {
+            if (err instanceof ApiError) {
+                throw err;
+            }
+            throw ApiError.databaseError("Error find role by id", err);
+        }
+    }
 
 
     async findOne(filter: object = {}): Promise<IRole | null> {

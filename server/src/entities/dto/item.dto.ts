@@ -63,7 +63,7 @@ export class ItemDto {
     @IsNotEmpty()
     quantity!: number;
 
-    @Exclude()
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     cost!: number;

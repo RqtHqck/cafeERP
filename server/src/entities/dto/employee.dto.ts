@@ -26,10 +26,9 @@ export class CreateEmployeeDto {
     @IsNotEmpty()
     password!: string;
 
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
-    @IsEnum(RoleEnum)
-    roleName!: RoleEnum;
+    roleId!: number;
 }
 
 

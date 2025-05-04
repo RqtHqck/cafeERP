@@ -1,26 +1,12 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
-import {IItem, IItemUpdate, IRole} from "@entities/interfaces";
+import {IItem, IItemUpdate} from "@entities/interfaces";
 
 
 export class ItemRepository {
 
     constructor(private _db: any = db) { }
-
-
-    async createMany(createItems: IItem[]) {
-        logger.info(`ItemRepository::createMany dto ${JSON.stringify(createItems)}`);
-
-        try{
-            await this._db.Item.bulkCreate(createItems, { ignoreDuplicates: true });
-        } catch(err) {
-            if (err instanceof ApiError) {
-                throw err;
-            }
-            throw ApiError.databaseError("Error create items", err);
-        }
-    }
 
 
     async add(options: object) {
@@ -45,16 +31,16 @@ export class ItemRepository {
 
 
     async addMany(items: IItem[], options: object = {}) {
-        // try{
+        try{
             logger.info(`ItemRepository::createMany dto ${JSON.stringify(items)}`);
             // If exists ignore
             await this._db.Item.bulkCreate(items, options);
-        // } catch(err) {
-        //     if (err instanceof ApiError) {
-        //         throw err;
-        //     }
-        //     throw ApiError.databaseError("Error create items", err);
-        // }
+        } catch(err) {
+            if (err instanceof ApiError) {
+                throw err;
+            }
+            throw ApiError.databaseError("Error create items", err);
+        }
     }
 
 
@@ -75,7 +61,31 @@ export class ItemRepository {
             if (err instanceof ApiError) {
                 throw err;
             }
-            throw ApiError.databaseError(`Error update item `, err);
+            throw ApiError.databaseError(`Error update item`, err);
+        }
+    }
+
+
+    async findAll(filters: object = {}) {
+        logger.info(`ItemRepository::findAll ${JSON.stringify(filters)}`);
+
+        try{
+            return await this._db.Item.findAll(filters);
+
+        } catch(err) {
+            throw ApiError.databaseError("Error find all items", err);
+        }
+    }
+
+
+    async findByPk(id: number) {
+        logger.info(`ItemRepository::findByPk`);
+
+        try{
+            return await this._db.Item.findByPk(id);
+
+        } catch(err) {
+            throw ApiError.databaseError(`Error find item by id: ${id}`, err);
         }
     }
 }

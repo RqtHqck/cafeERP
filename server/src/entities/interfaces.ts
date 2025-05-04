@@ -40,4 +40,24 @@ export interface IItem {
     cost: number;
 }
 
+export interface IProduct {
+    id?: number;
+    name: string;
+    description: string;
+    price: number;
+    categoryId: number;
+}
+
+export interface IProductItem {
+    id?: number;
+    productId: number;
+    itemId: number;
+    amount: number;
+}
+
+export interface IProductItemDto {
+    itemId: number;
+    amount: number;
+}
+
 export interface IItemUpdate extends Partial<IItem> {}
