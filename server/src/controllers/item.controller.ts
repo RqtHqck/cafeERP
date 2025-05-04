@@ -75,13 +75,33 @@ export class ItemController {
             const filters = req.query;
             const items = await this._itemService.getItems();
 
-            const responseItems = plainToInstance(ProductDto, items, {
+            const responseItems = plainToInstance(ItemDto, items, {
                 excludeExtraneousValues: true,
             });
 
             return res
                 .status(200)
                 .json(responseItems)
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+    async getItemByPk(req: Request, res: Response, next: NextFunction): Promise<any> {
+
+        try {
+            const id = parseInt(req.params.id as string, 10);
+
+            const item = await this._itemService.getByPk(id);
+
+            const responseItem = plainToInstance(ItemDto, item, {
+                excludeExtraneousValues: true,
+            });
+
+            return res
+                .status(200)
+                .json(responseItem)
         } catch (error) {
             next(error);
         }

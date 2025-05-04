@@ -74,6 +74,13 @@ export class ProductService {
     async getProducts(filters: object = {}) {
         logger.info(`ProductService::getProducts`)
 
-        return await this._productRepository.getAll(filters);
+        return await this._productRepository.findAll(filters);
+    }
+
+
+    async getByPk(id: number) {
+        logger.info(`ProductService::getByPk`)
+
+        return await this._productRepository.findByPk(id);
     }
 }

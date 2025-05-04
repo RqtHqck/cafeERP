@@ -40,6 +40,11 @@ itemsRoutes.patch('/:id',
     itemController.patchUpdateItem.bind(itemController)
 );
 
+// GET /items/:id
+itemsRoutes.get('/:id',
+    passport.authenticate("jwt", { session: false }),
+    itemController.getItemByPk.bind(itemController)
+);
 
 // GET /items/
 itemsRoutes.get('/',

@@ -66,14 +66,26 @@ export class ItemRepository {
     }
 
 
-    async getAll(filters: object = {}) {
-        logger.info(`ItemRepository::getAll ${JSON.stringify(filters)}`);
+    async findAll(filters: object = {}) {
+        logger.info(`ItemRepository::findAll ${JSON.stringify(filters)}`);
 
         try{
             return await this._db.Item.findAll(filters);
 
         } catch(err) {
             throw ApiError.databaseError("Error find all items", err);
+        }
+    }
+
+
+    async findByPk(id: number) {
+        logger.info(`ItemRepository::findByPk`);
+
+        try{
+            return await this._db.Item.findByPk(id);
+
+        } catch(err) {
+            throw ApiError.databaseError(`Error find item by id: ${id}`, err);
         }
     }
 }

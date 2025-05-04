@@ -25,8 +25,8 @@ export class ProductRepository {
     }
 
 
-    async getAll(filters: object = {}) {
-        logger.info(`ProductRepository::getAll ${JSON.stringify(filters)}`);
+    async findAll(filters: object = {}) {
+        logger.info(`ProductRepository::findAll ${JSON.stringify(filters)}`);
 
         try{
             return await this._db.Product.findAll(filters);
@@ -37,4 +37,14 @@ export class ProductRepository {
     }
 
 
+    async findByPk(id: number) {
+        logger.info(`ProductRepository::findByPk`);
+
+        try{
+            return await this._db.Product.findByPk(id);
+
+        } catch(err) {
+            throw ApiError.databaseError(`Error find product by id: ${id}`, err);
+        }
+    }
 }

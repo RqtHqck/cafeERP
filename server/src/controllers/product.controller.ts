@@ -52,4 +52,24 @@ export class ProductController {
             next(error);
         }
     }
+
+
+    async getProductByPk(req: Request, res: Response, next: NextFunction): Promise<any> {
+
+        try {
+            const id = parseInt(req.params.id as string, 10);
+
+            const product = await this._productService.getByPk(id);
+
+            const responseProduct = plainToInstance(ProductDto, product, {
+                excludeExtraneousValues: true,
+            });
+
+            return res
+                .status(200)
+                .json(responseProduct)
+        } catch (error) {
+            next(error);
+        }
+    }
 }

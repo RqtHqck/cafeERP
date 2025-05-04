@@ -71,6 +71,13 @@ export class ItemService {
     async getItems(filters: object = {}) {
         logger.info(`ItemService::getItems`)
 
-        return await this._itemRepository.getAll(filters);
+        return await this._itemRepository.findAll(filters);
+    }
+
+
+    async getByPk(id: number) {
+        logger.info(`ItemService::getById`)
+
+        return await this._itemRepository.findByPk(id);
     }
 }
