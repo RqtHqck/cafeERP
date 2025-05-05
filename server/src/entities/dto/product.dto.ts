@@ -1,6 +1,7 @@
 import {IsArray, IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
-import {Exclude, Expose} from "class-transformer";
+import {Exclude, Expose, Type} from "class-transformer";
 import {IProductItemDto} from "@entities/interfaces";
+import {ItemDto} from "@entities/dto/item.dto";
 
 export class AddProductDto {
 
@@ -54,4 +55,20 @@ export class ProductDto {
     @Exclude()
     @IsNumber()
     category_id!: string;
+}
+
+
+export class ProductItemsDto {
+    @Expose()
+    @IsNumber()
+    productId!: number;
+
+    @Expose()
+    @IsNumber()
+    amount!: number;
+
+    @Expose()
+    @IsOptional()
+    @Type(() => ItemDto)
+    item?: ItemDto;
 }

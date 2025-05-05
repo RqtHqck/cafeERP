@@ -60,4 +60,10 @@ export interface IProductItemDto {
     amount: number;
 }
 
+export interface IProductItemsResponse {
+    productId: number;
+    amount: number;
+    item: IItem;
+}
+
 export interface IItemUpdate extends Partial<IItem> {}

@@ -20,10 +20,16 @@ productRoutes.post('/',
     productController.addProduct.bind(productController)
 );
 
-// GET /items/:id
+// GET /products/:id
 productRoutes.get('/:id',
     passport.authenticate("jwt", { session: false }),
     productController.getProductByPk.bind(productController)
+);
+
+// GET /products/:id/items
+productRoutes.get('/:id/items',
+    passport.authenticate("jwt", { session: false }),
+    productController.getProductItems.bind(productController)
 );
 
 // GET /products/

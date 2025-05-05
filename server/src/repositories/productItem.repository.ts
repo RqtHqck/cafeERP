@@ -1,7 +1,7 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
-import {IProductItem, IRole} from "@entities/interfaces";
+import {IProductItem} from "@entities/interfaces";
 import {ForeignKeyConstraintError} from "sequelize";
 
 
@@ -10,11 +10,11 @@ export class ProductItemRepository {
     constructor(private _db: any = db) { }
 
 
-    async findOne(filter: object = {}): Promise<IRole | null> {
-        logger.info(`ProductItemRepository::findOne filter: ${JSON.stringify(filter)}`)
+    async findAll(options: object = {}): Promise<any[]> {
+        logger.info(`ProductItemRepository::findAll options: ${JSON.stringify(options)}`)
 
         try{
-            return await this._db.ProductItems.findOne(filter);
+            return await this._db.ProductItems.findAll(options);
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;
