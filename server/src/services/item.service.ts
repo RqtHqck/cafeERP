@@ -5,23 +5,26 @@ import {CreateEmployeeDto} from "@entities/dto/employee.dto";
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import {generatePassword, generateSalt} from "@utils/password.utility";
-import {IEmployee, IItem, IItemUpdate} from "@entities/interfaces";
+import {IEmployee, IItem, IItemCreatedDto, IItemUpdate} from "@entities/interfaces";
 import {AddItemDto, UpdateItemDto} from "@entities/dto/item.dto";
 import {ItemRepository} from "@repositories/item.repository";
-import eventEmitter from "../events/eventEmitter";
 import {Transaction} from "sequelize";
+import {ExpenseService} from "@services/expense.service";
+import {PaymentMethodEnum} from "@entities/enums";
 
 export class ItemService {
 
     private _itemRepository: ItemRepository;
+    private _expenseService: ExpenseService;
 
 
     constructor() {
         this._itemRepository = new ItemRepository();
+        this._expenseService = new ExpenseService();
     }
 
 
-    async addItems(addItemDto: AddItemDto, options?: { transaction: Transaction }) {
+    async addItems(addItemDto: AddItemDto, options: { transaction: Transaction }) {
         logger.info("ItemService::addItem")
 
         const item: IItem = {
@@ -33,33 +36,51 @@ export class ItemService {
 
          const newItem = await this._itemRepository.add({
             where: { name: item.name  },
-            transaction: options?.transaction,
+            transaction: options.transaction,
             defaults: item
         });
 
-        eventEmitter.emit('item:created', {
+        const expenseRecord = {
             itemId: newItem.id,
             price: newItem.price,
             quantity: newItem.quantity,
-            paymentMethod: newItem.paymentMethod,
-            options
-        })
+            paymentMethod: addItemDto.paymentMethod,
+        }
 
+        await this._expenseService.recordItemPurchase(
+            expenseRecord,
+            options
+        )
         return newItem;
     }
 
 
-    async addManyItems(addItemsDto: AddItemDto[]) {
+    async addManyItems(addItemsDtos: AddItemDto[], options: { transaction: Transaction }) {
         logger.info("ItemService::addManyItems")
 
-        const items: IItem[] = addItemsDto.map((item) => ({
+        const items: IItem[] = addItemsDtos.map((item) => ({
             name: item.name,
             unit: item.unit,
             price: item.price,
             quantity: item.quantity
         }))
 
-        return await this._itemRepository.addMany(items);
+        const newItems: IItem[]  = await this._itemRepository.addMany(items);
+
+        const expenseRecords: IItemCreatedDto[] = newItems.map((item: IItem) => ({
+            itemId: item.id!,
+            price: item.price,
+            quantity: item.quantity,
+            paymentMethod: "card" as PaymentMethodEnum,
+        }))
+
+
+        await this._expenseService.recordItemsPurchases(
+            expenseRecords,
+            options
+        )
+
+        return newItems;
     }
 
 

@@ -1,7 +1,7 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
-import {IExpense} from "@entities/interfaces";
+import {IExpense, IItem} from "@entities/interfaces";
 import {Transaction} from "sequelize";
 
 
@@ -11,7 +11,7 @@ export class ExpenseRepository {
     }
 
 
-    async create(obj: IExpense, options: {transaction: Transaction}): Promise<void> {
+    async create(obj: IExpense, options: object = {}): Promise<void> {
         logger.info(`ExpenseRepository::create dto: ${JSON.stringify(obj)}`);
 
         try {
@@ -21,6 +21,20 @@ export class ExpenseRepository {
                 throw err;
             }
             throw ApiError.databaseError("Error create expense record", err);
+        }
+    }
+
+
+    async createMany(objArr: IExpense[], options: object = {}) {
+        try{
+            logger.info(`ExpenseRepository::createMany dto ${objArr}`);
+            // If exists ignore
+            await this._db.Expense.bulkCreate(objArr, options);
+        } catch(err) {
+            if (err instanceof ApiError) {
+                throw err;
+            }
+            throw ApiError.databaseError("Error create expense records", err);
         }
     }
 }

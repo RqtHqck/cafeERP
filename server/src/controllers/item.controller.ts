@@ -38,9 +38,13 @@ export class ItemController {
 
 
     async addManyItems(req: Request, res: Response, next: NextFunction): Promise<any> {
+        const transaction = await db.sequelize.transaction();
+
         try {
             const addItemDto = <AddItemDto[]>req.body
-            const items = await this._itemService.addManyItems(addItemDto);
+            const items = await this._itemService.addManyItems(addItemDto, {transaction});
+
+            await transaction.commit();
 
             const responseItems = plainToInstance(ItemDto, items, {
                 excludeExtraneousValues: true,
@@ -50,6 +54,7 @@ export class ItemController {
                 .status(201)
                 .json(responseItems)
         } catch (error) {
+            await transaction.rollback();
             next(error);
         }
     }

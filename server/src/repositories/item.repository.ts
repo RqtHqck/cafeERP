@@ -34,7 +34,7 @@ export class ItemRepository {
         try{
             logger.info(`ItemRepository::createMany dto ${JSON.stringify(items)}`);
             // If exists ignore
-            await this._db.Item.bulkCreate(items, options);
+            return await this._db.Item.bulkCreate(items, options);
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;

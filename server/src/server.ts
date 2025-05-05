@@ -5,7 +5,6 @@ import {RoleService} from "@services/role.service";
 import {AdminService} from "@services/admin.service";
 import {ProductCategoryService} from "@services/productCategory.service";
 import {OrderStatusService} from "@services/orderStatus.service";
-import './events';
 
 (async () => {
     try {
