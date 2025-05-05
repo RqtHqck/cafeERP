@@ -7,7 +7,6 @@ export enum RoleEnum {
 }
 
 export enum OrderStatusEnum {
-    PENDING='pending',
     PROCESSING='processing',
     DONE='done',
     ABORTED='aborted'
