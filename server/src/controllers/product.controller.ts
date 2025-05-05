@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import {plainToInstance} from "class-transformer";
-import {AddProductDto, ProductDto} from "@entities/dto/product.dto";
+import {AddProductDto, ProductDto, ProductItemsDto} from "@entities/dto/product.dto";
 import {ProductService} from "@services/product.service";
 import db from "@utils/sequelize.utility";
+
 
 export class ProductController {
 
@@ -48,6 +49,25 @@ export class ProductController {
             return res
                 .status(200)
                 .json(responseProducts)
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+    async getProductItems(req: Request, res: Response, next: NextFunction): Promise<any> {
+
+        try {
+            const id = parseInt(req.params.id as string, 10);
+            const productItems = await this._productService.getProductItems(id);
+
+            const responseProductItems = plainToInstance(ProductItemsDto, productItems, {
+                excludeExtraneousValues: true,
+            });
+
+            return res
+                .status(200)
+                .json(responseProductItems)
         } catch (error) {
             next(error);
         }
