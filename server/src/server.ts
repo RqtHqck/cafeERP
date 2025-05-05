@@ -6,7 +6,6 @@ import {AdminService} from "@services/admin.service";
 import {ProductCategoryService} from "@services/productCategory.service";
 import {OrderStatusService} from "@services/orderStatus.service";
 
-
 (async () => {
     try {
         // DB
@@ -16,7 +15,7 @@ import {OrderStatusService} from "@services/orderStatus.service";
         const orderStatusService = new OrderStatusService();
 
         await db.sequelize.authenticate({ logging: true });
-        await db.sequelize.sync({ force: true, logging: true })
+        await db.sequelize.sync({ force: false, logging: true })
         logger.info("Database synchronized");
 
         await roleService.createMany();

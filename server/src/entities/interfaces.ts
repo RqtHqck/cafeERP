@@ -1,4 +1,5 @@
-import {RoleEnum} from "@entities/enums";
+import {PaymentMethodEnum, RoleEnum} from "@entities/enums";
+import {Transaction} from "sequelize";
 
 export interface IEmployee {
     id?: number;
@@ -41,8 +42,21 @@ export interface IItem {
     id?: number;
     name: string;
     unit: string;
+    price: number;
     quantity: number;
-    cost: number;
+}
+
+export interface IExpense {
+    itemId: number,
+    totalPrice: number,
+    paymentMethod: PaymentMethodEnum,
+}
+
+export interface IItemCreatedDto {
+    itemId: number,
+    price: number;
+    quantity: number;
+    paymentMethod: PaymentMethodEnum,
 }
 
 export interface IProduct {

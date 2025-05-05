@@ -3,6 +3,7 @@ import {plainToInstance} from "class-transformer";
 import {AddItemDto, ItemDto} from "@entities/dto/item.dto";
 import {ItemService} from "@services/item.service";
 import {ProductDto} from "@entities/dto/product.dto";
+import db from "@utils/sequelize.utility";
 
 export class ItemController {
 
@@ -14,9 +15,13 @@ export class ItemController {
 
 
     async addOneItem(req: Request, res: Response, next: NextFunction): Promise<any> {
+        const transaction = await db.sequelize.transaction();
+
         try {
             const addItemDto = <AddItemDto>req.body
-            const item = await this._itemService.addItems(addItemDto);
+            const item = await this._itemService.addItems(addItemDto, { transaction });
+
+            await transaction.commit();
 
             const responseItem = plainToInstance(ItemDto, item, {
                 excludeExtraneousValues: true,
@@ -26,15 +31,20 @@ export class ItemController {
                 .status(201)
                 .json(responseItem)
         } catch (error) {
+            await transaction.rollback();
             next(error);
         }
     }
 
 
     async addManyItems(req: Request, res: Response, next: NextFunction): Promise<any> {
+        const transaction = await db.sequelize.transaction();
+
         try {
             const addItemDto = <AddItemDto[]>req.body
-            const items = await this._itemService.addManyItems(addItemDto);
+            const items = await this._itemService.addManyItems(addItemDto, {transaction});
+
+            await transaction.commit();
 
             const responseItems = plainToInstance(ItemDto, items, {
                 excludeExtraneousValues: true,
@@ -44,6 +54,7 @@ export class ItemController {
                 .status(201)
                 .json(responseItems)
         } catch (error) {
+            await transaction.rollback();
             next(error);
         }
     }
