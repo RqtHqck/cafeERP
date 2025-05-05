@@ -29,7 +29,7 @@ class ProductItems extends Model<InferAttributes<ProductItems>, InferCreationAtt
         type: DataTypes.INTEGER,
         field: "item_id",
     })
-    itemId!: number;
+    declare itemId: number;
 
 
     @AllowNull(false)
@@ -38,21 +38,21 @@ class ProductItems extends Model<InferAttributes<ProductItems>, InferCreationAtt
         type: DataTypes.INTEGER,
         field: "product_id",
     })
-    productId!: number;
+    declare productId: number;
 
 
     @AllowNull(false)
     @Column({
         type: DataTypes.INTEGER,
     })
-    amount!: number;
+    declare amount: number;
 
 
     @BelongsTo(() => Product)
     product!: NonAttribute<Product>;
 
     @BelongsTo(() => Item)
-    item!: NonAttribute<Item>;
+    declare item: NonAttribute<Item>;
 
 }
 

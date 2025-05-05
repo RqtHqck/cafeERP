@@ -1,19 +1,19 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
-import {ICategory, IRole} from "@entities/interfaces";
+import {IProductCategory, IRole} from "@entities/interfaces";
 
 
-export class CategoryRepository {
+export class ProductCategoryRepository {
 
     constructor(private _db: any = db) { }
 
 
-    async findByPk(id: number): Promise<ICategory | null> {
+    async findByPk(id: number): Promise<IProductCategory | null> {
         logger.info(`CategoryRepository::findByPk id: ${JSON.stringify(id)}`)
 
         try{
-            return await this._db.Category.findByPk(id);
+            return await this._db.ProductCategory.findByPk(id);
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;
@@ -23,11 +23,11 @@ export class CategoryRepository {
     }
 
 
-    async findOne(filter: object = {}): Promise<ICategory | null> {
+    async findOne(filter: object = {}): Promise<IProductCategory | null> {
         logger.info(`CategoryRepository::findOne filter: ${JSON.stringify(filter)}`)
 
         try{
-            return await this._db.Category.findOne(filter);
+            return await this._db.ProductCategory.findOne(filter);
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;
@@ -41,7 +41,7 @@ export class CategoryRepository {
         logger.info(`CategoryRepository::createMany dto ${JSON.stringify(createCategories)}`);
 
         try{
-            await this._db.Category.bulkCreate(createCategories, { ignoreDuplicates: true });
+            await this._db.ProductCategory.bulkCreate(createCategories, { ignoreDuplicates: true });
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;

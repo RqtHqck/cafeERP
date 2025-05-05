@@ -8,17 +8,17 @@ import {
     Unique, ForeignKey, BelongsTo
 } from 'sequelize-typescript';
 import {InferAttributes, InferCreationAttributes} from "sequelize";
-import {ItemUnitEnum, PaymentMethodEnum, RoleEnum} from "@entities/enums";
+import {PaymentMethodEnum, RoleEnum} from "@entities/enums";
 import Order from "@models/order.model";
+import Item from "@models/item.model";
 
 @Table({
     timestamps: true,
-    createdAt: 'transaction_date',
     updatedAt: false,
-    tableName: 'payments',
-    modelName: 'Payment',
+    tableName: 'expenses',
+    modelName: 'Expense',
 })
-class Payment extends Model<InferAttributes<Payment>, InferCreationAttributes<Payment>> {
+class Expense extends Model<InferAttributes<Expense>, InferCreationAttributes<Expense>> {
     @PrimaryKey
     @AutoIncrement
     @Column
@@ -26,12 +26,12 @@ class Payment extends Model<InferAttributes<Payment>, InferCreationAttributes<Pa
 
 
     @AllowNull(false)
-    @ForeignKey(() => Order)
+    @ForeignKey(() => Item)
     @Column({
         type: DataType.INTEGER,
-        field: 'order_id'
+        field: 'item_id'
     })
-    declare orderId: number;
+    declare itemId: number;
 
 
     @AllowNull(false)
@@ -43,14 +43,21 @@ class Payment extends Model<InferAttributes<Payment>, InferCreationAttributes<Pa
 
     @AllowNull(false)
     @Column({
+        type: DataType.FLOAT,
+    })
+    declare quantity: number;
+
+
+    @AllowNull(false)
+    @Column({
         type: DataType.ENUM(...Object.values(PaymentMethodEnum)),
         field: 'payment_method'
     })
     declare paymentMethod: PaymentMethodEnum;
 
 
-    @BelongsTo(() => Order)
-    declare order: Order;
+    @BelongsTo(() => Item)
+    declare item: Item;
 }
 
-export default Payment;
+export default Expense;

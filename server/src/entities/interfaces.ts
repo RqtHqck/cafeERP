@@ -15,7 +15,7 @@ export interface IRole {
     name: string;
 }
 
-export interface ICategory {
+export interface IProductCategory {
     id?: number;
     name: string;
 }

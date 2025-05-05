@@ -3,14 +3,14 @@ import logger from '@utils/logger'
 import db from '@utils/sequelize.utility'
 import {RoleService} from "@services/role.service";
 import {AdminService} from "@services/admin.service";
-import {CategoryService} from "@services/category.service";
+import {ProductCategoryService} from "@services/productCategory.service";
 
 
 (async () => {
     try {
         // DB
         const roleService = new RoleService();
-        const categoryService = new CategoryService();
+        const categoryService = new ProductCategoryService();
         const adminService = new AdminService();
 
         await db.sequelize.authenticate({ logging: true });

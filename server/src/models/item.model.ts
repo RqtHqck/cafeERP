@@ -6,10 +6,12 @@ import {
     PrimaryKey,
     AllowNull,
     AutoIncrement,
-    Unique
+    Unique, HasOne
 } from 'sequelize-typescript';
-import {InferAttributes, InferCreationAttributes} from "sequelize";
+import {InferAttributes, InferCreationAttributes, NonAttribute} from "sequelize";
 import {ItemUnitEnum} from "@entities/enums";
+import Payment from "@models/payment.model";
+import Expense from "@models/expense.model";
 
 
 @Table({
@@ -48,14 +50,13 @@ class Item extends Model<InferAttributes<Item>, InferCreationAttributes<Item>> {
     @Column({
         type: DataType.FLOAT,
     })
-    declare quantity: number;
+    declare unit_price: number;
 
 
-    @AllowNull(false)
-    @Column({
-        type: DataType.FLOAT,
+    @HasOne(() => Expense, {
+        foreignKey: 'item_id'
     })
-    declare cost: number;
+    declare expense: NonAttribute<Expense>;
 }
 
 export default Item;

@@ -13,7 +13,7 @@ export enum OrderStatusEnum {
     ABORTED='aborted'
 }
 
-export enum CategoryEnum {
+export enum ProductCategoryEnum {
     COFFEE = 'coffee',
     TEA = 'tea',
     COLD_DRINKS = 'cold_drinks',
@@ -25,6 +25,11 @@ export enum CategoryEnum {
     LUNCH = 'lunch'
 }
 
+export enum PaymentMethodEnum {
+    CARD = 'card',
+    CASH = 'cash',
+}
+
 export enum ItemUnitEnum {
     GRAMS = 'g',
     KILOGRAMS = 'kg',
@@ -34,5 +39,7 @@ export enum ItemUnitEnum {
 
 export default {
     RoleEnum,
-    OrderStatusEnum
+    OrderStatusEnum,
+    ProductCategoryEnum,
+    ItemUnitEnum,
 };

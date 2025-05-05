@@ -90,6 +90,7 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
     })
     declare role: NonAttribute<Role>;
 
+
     @HasMany(() => Order, {
         foreignKey: 'employee_id'
     })

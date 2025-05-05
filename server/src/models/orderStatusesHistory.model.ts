@@ -8,14 +8,16 @@ import {
 import Order from "@models/order.model";
 import Product from "@models/product.model";
 import {InferAttributes, InferCreationAttributes} from "sequelize";
+import OrderStatus from "@models/orderStatus.model";
 
 
 @Table({
-    timestamps: false,
-    tableName: "order_products",
-    modelName: "OrderProduct",
+    timestamps: true,
+    updatedAt: false,
+    tableName: "order_statuses_history",
+    modelName: "OrderStatusesHistory",
 })
-class OrderProduct extends Model<InferAttributes<OrderProduct>, InferCreationAttributes<OrderProduct>> {
+class OrderStatusesHistory extends Model<InferAttributes<OrderStatusesHistory>, InferCreationAttributes<OrderStatusesHistory>> {
 
     @PrimaryKey
     @AutoIncrement
@@ -32,19 +34,11 @@ class OrderProduct extends Model<InferAttributes<OrderProduct>, InferCreationAtt
 
 
     @AllowNull(false)
-    @ForeignKey(() => Product)
+    @ForeignKey(() => OrderStatus)
     @Column({
-        field: "product_id",
+        field: "status_id",
     })
-    declare productId: number;
-
-
-    @AllowNull(false)
-    @Column({
-        type: DataType.INTEGER,
-        defaultValue: 1
-    })
-    declare quantity: number;
+    declare statusId: number;
 }
 
-export default OrderProduct;
+export default OrderStatusesHistory;

@@ -8,16 +8,16 @@ import {
     Unique, HasMany
 } from 'sequelize-typescript';
 import {InferAttributes, InferCreationAttributes, NonAttribute} from "sequelize";
-import {CategoryEnum} from "@entities/enums";
+import {ProductCategoryEnum} from "@entities/enums";
 import Product from "@models/product.model";
 
 
 @Table({
     timestamps: false,
-    tableName: 'categories',
-    modelName: 'Category',
+    tableName: 'product_categories',
+    modelName: 'ProductCategory',
 })
-class Category extends Model<InferAttributes<Category>, InferCreationAttributes<Category>> {
+class ProductCategory extends Model<InferAttributes<ProductCategory>, InferCreationAttributes<ProductCategory>> {
     @PrimaryKey
     @AutoIncrement
     @Column
@@ -27,9 +27,9 @@ class Category extends Model<InferAttributes<Category>, InferCreationAttributes<
     @Unique
     @AllowNull(false)
     @Column({
-        type: DataType.ENUM(...Object.values(CategoryEnum)),
+        type: DataType.ENUM(...Object.values(ProductCategoryEnum)),
     })
-    declare name: CategoryEnum;
+    declare name: ProductCategoryEnum;
 
 
     @HasMany(() => Product, {
@@ -38,4 +38,4 @@ class Category extends Model<InferAttributes<Category>, InferCreationAttributes<
     declare products: NonAttribute<Product[]>;
 }
 
-export default Category;
+export default ProductCategory;

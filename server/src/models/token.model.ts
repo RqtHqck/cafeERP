@@ -31,7 +31,7 @@ class Token extends Model<InferAttributes<Token>, InferCreationAttributes<Token>
         onDelete: 'CASCADE',
         field: 'employee_id',
     })
-    employeeId!: number;
+    declare employeeId: number;
 
 
     @Unique
@@ -40,7 +40,7 @@ class Token extends Model<InferAttributes<Token>, InferCreationAttributes<Token>
         type: DataType.STRING,
         field: 'refresh_token'
     })
-    refreshToken!: string;
+    declare refreshToken: string;
 
 
     @BelongsTo(
@@ -48,7 +48,7 @@ class Token extends Model<InferAttributes<Token>, InferCreationAttributes<Token>
             foreignKey: 'employeeId', targetKey: 'id'
         }
     )
-    employee!: NonAttribute<Employee>;
+    declare employee: NonAttribute<Employee>;
 }
 
 export default Token;

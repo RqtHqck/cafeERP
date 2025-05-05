@@ -8,7 +8,7 @@ import {
     AutoIncrement,
     ForeignKey, BelongsTo, Unique, BelongsToMany
 } from 'sequelize-typescript';
-import Category from "@models/category.model";
+import ProductCategory from "@models/productCategory.model";
 import {InferAttributes, InferCreationAttributes, NonAttribute} from "sequelize";
 import OrderProducts from "@models/orderProducts.model";
 import Order from "@models/order.model";
@@ -62,7 +62,7 @@ class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Pr
 
 
     @AllowNull(false)
-    @ForeignKey(() => Category)
+    @ForeignKey(() => ProductCategory)
     @Column({
         type: DataType.INTEGER,
         field: 'category_id'
@@ -70,14 +70,14 @@ class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Pr
     declare categoryId: number;
 
 
-    @BelongsTo(() => Category, {
+    @BelongsTo(() => ProductCategory, {
         foreignKey: 'category_id',
         targetKey: 'id'
     })
-    declare category: NonAttribute<Category>;
+    declare category: NonAttribute<ProductCategory>;
 
     @BelongsToMany(() => Order, () => OrderProducts)
-    orders!: NonAttribute<Order[]>;
+    declare orders: NonAttribute<Order[]>;
 }
 
 export default Product;
