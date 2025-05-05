@@ -32,7 +32,7 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
         type: DataType.STRING(255),
         validate: {
             notEmpty: true,
-            max: 255
+            len: [1, 255]
         },
         field: 'first_name'
     })
@@ -89,6 +89,7 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
         targetKey: 'id'
     })
     declare role: NonAttribute<Role>;
+
 
     @HasMany(() => Order, {
         foreignKey: 'employee_id'

@@ -1,7 +1,7 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
-import {ICategory, IRole} from "@entities/interfaces";
+import {IProductCategory, IRole} from "@entities/interfaces";
 
 
 export class RoleRepository {

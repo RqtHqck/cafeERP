@@ -4,7 +4,7 @@ import {ProductRepository} from "@repositories/product.repository";
 import {AddProductDto} from "@entities/dto/product.dto";
 import {Transaction} from "sequelize";
 import {ProductItemRepository} from "@repositories/productItem.repository";
-import {CategoryRepository} from "@repositories/category.repository";
+import {ProductCategoryRepository} from "@repositories/productCategory.repository";
 import ApiError from "@errors/ApiError";
 import Item from "@models/item.model";
 
@@ -13,12 +13,12 @@ export class ProductService {
 
     private _productRepository: ProductRepository;
     private _productItemRepository: ProductItemRepository;
-    private _categoryRepository: CategoryRepository;
+    private _productCategoryRepository: ProductCategoryRepository;
 
     constructor() {
         this._productRepository = new ProductRepository();
         this._productItemRepository = new ProductItemRepository();
-        this._categoryRepository = new CategoryRepository();
+        this._productCategoryRepository = new ProductCategoryRepository();
     }
 
 
@@ -26,7 +26,7 @@ export class ProductService {
         logger.info("ProductService::addProduct")
 
         // Check if category exists
-        const category = await this._categoryRepository.findByPk(addProductDto.categoryId);
+        const category = await this._productCategoryRepository.findByPk(addProductDto.categoryId);
         if (!category) {
             throw ApiError.badRequestError(`Category with id=${addProductDto.categoryId} not found`);
         }

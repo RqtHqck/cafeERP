@@ -28,7 +28,7 @@ class OrderProduct extends Model<InferAttributes<OrderProduct>, InferCreationAtt
     @Column({
         field: "order_id",
     })
-    orderId!: number;
+    declare orderId: number;
 
 
     @AllowNull(false)
@@ -36,7 +36,7 @@ class OrderProduct extends Model<InferAttributes<OrderProduct>, InferCreationAtt
     @Column({
         field: "product_id",
     })
-    productId!: number;
+    declare productId: number;
 
 
     @AllowNull(false)
