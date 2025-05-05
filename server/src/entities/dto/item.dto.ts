@@ -1,5 +1,5 @@
 import {IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
-import {ItemUnitEnum} from "@entities/enums";
+import {ItemUnitEnum, PaymentMethodEnum} from "@entities/enums";
 import {Exclude, Expose} from "class-transformer";
 
 export class AddItemDto {
@@ -14,11 +14,15 @@ export class AddItemDto {
 
     @IsNumber()
     @IsNotEmpty()
-    quantity!: number;
+    price!: number;
 
     @IsNumber()
     @IsNotEmpty()
-    cost!: number;
+    quantity!: number;
+
+    @IsEnum(PaymentMethodEnum)
+    @IsNotEmpty()
+    paymentMethod!: PaymentMethodEnum;
 }
 
 
@@ -31,14 +35,6 @@ export class UpdateItemDto {
     @IsEnum(ItemUnitEnum)
     @IsOptional()
     unit?: ItemUnitEnum;
-
-    @IsNumber()
-    @IsOptional()
-    quantity?: number;
-
-    @IsNumber()
-    @IsOptional()
-    cost?: number;
 }
 
 
@@ -50,21 +46,17 @@ export class ItemDto {
 
     @Expose()
     @IsString()
-    @IsNotEmpty()
     name!: string;
 
     @Expose()
-    @IsNotEmpty()
     @IsEnum(ItemUnitEnum)
     unit!: ItemUnitEnum;
 
     @Expose()
     @IsNumber()
-    @IsNotEmpty()
-    quantity!: number;
+    price!: number;
 
     @Expose()
     @IsNumber()
-    @IsNotEmpty()
-    cost!: number;
+    quantity!: number;
 }

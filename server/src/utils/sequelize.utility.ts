@@ -12,6 +12,7 @@ import ProductItems from "@models/productItems.model";
 import OrderProduct from "@models/orderProducts.model";
 import OrderStatus from "@models/orderStatus.model";
 import OrderStatusesHistory from "@models/orderStatusesHistory.model";
+import Expense from "@models/expense.model";
 
 
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
@@ -27,6 +28,7 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
 const db = {
     sequelize,
     Role,
+    Expense,
     Employee,
     Token,
     ProductCategory,

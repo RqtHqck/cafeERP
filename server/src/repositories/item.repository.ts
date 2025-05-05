@@ -10,7 +10,7 @@ export class ItemRepository {
 
 
     async add(options: object) {
-        logger.info(`ItemRepository::add dto ${JSON.stringify(options)}`);
+        logger.info(`ItemRepository::add dto ${options}`);
 
         try{
 

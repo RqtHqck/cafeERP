@@ -8,6 +8,8 @@ import {generatePassword, generateSalt} from "@utils/password.utility";
 import {IEmployee, IItem, IItemUpdate} from "@entities/interfaces";
 import {AddItemDto, UpdateItemDto} from "@entities/dto/item.dto";
 import {ItemRepository} from "@repositories/item.repository";
+import eventEmitter from "../events/eventEmitter";
+import {Transaction} from "sequelize";
 
 export class ItemService {
 
@@ -19,20 +21,31 @@ export class ItemService {
     }
 
 
-    async addItems(addItemDto: AddItemDto) {
+    async addItems(addItemDto: AddItemDto, options?: { transaction: Transaction }) {
         logger.info("ItemService::addItem")
 
         const item: IItem = {
             name: addItemDto.name,
             unit: addItemDto.unit,
-            quantity: addItemDto.quantity,
-            cost: addItemDto.cost
+            price: addItemDto.price,
+            quantity: addItemDto.quantity
         }
 
-        return await this._itemRepository.add({
+         const newItem = await this._itemRepository.add({
             where: { name: item.name  },
+            transaction: options?.transaction,
             defaults: item
         });
+
+        eventEmitter.emit('item:created', {
+            itemId: newItem.id,
+            price: newItem.price,
+            quantity: newItem.quantity,
+            paymentMethod: newItem.paymentMethod,
+            options
+        })
+
+        return newItem;
     }
 
 
@@ -42,8 +55,8 @@ export class ItemService {
         const items: IItem[] = addItemsDto.map((item) => ({
             name: item.name,
             unit: item.unit,
-            quantity: item.quantity,
-            cost: item.cost
+            price: item.price,
+            quantity: item.quantity
         }))
 
         return await this._itemRepository.addMany(items);
@@ -56,8 +69,6 @@ export class ItemService {
         const item: IItemUpdate = {
             name: updateItemDto.name,
             unit: updateItemDto.unit,
-            quantity: updateItemDto.quantity,
-            cost: updateItemDto.cost
         }
 
         return await this._itemRepository.update(

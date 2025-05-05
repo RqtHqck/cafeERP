@@ -50,7 +50,14 @@ class Item extends Model<InferAttributes<Item>, InferCreationAttributes<Item>> {
     @Column({
         type: DataType.FLOAT,
     })
-    declare unit_price: number;
+    declare price: number;
+
+
+    @AllowNull(false)
+    @Column({
+        type: DataType.INTEGER,
+    })
+    declare quantity: number;
 
 
     @HasOne(() => Expense, {

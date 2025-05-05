@@ -28,7 +28,7 @@ export class AuthService {
         const employee = await this._employeeRepository.findOne({where: { email: dto.email }});
 
         if (!employee) {
-            throw ApiError.conflictError(`Employee with email ${ dto.email } exists`);
+            throw ApiError.notFoundError(`Employee with email ${ dto.email } not exists`);
         }
 
         const validatePasswordResult = await validatePassword(dto.password, employee.passwordHash, employee.hashSalt);
