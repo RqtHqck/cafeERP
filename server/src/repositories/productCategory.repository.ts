@@ -37,11 +37,11 @@ export class ProductCategoryRepository {
     }
 
 
-    async createMany(createCategories: IRole[]) {
-        logger.info(`CategoryRepository::createMany dto ${JSON.stringify(createCategories)}`);
+    async createMany(productCategories: IProductCategory[]) {
+        logger.info(`CategoryRepository::createMany dto ${JSON.stringify(productCategories)}`);
 
         try{
-            await this._db.ProductCategory.bulkCreate(createCategories, { ignoreDuplicates: true });
+            await this._db.ProductCategory.bulkCreate(productCategories, { ignoreDuplicates: true });
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;

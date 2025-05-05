@@ -32,7 +32,7 @@ class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<
         type: DataType.STRING(255),
         validate: {
             notEmpty: true,
-            max: 255
+            len: [1, 255]
         },
         field: 'first_name'
     })

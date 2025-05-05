@@ -10,6 +10,8 @@ import Item from "@models/item.model";
 import Payment from "@models/payment.model";
 import ProductItems from "@models/productItems.model";
 import OrderProduct from "@models/orderProducts.model";
+import OrderStatus from "@models/orderStatus.model";
+import OrderStatusesHistory from "@models/orderStatusesHistory.model";
 
 
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
@@ -28,6 +30,8 @@ const db = {
     Employee,
     Token,
     ProductCategory,
+    OrderStatus,
+    OrderStatusesHistory,
     Order,
     Product,
     Item,

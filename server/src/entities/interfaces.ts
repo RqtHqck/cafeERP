@@ -10,6 +10,11 @@ export interface IEmployee {
     roleId: number;
 }
 
+export interface  IOrderStatus {
+    id?: number;
+    name: string;
+}
+
 export interface IRole {
     id?: number;
     name: string;
