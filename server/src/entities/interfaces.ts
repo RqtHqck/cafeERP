@@ -1,5 +1,6 @@
-import {PaymentMethodEnum, RoleEnum} from "@entities/enums";
+import {ItemUnitEnum, PaymentMethodEnum, RoleEnum} from "@entities/enums";
 import {Transaction} from "sequelize";
+import {IsEnum} from "class-validator";
 
 export interface IEmployee {
     id?: number;
@@ -46,11 +47,35 @@ export interface IItem {
     quantity: number;
 }
 
-export interface IExpense {
-    itemId: number,
+export interface IFeePayload {
     totalPrice: number,
     paymentMethod: PaymentMethodEnum,
+    transactionDate?: Date
 }
+
+export interface IExpense extends IFeePayload {
+    id?: number;
+    itemId: number,
+    item?: IItem;
+}
+
+export interface IExpenseCheck extends IFeePayload {
+    itemName: string,
+    itemUnit: ItemUnitEnum,
+    itemUnitPrice: number,
+    itemQuantity: number,
+}
+
+
+// export interface IPayment extends IFeePayload {
+//     id?: number;
+//     orderId: number,
+//     order?: IOrder,
+// }
+
+// export interface IPaymentCheck extends IFeePayload {
+//
+// }
 
 export interface IItemCreatedDto {
     itemId: number,
