@@ -67,18 +67,18 @@ export class AuthService {
             throw ApiError.forbiddenError('RefreshToken not provided')
         }
 
-        const payload = await this._tokenService.verifyToken(refreshToken);
+        const decoded = await this._tokenService.verifyToken(refreshToken);
         const existRefresh = await this._tokenRepository.findOne({ where: { refreshToken }});
 
-        if (!existRefresh || !payload) {
-            throw ApiError.forbiddenError('RefreshToken not provided or incorrect')
+        if (!existRefresh || !decoded) {
+            throw ApiError.forbiddenError('RefreshToken not exists in database or incorrect')
         }
 
         // Generate tokens = { access, refresh }
         const tokens = await this._tokenService.generateAndSaveAuthTokens({
-            employeeId: payload.employeeId!,
-            email: payload.email!,
-            roleId: payload.roleId!
+            employeeId: decoded.employeeId!,
+            email: decoded.email!,
+            roleId: decoded.roleId!
         }, options)
 
         return tokens
