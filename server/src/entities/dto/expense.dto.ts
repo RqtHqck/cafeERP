@@ -14,7 +14,7 @@ export class ExpenseDto {
 
     @Expose()
     @IsNumber()
-    total_price!: number;
+    totalPrice!: number;
 
     @Expose()
     @IsEnum(PaymentMethodEnum)
@@ -22,7 +22,7 @@ export class ExpenseDto {
 
     @Expose()
     @IsDate()
-    createdAt!: Date;
+    transaction_date!: Date;
 }
 
 export class ExpenseCheckDto {
@@ -37,7 +37,7 @@ export class ExpenseCheckDto {
 
     @Expose()
     @IsDate()
-    transactionDate!: Date;
+    transaction_date!: Date;
 
     @Expose()
     @IsString()

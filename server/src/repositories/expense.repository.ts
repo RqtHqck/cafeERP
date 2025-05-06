@@ -51,7 +51,7 @@ export class ExpenseRepository {
     }
 
 
-    async findAll(filters: object = {}) {
+    async findAll(filters: object = {}): Promise<IExpense[]> {
         logger.info(`ExpenseRepository::findAll ${JSON.stringify(filters)}`);
 
         try{

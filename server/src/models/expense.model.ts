@@ -14,7 +14,7 @@ import Item from "@models/item.model";
 
 @Table({
     timestamps: true,
-    createdAt: 'transaction_date',
+    createdAt: 'transactionDate',
     updatedAt: false,
     tableName: 'expenses',
     modelName: 'Expense',

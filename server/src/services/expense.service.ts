@@ -5,7 +5,7 @@ import {IItemCreatedDto} from "@entities/interfaces";
 import {Transaction} from "sequelize";
 import Item from "@models/item.model";
 import ApiError from "@errors/ApiError";
-import {ItemUnitEnum, PaymentMethodEnum} from "@entities/enums";
+import {ItemUnitEnum} from "@entities/enums";
 
 export class ExpenseService {
 
@@ -42,20 +42,24 @@ export class ExpenseService {
     }
 
 
-    async getExpenses(filters: object = {}) {
+    async getExpenses(filters: object = {}): Promise<IExpense[]> {
         logger.info(`ExpenseService::getExpenses`)
 
         return await this._expenseRepository.findAll(filters);
     }
 
 
-    async printCheck(id: number) {
+    async printCheck(id: number): Promise<IExpenseCheck> {
         logger.info(`ExpenseService::printCheck`)
 
         const expenseWithItem: IExpense = await this._expenseRepository.findOne({
             where: { id },
             include: [{ model: Item }]
         });
+
+        if (!expenseWithItem) {
+            throw ApiError.notFoundError(`Expense not found`)
+        }
 
         const item = expenseWithItem.item!
 
@@ -67,10 +71,6 @@ export class ExpenseService {
             totalPrice: expenseWithItem.totalPrice,
             paymentMethod: expenseWithItem.paymentMethod,
             transactionDate: expenseWithItem.transactionDate
-        }
-
-        if (!expenseWithItem) {
-            throw ApiError.notFoundError("Expense check not found");
         }
 
         return check;
