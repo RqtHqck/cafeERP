@@ -48,7 +48,7 @@ class Item extends Model<InferAttributes<Item>, InferCreationAttributes<Item>> {
 
     @AllowNull(false)
     @Column({
-        type: DataType.FLOAT,
+        type: DataType.DECIMAL(10, 2),
     })
     declare price: number;
 

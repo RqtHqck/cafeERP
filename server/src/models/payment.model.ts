@@ -36,10 +36,10 @@ class Payment extends Model<InferAttributes<Payment>, InferCreationAttributes<Pa
 
     @AllowNull(false)
     @Column({
-        type: DataType.FLOAT,
+        type: DataType.DECIMAL(10, 2),
         field: "total_price"
     })
-    declare total_price: number;
+    declare totalPrice: number;
 
 
     @AllowNull(false)
