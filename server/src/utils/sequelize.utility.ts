@@ -20,6 +20,7 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
     port: dbConfig.port,
     timezone: dbConfig.timezone,
     dialect: dbConfig.dialect,
+    dialectModule: dbConfig.dialectModule,
     pool: dbConfig.pool,
     logging: dbConfig.logging,
     models: dbConfig.models,
@@ -41,5 +42,20 @@ const db = {
     OrderProduct,
     ProductItems
 };
+
+export function openConnection(options?: { logging: boolean }) {
+    return sequelize.authenticate(options);
+}
+
+export function syncDatabase(options: { force?: boolean; alter?: boolean; logging?: boolean } = {}) {
+    return sequelize.sync(options);
+}
+
+
+
+
+export function closeConnection() {
+    return sequelize.close();
+}
 
 export default db;
