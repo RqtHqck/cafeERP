@@ -26,7 +26,6 @@ authRoutes.get('/logout',
 
 // GET /auth/refresh
 authRoutes.get('/refresh',
-    passport.authenticate("jwt", { session: false }),
     authController.refresh.bind(authController)
 );
 

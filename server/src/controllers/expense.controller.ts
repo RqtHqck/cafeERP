@@ -1,0 +1,55 @@
+import { Request, Response, NextFunction } from 'express';
+import logger from "@utils/logger";
+import {ExpenseService} from "@services/expense.service";
+import {plainToInstance} from "class-transformer";
+import {ExpenseCheckDto, ExpenseDto} from "@entities/dto/expense.dto";
+import {IExpense, IExpenseCheck} from "@entities/interfaces";
+
+export class ExpenseController {
+
+    private _expenseService: ExpenseService;
+
+    constructor(expenseService: ExpenseService) {
+        this._expenseService = expenseService;
+    }
+
+    async getAllExpenses(req: Request, res: Response, next: NextFunction): Promise<any> {
+        logger.info("ExpenseController::getAllExpenses");
+
+        try {
+            const filters = req.query;
+            const expenses: IExpense[] = await this._expenseService.getExpenses();
+
+            const responseExpenses = plainToInstance(ExpenseDto, expenses, {
+                excludeExtraneousValues: true,
+            });
+
+            return res
+                .status(200)
+                .json(responseExpenses)
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+    async printCheck(req: Request, res: Response, next: NextFunction): Promise<any> {
+        logger.info("ExpenseController::printCheck");
+
+        try {
+            const id = parseInt(req.params.id as string, 10);
+
+            const check: IExpenseCheck = await this._expenseService.printCheck(id);
+
+            const responseCheck = plainToInstance(ExpenseCheckDto, check, {
+                excludeExtraneousValues: true,
+            });
+
+            return res
+                .status(200)
+                .json(responseCheck);
+        } catch (error) {
+            next(error);
+        }
+    }
+}

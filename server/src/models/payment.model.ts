@@ -13,7 +13,7 @@ import Order from "@models/order.model";
 
 @Table({
     timestamps: true,
-    createdAt: 'transaction_date',
+    createdAt: 'transactionDate',
     updatedAt: false,
     tableName: 'payments',
     modelName: 'Payment',

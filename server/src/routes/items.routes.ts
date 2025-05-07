@@ -43,6 +43,7 @@ itemsRoutes.patch('/:id',
 // GET /items/:id
 itemsRoutes.get('/:id',
     passport.authenticate("jwt", { session: false }),
+    validateParamsId(),
     itemController.getItemByPk.bind(itemController)
 );
 
