@@ -37,7 +37,7 @@ class Expense extends Model<InferAttributes<Expense>, InferCreationAttributes<Ex
 
     @AllowNull(false)
     @Column({
-        type: DataType.FLOAT,
+        type: DataType.DECIMAL(10, 2),
         field: 'total_price'
     })
     declare totalPrice: number;

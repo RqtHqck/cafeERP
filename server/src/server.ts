@@ -1,21 +1,22 @@
 import app from "./app";
 import logger from '@utils/logger'
-import db from '@utils/sequelize.utility'
+import db, {closeConnection, openConnection, syncDatabase} from '@utils/sequelize.utility'
 import {RoleService} from "@services/role.service";
 import {AdminService} from "@services/admin.service";
 import {ProductCategoryService} from "@services/productCategory.service";
 import {OrderStatusService} from "@services/orderStatus.service";
 
-(async () => {
+async function bootstrap()  {
     try {
         // DB
         const roleService = new RoleService();
         const categoryService = new ProductCategoryService();
         const adminService = new AdminService();
         const orderStatusService = new OrderStatusService();
-
-        await db.sequelize.authenticate({ logging: true });
-        await db.sequelize.sync({ force: false, logging: true })
+        await openConnection({ logging: true });
+        await syncDatabase({ force: false, logging: true });
+        await db.sequelize.authenticate();
+        await db.sequelize.sync()
         logger.info("Database synchronized");
 
         await roleService.createMany();
@@ -27,8 +28,11 @@ import {OrderStatusService} from "@services/orderStatus.service";
         app.listen(process.env.PORT, () => {
             logger.info(`Server started on http://localhost:${process.env.PORT}`);
         });
-    } catch (error) {
-        logger.error(error);
+    } catch (err) {
+        logger.error(err);
+        await closeConnection();
         process.exit(1);
     }
-})();
+}
+
+bootstrap();

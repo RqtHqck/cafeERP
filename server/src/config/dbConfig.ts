@@ -1,24 +1,10 @@
 import logger from '@utils/logger';
 import {Dialect} from "sequelize";
 import path from "path";
+import {IDbConfig} from "@entities/interfaces";
+import pg from "pg";
 
-export interface IDbConfig {
-    database: string;
-    user: string;
-    password: string;
-    host: string;
-    port: number;
-    timezone: string;
-    dialect: Dialect;
-    pool: {
-        max: number;
-        min: number;
-        acquire: number;
-        idle: number;
-    };
-    logging: (msg: string) => any;
-    models: string[];
-}
+
 
 const dbConfig: IDbConfig = {
     database: process.env.POSTGRES_DB!,
@@ -28,6 +14,7 @@ const dbConfig: IDbConfig = {
     port: 5432,
     timezone: '+03:00',
     dialect: 'postgres',
+    dialectModule: pg,
     pool: {
         max: 5,
         min: 0,

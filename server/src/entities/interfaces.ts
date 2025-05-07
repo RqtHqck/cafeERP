@@ -1,6 +1,25 @@
-import {ItemUnitEnum, PaymentMethodEnum, RoleEnum} from "@entities/enums";
-import {Transaction} from "sequelize";
-import {IsEnum} from "class-validator";
+import {ItemUnitEnum, OrderStatusEnum, PaymentMethodEnum, ProductCategoryEnum, RoleEnum} from "@entities/enums";
+import {Dialect} from "sequelize";
+import pg from "pg";
+
+export interface IDbConfig {
+    database: string;
+    user: string;
+    password: string;
+    host: string;
+    port: number;
+    timezone: string;
+    dialect: Dialect;
+    dialectModule: typeof pg,
+    pool: {
+        max: number;
+        min: number;
+        acquire: number;
+        idle: number;
+    };
+    logging: (msg: string) => any;
+    models: string[];
+}
 
 export interface IEmployee {
     id?: number;
@@ -14,17 +33,17 @@ export interface IEmployee {
 
 export interface  IOrderStatus {
     id?: number;
-    name: string;
+    name: OrderStatusEnum;
 }
 
 export interface IRole {
     id?: number;
-    name: string;
+    name: RoleEnum;
 }
 
 export interface IProductCategory {
     id?: number;
-    name: string;
+    name: ProductCategoryEnum;
 }
 
 export interface AuthPayload {
@@ -42,7 +61,7 @@ export interface IToken {
 export interface IItem {
     id?: number;
     name: string;
-    unit: string;
+    unit: ItemUnitEnum;
     price: number;
     quantity: number;
 }

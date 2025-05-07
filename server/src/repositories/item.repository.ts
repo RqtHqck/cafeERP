@@ -2,7 +2,8 @@ import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
 import {IItem, IItemUpdate} from "@entities/interfaces";
-
+import {Sequelize} from "sequelize-typescript";
+import {ValidationError} from "sequelize";
 
 export class ItemRepository {
 
@@ -13,17 +14,19 @@ export class ItemRepository {
         logger.info(`ItemRepository::add dto ${options}`);
 
         try{
-
             const [item, created] = await this._db.Item.findOrCreate(options);
 
             if (!created) {
                 throw ApiError.conflictError(`Item is exists`);
             }
-            return item;
 
+            return item;
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;
+            }
+            if (err instanceof ValidationError) {
+                throw ApiError.badRequestError('Validation error', err);
             }
             throw ApiError.databaseError("Error create items", err);
         }
@@ -31,13 +34,15 @@ export class ItemRepository {
 
 
     async addMany(items: IItem[], options: object = {}) {
+        logger.info(`ItemRepository::addMany dto ${JSON.stringify(items)}`);
+
         try{
-            logger.info(`ItemRepository::createMany dto ${JSON.stringify(items)}`);
-            // If exists ignore
             return await this._db.Item.bulkCreate(items, options);
         } catch(err) {
-            if (err instanceof ApiError) {
-                throw err;
+            if (err instanceof ValidationError) {
+                throw ApiError.validationError('Validation failed', err.errors.map(e => (
+                    e.message.toString()
+                )), err);
             }
             throw ApiError.databaseError("Error create items", err);
         }
@@ -71,7 +76,6 @@ export class ItemRepository {
 
         try{
             return await this._db.Item.findAll(filters);
-
         } catch(err) {
             throw ApiError.databaseError("Error find all items", err);
         }
@@ -83,7 +87,6 @@ export class ItemRepository {
 
         try{
             return await this._db.Item.findByPk(id);
-
         } catch(err) {
             throw ApiError.databaseError(`Error find item by id: ${id}`, err);
         }

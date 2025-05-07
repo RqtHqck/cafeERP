@@ -53,7 +53,7 @@ class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Pr
 
     @AllowNull(false)
     @Column({
-        type: DataType.FLOAT,
+        type: DataType.DECIMAL(10, 2),
         validate: {
             min: 0.01
         }
