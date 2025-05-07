@@ -40,7 +40,9 @@ export class ItemRepository {
             return await this._db.Item.bulkCreate(items, options);
         } catch(err) {
             if (err instanceof ValidationError) {
-                throw ApiError.badRequestError('Validation error', err);
+                throw ApiError.validationError('Validation failed', err.errors.map(e => (
+                    e.message.toString()
+                )), err);
             }
             throw ApiError.databaseError("Error create items", err);
         }

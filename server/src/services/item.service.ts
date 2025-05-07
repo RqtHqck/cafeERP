@@ -10,7 +10,7 @@ import {AddItemDto, UpdateItemDto} from "@entities/dto/item.dto";
 import {ItemRepository} from "@repositories/item.repository";
 import {Transaction} from "sequelize";
 import {ExpenseService} from "@services/expense.service";
-import {PaymentMethodEnum} from "@entities/enums";
+import {ItemUnitEnum, PaymentMethodEnum} from "@entities/enums";
 
 export class ItemService {
 
@@ -60,12 +60,12 @@ export class ItemService {
 
         const items: IItem[] = addItemsDtos.map((item) => ({
             name: item.name,
-            unit: item.unit,
+            unit: item.unit as ItemUnitEnum,
             price: item.price,
             quantity: item.quantity
         }))
 
-        const newItems: IItem[]  = await this._itemRepository.addMany(items);
+        const newItems: IItem[]  = await this._itemRepository.addMany(items, {validate: true});
 
         // add more then one only with card
         const expenseRecords: IItemCreatedDto[] = newItems.map((item: IItem) => ({
