@@ -1,0 +1,10 @@
+//Sequelize migrations handling
+require('ts-node/register'); // Для поддержки TS
+const { resolve } = require('path');
+
+module.exports = {
+    config: resolve('build/db/config.js'),
+    'seeders-path': resolve('build/db/seeders'),
+    'migrations-path': resolve('build/db/migrations'),
+    'models-path': resolve('dist/models')
+};
