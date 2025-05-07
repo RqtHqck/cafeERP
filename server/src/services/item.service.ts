@@ -67,13 +67,13 @@ export class ItemService {
 
         const newItems: IItem[]  = await this._itemRepository.addMany(items);
 
+        // add more then one only with card
         const expenseRecords: IItemCreatedDto[] = newItems.map((item: IItem) => ({
             itemId: item.id!,
             price: item.price,
             quantity: item.quantity,
-            paymentMethod: "card" as PaymentMethodEnum,
+            paymentMethod: PaymentMethodEnum.CARD,
         }))
-
 
         await this._expenseService.recordItemsPurchases(
             expenseRecords,
