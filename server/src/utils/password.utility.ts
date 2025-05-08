@@ -1,6 +1,4 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import {AuthPayload} from "@entities/interfaces";
 
 
 export const generateSalt = async (): Promise<string> => {

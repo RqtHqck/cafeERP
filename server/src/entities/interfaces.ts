@@ -46,7 +46,7 @@ export interface IProductCategory {
     name: ProductCategoryEnum;
 }
 
-export interface AuthPayload {
+export interface IAuthPayload {
     employeeId: number;
     email: string;
     roleId: number;

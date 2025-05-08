@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express'
-import {AuthPayload} from "@entities/interfaces";
+import {IAuthPayload} from "@entities/interfaces";
 import {RoleRepository} from "@repositories/role.repository";
 import ApiError from "@errors/ApiError";
 import {RoleEnum} from "@entities/enums";
@@ -11,7 +11,7 @@ export const roleAccessMiddleware = (allowedRoles: RoleEnum[]) => {
         try {
             logger.info('roleAccessMiddleware...')
             logger.info(`allowedRoles: [${Object.values(allowedRoles)}]`)
-            const userPayload = req.user as AuthPayload;
+            const userPayload = req.user as IAuthPayload;
             const roleRepository = new RoleRepository();
 
             const role = await roleRepository.findOne({ where: { id: userPayload.roleId } })
