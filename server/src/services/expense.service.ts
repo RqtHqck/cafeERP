@@ -21,7 +21,7 @@ export class ExpenseService {
 
         const record: IExpense = {
             itemId: itemDto.itemId,
-            totalPrice: itemDto.price * itemDto.quantity,
+            totalPrice: itemDto.unitPrice * itemDto.quantity,
             paymentMethod: itemDto.paymentMethod,
         };
 
@@ -34,7 +34,7 @@ export class ExpenseService {
 
         const records: IExpense[] = itemDtos.map((item: IItemCreatedDto) => ({
             itemId: item.itemId,
-            totalPrice: item.price * item.quantity,
+            totalPrice: item.unitPrice * item.quantity,
             paymentMethod: item.paymentMethod,
         }))
 
@@ -66,7 +66,7 @@ export class ExpenseService {
         const check: IExpenseCheck = {
             itemName: item.name,
             itemUnit: item.unit as ItemUnitEnum,
-            itemUnitPrice: item.price,
+            itemUnitPrice: item.unitPrice,
             itemQuantity: item.quantity,
             totalPrice: expenseWithItem.totalPrice,
             paymentMethod: expenseWithItem.paymentMethod,

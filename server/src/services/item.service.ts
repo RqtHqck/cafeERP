@@ -30,7 +30,7 @@ export class ItemService {
         const item: IItem = {
             name: addItemDto.name,
             unit: addItemDto.unit,
-            price: addItemDto.price,
+            unitPrice: addItemDto.unitPrice,
             quantity: addItemDto.quantity
         }
 
@@ -40,9 +40,9 @@ export class ItemService {
             defaults: item
         });
 
-        const expenseRecord = {
+        const expenseRecord: IItemCreatedDto = {
             itemId: newItem.id,
-            price: newItem.price,
+            unitPrice: newItem.price,
             quantity: newItem.quantity,
             paymentMethod: addItemDto.paymentMethod,
         }
@@ -61,7 +61,7 @@ export class ItemService {
         const items: IItem[] = addItemsDtos.map((item) => ({
             name: item.name,
             unit: item.unit as ItemUnitEnum,
-            price: item.price,
+            unitPrice: item.unitPrice,
             quantity: item.quantity
         }))
 
@@ -70,7 +70,7 @@ export class ItemService {
         // add more then one only with card
         const expenseRecords: IItemCreatedDto[] = newItems.map((item: IItem) => ({
             itemId: item.id!,
-            price: item.price,
+            unitPrice: item.unitPrice,
             quantity: item.quantity,
             paymentMethod: PaymentMethodEnum.CARD,
         }))

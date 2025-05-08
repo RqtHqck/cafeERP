@@ -62,7 +62,7 @@ export interface IItem {
     id?: number;
     name: string;
     unit: ItemUnitEnum;
-    price: number;
+    unitPrice: number;
     quantity: number;
 }
 
@@ -98,7 +98,7 @@ export interface IExpenseCheck extends IFeePayload {
 
 export interface IItemCreatedDto {
     itemId: number,
-    price: number;
+    unitPrice: number;
     quantity: number;
     paymentMethod: PaymentMethodEnum,
 }
