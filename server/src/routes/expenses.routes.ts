@@ -4,6 +4,7 @@ import {roleAccessMiddleware} from "@middlewares/availability/roleAccess.middlew
 import {RoleEnum} from "@entities/enums";
 import {ExpenseController} from "@controllers/expense.controller";
 import {ExpenseService} from "@services/expense.service";
+import {validateParamsId} from "@middlewares/validation/validateId.middleware";
 
 
 const expenseService = new ExpenseService();
@@ -24,6 +25,7 @@ expensesRouter.get('/',
 expensesRouter.get('/:id/printCheck',
     passport.authenticate("jwt", { session: false }),
     roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER]),
+    validateParamsId(),
     expenseController.printCheck.bind(expenseController)
 );
 

@@ -6,6 +6,7 @@ import {validateBodyDto} from "@middlewares/validation/validateDto.middleware";
 import {AddProductDto} from "@entities/dto/product.dto";
 import {RoleEnum} from "@entities/enums";
 import passport from "@middlewares/passport.middleware";
+import {validateParamsId} from "@middlewares/validation/validateId.middleware";
 
 const productService = new ProductService();
 const productController = new ProductController(productService);
@@ -23,12 +24,14 @@ productRoutes.post('/',
 // GET /products/:id
 productRoutes.get('/:id',
     passport.authenticate("jwt", { session: false }),
+    validateParamsId(),
     productController.getProductByPk.bind(productController)
 );
 
 // GET /products/:id/items
 productRoutes.get('/:id/items',
     passport.authenticate("jwt", { session: false }),
+    validateParamsId(),
     productController.getProductItems.bind(productController)
 );
 
