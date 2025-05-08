@@ -43,6 +43,13 @@ class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>
 
 
     @AllowNull(false)
+    @Column({
+        type: DataType.DECIMAL(10, 2),
+    })
+    declare price: number;
+
+
+    @AllowNull(false)
     @ForeignKey(() => Employee)
     @Column({
         field: 'employee_id'
