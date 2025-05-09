@@ -14,10 +14,17 @@ export class OrderStatusService {
 
 
     async createMany() {
-        logger.info("CategoryService::createMany")
+        logger.info("OrderStatusService::createMany")
         const allowedOrderStatuses = [...Object.values(OrderStatusEnum)]
         // Create roles by enum
         let orderStatuses: IOrderStatus[] = allowedOrderStatuses.map((name: OrderStatusEnum): IOrderStatus => ({ name }));
         await this._orderStatusRepository.createMany(orderStatuses);
+    }
+
+
+    async findOneByName(name: OrderStatusEnum) {
+        logger.info(`OrderStatusService::findOneByName`)
+
+        return await this._orderStatusRepository.findByName(name);
     }
 }

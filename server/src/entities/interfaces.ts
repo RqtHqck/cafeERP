@@ -86,11 +86,10 @@ export interface IExpenseCheck extends IFeePayload {
 }
 
 
-// export interface IPayment extends IFeePayload {
-//     id?: number;
-//     orderId: number,
-//     order?: IOrder,
-// }
+export interface IPayment extends IFeePayload {
+    orderId: number,
+    order?: IOrder,
+}
 
 // export interface IPaymentCheck extends IFeePayload {
 //
@@ -101,6 +100,14 @@ export interface IItemCreatedDto {
     unitPrice: number;
     quantity: number;
     paymentMethod: PaymentMethodEnum,
+}
+
+export interface IOrder {
+    id?: number;
+    customerName: string;
+    price: number;
+    employeeId: number;
+    statusId: number;
 }
 
 export interface IProduct {
@@ -118,6 +125,11 @@ export interface IProductItem {
     amount: number;
 }
 
+export interface IOrderProductsDto {
+    productId: number;
+    amount: number;
+}
+
 export interface IProductItemDto {
     itemId: number;
     amount: number;
@@ -127,6 +139,11 @@ export interface IProductItemsResponse {
     productId: number;
     amount: number;
     item: IItem;
+}
+
+export interface IOrderStatusHistory {
+    orderId: number;
+    statusId: number;
 }
 
 export interface IItemUpdate extends Partial<IItem> {}

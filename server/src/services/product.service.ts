@@ -22,6 +22,14 @@ export class ProductService {
     }
 
 
+    calculateProductsTotalPrice(products: IProduct[]) {
+        return products.reduce((sum, product) => {
+            sum += product.price;
+            return sum;
+        }, 0)
+    }
+
+
     async addProduct(addProductDto: AddProductDto, options?: {transaction: Transaction}) {
         logger.info("ProductService::addProduct")
 
@@ -98,7 +106,7 @@ export class ProductService {
     }
 
 
-    async getByPk(id: number) {
+    async getProductByPk(id: number) {
         logger.info(`ProductService::getByPk`)
 
         return await this._productRepository.findByPk(id);

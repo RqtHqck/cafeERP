@@ -2,6 +2,7 @@ import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
 import {IOrderStatus, IRole} from "@entities/interfaces";
+import {OrderStatusEnum} from "@entities/enums";
 
 
 export class OrderStatusRepository {
@@ -10,11 +11,11 @@ export class OrderStatusRepository {
     }
 
 
-    async findByPk(id: number): Promise<IOrderStatus | null> {
-        logger.info(`OrderStatusRepository::findByPk id: ${JSON.stringify(id)}`)
+    async findByName(name: OrderStatusEnum): Promise<IOrderStatus> {
+        logger.info(`OrderStatusRepository::findByName name: ${name}`)
 
         try {
-            return await this._db.OrderStatus.findByPk(id);
+            return await this._db.OrderStatus.findOne({ where: { name } });
         } catch (err) {
             if (err instanceof ApiError) {
                 throw err;
