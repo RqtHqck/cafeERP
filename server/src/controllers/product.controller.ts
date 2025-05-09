@@ -79,7 +79,7 @@ export class ProductController {
         try {
             const id = parseInt(req.params.id as string, 10);
 
-            const product = await this._productService.getByPk(id);
+            const product = await this._productService.getProductByPk(id);
 
             const responseProduct = plainToInstance(ProductDto, product, {
                 excludeExtraneousValues: true,

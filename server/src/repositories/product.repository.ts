@@ -38,7 +38,7 @@ export class ProductRepository {
 
 
     async findByPk(id: number) {
-        logger.info(`ProductRepository::findByPk`);
+        logger.info(`ProductRepository::findByPk id: ${id}`);
 
         try{
             return await this._db.Product.findByPk(id);

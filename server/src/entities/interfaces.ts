@@ -67,13 +67,13 @@ export interface IItem {
 }
 
 export interface IFeePayload {
+    id?: number;
     totalPrice: number,
     paymentMethod: PaymentMethodEnum,
     transactionDate?: Date
 }
 
 export interface IExpense extends IFeePayload {
-    id?: number;
     itemId: number,
     item?: IItem;
 }

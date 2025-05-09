@@ -16,7 +16,7 @@ const productRoutes = Router();
 // POST /products/
 productRoutes.post('/',
     passport.authenticate("jwt", { session: false }),
-    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER]),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER, RoleEnum.COOK ]),
     validateBodyDto(AddProductDto),
     productController.addProduct.bind(productController)
 );
@@ -24,6 +24,7 @@ productRoutes.post('/',
 // GET /products/:id
 productRoutes.get('/:id',
     passport.authenticate("jwt", { session: false }),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER, RoleEnum.COOK ]),
     validateParamsId(),
     productController.getProductByPk.bind(productController)
 );
@@ -31,6 +32,7 @@ productRoutes.get('/:id',
 // GET /products/:id/items
 productRoutes.get('/:id/items',
     passport.authenticate("jwt", { session: false }),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER, RoleEnum.COOK ]),
     validateParamsId(),
     productController.getProductItems.bind(productController)
 );
@@ -38,6 +40,7 @@ productRoutes.get('/:id/items',
 // GET /products/
 productRoutes.get('/',
     passport.authenticate("jwt", { session: false }),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER, RoleEnum.COOK ]),
     productController.getAllProducts.bind(productController)
 );
 
