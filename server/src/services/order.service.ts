@@ -1,11 +1,11 @@
 import logger from "@utils/logger";
-import {IOrder, IOrderStatusHistory, IPayment, IProduct} from "@entities/interfaces";
+import {IAuthPayload, IOrder, IOrderStatusHistory, IPayment, IProduct, IRole} from "@entities/interfaces";
 import {Transaction} from "sequelize";
 import {CreateOrderDto} from "@entities/dto/order.dto";
 import {OrderRepository} from "@repositories/order.repository";
 import {ProductService} from "@services/product.service";
 import {OrderStatusService} from "@services/orderStatus.service";
-import {OrderStatusEnum} from "@entities/enums";
+import {OrderStatusEnum, RoleEnum} from "@entities/enums";
 import ApiError from "@errors/ApiError";
 import {OrderStatusesHistoryRepository} from "@repositories/orderStatusesHistory.repository";
 import {PaymentRepository} from "@repositories/payment.repository";
@@ -98,14 +98,21 @@ export class OrderService {
     }
 
 
-    async getOrderByPk(employeeId: number, id: number) {
+    async getOrderByPk(authPayload: IAuthPayload, id: number) {
         logger.info(`OrderService::getById`)
-        const order = await this._orderRepository.findByPk(id);
+        const order: IOrder = await this._orderRepository.findByPk(id);
 
-        if (employeeId !== order.employeeId) {
+        if (!order) {
+            throw ApiError.notFoundError("Order not found")
+        }
+
+        const role: IRole = await this._orderRepository.findByPk(authPayload.roleId);
+
+        // If not admin and orderId is not employee order
+        if (role.name !== RoleEnum.ADMIN && order.employeeId !== authPayload.employeeId) {
             throw ApiError.forbiddenError("Access denied");
         }
 
-        return order
+        return order;
     }
 }

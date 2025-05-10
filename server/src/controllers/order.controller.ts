@@ -88,7 +88,7 @@ export class OrderController {
             const id = parseInt(req.params.id as string, 10);
             const authPayload = <IAuthPayload>req.user;
 
-            const order = await this._orderService.getOrderByPk(authPayload.employeeId, id);
+            const order = await this._orderService.getOrderByPk(authPayload, id);
 
             const responseOrder = plainToInstance(OrderDto, order, {
                 excludeExtraneousValues: true,

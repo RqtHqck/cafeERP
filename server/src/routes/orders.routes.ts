@@ -44,7 +44,7 @@ orderRoutes.get('/employee',
     orderController.getEmployeeOrders.bind(orderController)
 );
 
-// PUT /orders/
+// PUT /orders/:id/status
 orderRoutes.put('/:id/status',
     passport.authenticate("jwt", { session: false }),
     roleAccessMiddleware([RoleEnum.ADMIN]),
