@@ -1,6 +1,6 @@
 import {IsArray, IsEnum, IsNotEmpty, IsNumber, IsString} from "class-validator";
 import {PaymentMethodEnum} from "@entities/enums";
-import {IOrderProductsDto, IProductItemDto} from "@entities/interfaces";
+import {IOrderProductsDto} from "@entities/interfaces";
 import {Exclude, Expose} from "class-transformer";
 
 export class CreateOrderDto {

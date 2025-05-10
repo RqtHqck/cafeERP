@@ -13,15 +13,18 @@ export class AuthController {
     }
 
 
-    async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    async login(req: Request, res: Response, next: NextFunction): Promise<void>  {
         logger.info("AuthController::login");
         const transaction = await db.sequelize.transaction();
 
         try {
             const loginDto = <LoginDto>req.body;
+
             const { accessToken, refreshToken } = await this.authService.login(loginDto, { transaction });
+
             await transaction.commit();
-            return res
+
+            res
                 .status(200)
                 .cookie('refreshToken', refreshToken, {
                     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
@@ -36,15 +39,18 @@ export class AuthController {
     }
 
 
-    async logout(req: Request, res: Response, next: NextFunction): Promise<Response<void> | void>  {
+    async logout(req: Request, res: Response, next: NextFunction): Promise<void>   {
         logger.info("AuthController::logout");
         const transaction = await db.sequelize.transaction();
 
         try {
             const { refreshToken } = req.cookies;
+
             await this.authService.logout(refreshToken, { transaction });
+
             await transaction.commit();
-            return res
+
+            res
                 .status(204)
                 .cookie('refreshToken', '', { maxAge: 0 })
                 .end()
@@ -55,14 +61,18 @@ export class AuthController {
     }
 
 
-    async refresh(req: Request, res: Response, next: NextFunction): Promise<Response | void>  {
+    async refresh(req: Request, res: Response, next: NextFunction): Promise<void>   {
         logger.info("AuthController::refresh");
         const transaction = await db.sequelize.transaction();
 
         try {
             const { refreshToken } = req.cookies;
+
             const tokens = await this.authService.refresh(refreshToken, { transaction });
-            return res
+
+            await transaction.commit();
+
+            res
                 .status(200)
                 .cookie('refreshToken', tokens.refreshToken, {
                     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
@@ -71,6 +81,7 @@ export class AuthController {
                 })
                 .json({ accessToken: tokens.accessToken });
         } catch (error) {
+            await transaction.rollback();
             next(error);
         }
     }

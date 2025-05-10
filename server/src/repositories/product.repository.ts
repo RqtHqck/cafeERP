@@ -2,6 +2,7 @@ import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
 import {IProduct} from "@entities/interfaces";
+import {ValidationError} from "sequelize";
 
 
 export class ProductRepository {
@@ -9,18 +10,23 @@ export class ProductRepository {
     constructor(private _db: any = db) { }
 
 
-    async add(options: object): Promise<IProduct> {
+    async add(obj: object,options: object): Promise<IProduct> {
         logger.info(`ProductRepository::add`);
 
         try{
-            const [product, created] = await this._db.Product.findOrCreate(options);
-
-            if (!created) {
-                throw ApiError.conflictError(`Product is exists`);
-            }
-            return product;
+            return await this._db.Product.create(obj, options);
 
         } catch(err) {
+            if (err instanceof ApiError) {
+                throw err
+            }
+            if (err instanceof ValidationError) {
+                throw ApiError.validationError(
+                    'Product validation failed',
+                    err.errors.map(e => (e.message.toString()),
+                    err
+                ));
+            }
             throw ApiError.databaseError("Error create products", err);
         }
     }
@@ -38,7 +44,7 @@ export class ProductRepository {
     }
 
 
-    async findByPk(id: number): Promise<IProduct | null> {
+    async findByPk(id: number): Promise<IProduct> {
         logger.info(`ProductRepository::findByPk id: ${id}`);
 
         try{
@@ -46,6 +52,16 @@ export class ProductRepository {
 
         } catch(err) {
             throw ApiError.databaseError(`Error find product by id: ${id}`, err);
+        }
+    }
+
+    async findOne(options: object): Promise<IProduct> {
+        logger.info(`ProductRepository::findOne options: ${options}`);
+
+        try{
+            return await this._db.Product.findOne(options);
+        } catch(err) {
+            throw ApiError.databaseError(`Error find product`, err);
         }
     }
 }

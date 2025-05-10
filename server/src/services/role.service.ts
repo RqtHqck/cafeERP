@@ -12,11 +12,25 @@ export class RoleService {
     }
 
 
-    async createMany() {
+    async createMany(): Promise<void> {
         logger.info("RoleService::createMany")
         const allowedRoleNames = [...Object.values(RoleEnum)]
         // Create roles by enum
         let roles: IRole[] = allowedRoleNames.map((name: RoleEnum): IRole => ({ name }));
         await this._roleRepository.createMany(roles);
+    }
+
+
+    async findRoleByName(name: RoleEnum): Promise<IRole | null> {
+        logger.info(`RoleService::findOneByName name: ${name}`);
+
+        return await this._roleRepository.findOne({ where: { name } });
+    }
+
+
+    async findRoleByPk(id: number): Promise<IRole> {
+        logger.info(`RoleService::findRoleByPk id: ${id}`);
+
+        return await this._roleRepository.findByPk(id);
     }
 }

@@ -4,6 +4,7 @@ import {RoleRepository} from "@repositories/role.repository";
 import ApiError from "@errors/ApiError";
 import {RoleEnum} from "@entities/enums";
 import logger from "@utils/logger";
+import {RoleService} from "@services/role.service";
 
 
 export const roleAccessMiddleware = (allowedRoles: RoleEnum[]) => {
@@ -12,13 +13,14 @@ export const roleAccessMiddleware = (allowedRoles: RoleEnum[]) => {
             logger.info('roleAccessMiddleware...')
             logger.info(`allowedRoles: [${Object.values(allowedRoles)}]`)
             const userPayload = req.user as IAuthPayload;
-            const roleRepository = new RoleRepository();
+            const roleService = new RoleService();
 
-            const role = await roleRepository.findOne({ where: { id: userPayload.roleId } })
+            const role = await roleService.findRoleByPk(userPayload.roleId)
 
             if (!role) {
                 throw ApiError.badRequestError(`Role with id ${userPayload.roleId} not found`);
             }
+
             if (allowedRoles.includes(role.name as RoleEnum)) {
                 return next();
             }

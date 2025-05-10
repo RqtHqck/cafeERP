@@ -22,14 +22,6 @@ orderRoutes.post('/',
     orderController.createOrder.bind(orderController)
 );
 
-// GET /orders/:id
-orderRoutes.get('/:id',
-    passport.authenticate("jwt", { session: false }),
-    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER, RoleEnum.CASHIER, RoleEnum.COOK]),
-    validateParamsId(),
-    orderController.getOrderByPk.bind(orderController)
-);
-
 // GET /orders/all
 orderRoutes.get('/all',
     passport.authenticate("jwt", { session: false }),
@@ -42,6 +34,14 @@ orderRoutes.get('/employee',
     passport.authenticate("jwt", { session: false }),
     roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER, RoleEnum.CASHIER, RoleEnum.COOK]),
     orderController.getEmployeeOrders.bind(orderController)
+);
+
+// GET /orders/:id
+orderRoutes.get('/:id',
+    passport.authenticate("jwt", { session: false }),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER, RoleEnum.CASHIER, RoleEnum.COOK]),
+    validateParamsId(),
+    orderController.getOrderByPk.bind(orderController)
 );
 
 // PUT /orders/:id/status

@@ -9,11 +9,15 @@ export class RoleRepository {
     constructor(private _db: any = db) { }
 
 
-    async findByPk(id: number): Promise<IRole | null> {
+    async findByPk(id: number): Promise<IRole> {
         logger.info(`RoleRepository::findByPk id: ${JSON.stringify(id)}`)
 
         try{
-            return await this._db.Category.findByPk(id);
+            const role = await this._db.Role.findByPk(id);
+            if (!role) {
+                throw ApiError.notFoundError("Role not found")
+            }
+            return role
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;

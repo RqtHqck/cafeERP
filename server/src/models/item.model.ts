@@ -50,7 +50,7 @@ class Item extends Model<InferAttributes<Item>, InferCreationAttributes<Item>> {
     @Column({
         type: DataType.DECIMAL(10, 2),
     })
-    declare price: number;
+    declare unitPrice: number;
 
 
     @AllowNull(false)

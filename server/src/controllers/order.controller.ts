@@ -18,7 +18,7 @@ export class OrderController {
     }
 
 
-    async createOrder(req: Request, res: Response, next: NextFunction): Promise<Response<OrderDto> | void> {
+    async createOrder(req: Request, res: Response, next: NextFunction): Promise<void> {
         const transaction = await db.sequelize.transaction();
 
         try {
@@ -27,13 +27,13 @@ export class OrderController {
 
             const order = await this._orderService.createOrder(createOrderDto, authPayload.employeeId, { transaction });
 
-            await transaction.commit();
-
             const responseOrder = plainToInstance(OrderDto, order, {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            await transaction.commit();
+
+            res
                 .status(201)
                 .json(order)
         } catch (error) {
@@ -43,7 +43,7 @@ export class OrderController {
     }
 
 
-    async getAllOrders(req: Request, res: Response, next: NextFunction): Promise<Response<OrderDto[]> | void> {
+    async getAllOrders(req: Request, res: Response, next: NextFunction): Promise<void>{
 
         try {
             const filters = req.query;
@@ -53,7 +53,7 @@ export class OrderController {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseOrders)
         } catch (error) {
@@ -62,7 +62,7 @@ export class OrderController {
     }
 
 
-    async getEmployeeOrders(req: Request, res: Response, next: NextFunction): Promise<Response<OrderDto[]> | void> {
+    async getEmployeeOrders(req: Request, res: Response, next: NextFunction): Promise<void> {
 
         try {
             const authPayload = <IAuthPayload>req.user;
@@ -73,7 +73,7 @@ export class OrderController {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseOrders)
         } catch (error) {
@@ -82,7 +82,7 @@ export class OrderController {
     }
 
 
-    async getOrderByPk(req: Request, res: Response, next: NextFunction): Promise<Response<OrderDto> | void> {
+    async getOrderByPk(req: Request, res: Response, next: NextFunction): Promise<void> {
 
         try {
             const id = parseInt(req.params.id as string, 10);
@@ -94,7 +94,7 @@ export class OrderController {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseOrder)
         } catch (error) {

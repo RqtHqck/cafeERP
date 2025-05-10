@@ -1,11 +1,5 @@
-import {EmployeeRepository} from "@repositories/employee.repository";
-
-import {RoleRepository} from "@repositories/role.repository";
-import {CreateEmployeeDto} from "@entities/dto/employee.dto";
 import logger from "@utils/logger";
-import ApiError from "@errors/ApiError";
-import {generatePassword, generateSalt} from "@utils/password.utility";
-import {IEmployee, IItem, IItemCreatedDto, IItemUpdate} from "@entities/interfaces";
+import {IItem, IItemCreatedDto, IItemUpdate} from "@entities/interfaces";
 import {AddItemDto, UpdateItemDto} from "@entities/dto/item.dto";
 import {ItemRepository} from "@repositories/item.repository";
 import {Transaction} from "sequelize";
@@ -34,15 +28,15 @@ export class ItemService {
             quantity: addItemDto.quantity
         }
 
-         const newItem = await this._itemRepository.add({
+         const newItem: IItem = await this._itemRepository.add({
             where: { name: item.name  },
             transaction: options.transaction,
             defaults: item
         });
 
         const expenseRecord: IItemCreatedDto = {
-            itemId: newItem.id,
-            unitPrice: newItem.price,
+            itemId: newItem.id!,
+            unitPrice: newItem.unitPrice,
             quantity: newItem.quantity,
             paymentMethod: addItemDto.paymentMethod,
         }
@@ -65,7 +59,7 @@ export class ItemService {
             quantity: item.quantity
         }))
 
-        const newItems: IItem[]  = await this._itemRepository.addMany(items, {validate: true});
+        const newItems = await this._itemRepository.addMany(items, {validate: true});
 
         // add more then one only with card
         const expenseRecords: IItemCreatedDto[] = newItems.map((item: IItem) => ({
