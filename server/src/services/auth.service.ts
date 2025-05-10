@@ -22,7 +22,7 @@ export class AuthService {
     }
 
 
-    async login(dto: LoginDto, options?: {transaction: Transaction}): Promise<any> {
+    async login(dto: LoginDto, options?: {transaction: Transaction}): Promise<{ accessToken: string, refreshToken: string }>{
         logger.info("AuthService::login")
 
         const employee = await this._employeeRepository.findOne({where: { email: dto.email }});
@@ -46,7 +46,7 @@ export class AuthService {
     }
 
 
-    async logout(refreshToken: string, options?: {transaction: Transaction}): Promise<any> {
+    async logout(refreshToken: string, options?: {transaction: Transaction}): Promise<void> {
         logger.info("AuthService::logout")
 
         if (!refreshToken) {
@@ -60,7 +60,7 @@ export class AuthService {
     }
 
 
-    async refresh(refreshToken: string, options?: {transaction: Transaction}): Promise<any> {
+    async refresh(refreshToken: string, options?: {transaction: Transaction}): Promise<{ accessToken: string, refreshToken: string }> {
         logger.info("AuthService::refresh")
 
         if (!refreshToken) {

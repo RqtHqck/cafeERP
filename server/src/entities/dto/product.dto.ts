@@ -1,6 +1,5 @@
 import {IsArray, IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
 import {Exclude, Expose, Type} from "class-transformer";
-import {IProductItemDto} from "@entities/interfaces";
 import {ItemDto} from "@entities/dto/item.dto";
 
 export class AddProductDto {
@@ -23,9 +22,16 @@ export class AddProductDto {
 
     @IsArray()
     @IsOptional()
-    items?: IProductItemDto[]
+    items?: AddProductItemDto[]
 }
 
+export class AddProductItemDto {
+    @IsNumber()
+    amount!: number;
+
+    @IsNumber()
+    itemId!: number;
+}
 
 export class ProductDto {
 

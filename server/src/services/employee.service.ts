@@ -18,7 +18,7 @@ export class EmployeeService {
     }
 
 
-    async createEmployee(createEmployeeDto: CreateEmployeeDto) {
+    async createEmployee(createEmployeeDto: CreateEmployeeDto): Promise<IEmployee | null> {
         logger.info("EmployeeService::createEmployee")
 
         const hashSalt = await generateSalt();
@@ -37,5 +37,48 @@ export class EmployeeService {
             where: {email: createEmployeeDto.email},
             defaults: employeeObj
         });
+    }
+
+
+    async createEmployeeAdmin(): Promise<undefined> {
+        try {
+            logger.info("AdminService::createEmployeeAdmin")
+
+            const role = await this._roleRepository.findOne({ where: { name: "admin" } });
+            if (!role) {
+                throw ApiError.notFoundError("'ADMIN' role not found");
+            }
+
+            const admin = await this._employeeRepository.findOne({
+                where: {
+                    email: process.env.ADMIN_EMAIL as string,
+                    roleId: role.id
+                }
+            });
+            if (admin) {
+                logger.info("Admin exists");
+                return;
+            }
+
+            const hashSalt = await generateSalt();
+            const passwordHash = await generatePassword(process.env.ADMIN_PASSWORD as string, hashSalt);
+
+            const adminEmployee: IEmployee = {
+                firstName:"admin",
+                lastName: "admin",
+                passwordHash: passwordHash,
+                hashSalt: hashSalt,
+                email: process.env.ADMIN_EMAIL as string,
+                roleId: role.id!
+            }
+
+            await this._employeeRepository.findOrCreate({
+                where: { email: adminEmployee.email },
+                defaults: adminEmployee
+            });
+            return;
+        } catch (err) {
+            throw ApiError.databaseError("Error create admin employee", err)
+        }
     }
 }

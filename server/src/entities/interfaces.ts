@@ -123,22 +123,13 @@ export interface IProductItem {
     productId: number;
     itemId: number;
     amount: number;
+    item?: IItem;
+    product?: IProduct;
 }
 
 export interface IOrderProductsDto {
     productId: number;
     amount: number;
-}
-
-export interface IProductItemDto {
-    itemId: number;
-    amount: number;
-}
-
-export interface IProductItemsResponse {
-    productId: number;
-    amount: number;
-    item: IItem;
 }
 
 export interface IOrderStatusHistory {

@@ -13,7 +13,7 @@ export class TokenService {
         this._tokenRepository = new TokenRepository();
     }
 
-    async generateToken(payload: object, expiresIn:  number) {
+    async generateToken(payload: object, expiresIn:  number): Promise<string> {
         logger.info("TokenService::generateToken");
 
         const options: jwt.SignOptions = { expiresIn };
@@ -53,16 +53,14 @@ export class TokenService {
         logger.info("TokenService::saveToken")
 
         const employeeToken = await this._tokenRepository.findOne({ where: { employeeId } })
-        console.log(employeeToken)
+
         if (!employeeToken) {
             await this._tokenRepository.create({
                 employeeId,
                 refreshToken
             }, options)
         } else {
-
-            await this._tokenRepository.update(
-                {
+            await this._tokenRepository.update({
                     employeeId,
                     refreshToken
                 },

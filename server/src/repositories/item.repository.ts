@@ -10,8 +10,8 @@ export class ItemRepository {
     constructor(private _db: any = db) { }
 
 
-    async add(options: object): Promise<IItem | null> {
-        logger.info(`ItemRepository::add dto ${options}`);
+    async add(options: object): Promise<IItem> {
+        logger.info(`ItemRepository::add`);
 
         try{
             const [item, created] = await this._db.Item.findOrCreate(options);
@@ -33,7 +33,7 @@ export class ItemRepository {
     }
 
 
-    async addMany(items: IItem[], options: object = {}): Promise<IItem[] | null>  {
+    async addMany(items: IItem[], options: object = {}): Promise<IItem[]>  {
         logger.info(`ItemRepository::addMany dto ${JSON.stringify(items)}`);
 
         try{

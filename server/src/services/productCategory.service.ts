@@ -12,7 +12,7 @@ export class ProductCategoryService {
     }
 
 
-    async createMany() {
+    async createMany(): Promise<void> {
         logger.info("CategoryService::createMany")
         const allowedCategoryNames = [...Object.values(ProductCategoryEnum)]
         // Create roles by enum

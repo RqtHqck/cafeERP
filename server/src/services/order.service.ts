@@ -9,6 +9,7 @@ import {OrderStatusEnum, RoleEnum} from "@entities/enums";
 import ApiError from "@errors/ApiError";
 import {OrderStatusesHistoryRepository} from "@repositories/orderStatusesHistory.repository";
 import {PaymentRepository} from "@repositories/payment.repository";
+import {RoleService} from "@services/role.service";
 
 
 export class OrderService {
@@ -16,6 +17,7 @@ export class OrderService {
     private _orderRepository: OrderRepository;
     private _paymentRepository: PaymentRepository;
     private _orderStatusesHistoryRepository: OrderStatusesHistoryRepository;
+    private _roleService: RoleService;
 
     private _productService: ProductService;
     private _orderStatusService: OrderStatusService;
@@ -25,13 +27,14 @@ export class OrderService {
         this._orderRepository = new OrderRepository();
         this._orderStatusesHistoryRepository = new OrderStatusesHistoryRepository();
         this._paymentRepository = new PaymentRepository();
+        this._roleService = new RoleService();
 
         this._productService = new ProductService();
         this._orderStatusService = new OrderStatusService();
     }
 
 
-    async createOrder(createOrderDto: CreateOrderDto, employeeId: number, options: { transaction: Transaction }) {
+    async createOrder(createOrderDto: CreateOrderDto, employeeId: number, options: { transaction: Transaction }): Promise<IOrder> {
         logger.info("OrderService::createOrder")
 
         // Find products and calculate total price
@@ -77,14 +80,14 @@ export class OrderService {
     }
 
 
-    async getOrders(filters: object = {}) {
+    async getOrders(filters: object = {}): Promise<IOrder[]> {
         logger.info(`OrderService::getOrders`)
 
         return await this._orderRepository.findAll(filters);
     }
 
 
-    async getEmployeeOrders(employeeId: number) {
+    async getEmployeeOrders(employeeId: number): Promise<IOrder[]> {
         logger.info(`OrderService::getEmployeeOrders employeeId: ${employeeId}`)
         const options = {
             where: { employeeId }
@@ -98,15 +101,15 @@ export class OrderService {
     }
 
 
-    async getOrderByPk(authPayload: IAuthPayload, id: number) {
+    async getOrderByPk(authPayload: IAuthPayload, id: number): Promise<IOrder> {
         logger.info(`OrderService::getById`)
-        const order: IOrder = await this._orderRepository.findByPk(id);
+        const order = await this._orderRepository.findByPk(id);
 
         if (!order) {
             throw ApiError.notFoundError("Order not found")
         }
 
-        const role: IRole = await this._orderRepository.findByPk(authPayload.roleId);
+        const role = await this._roleService.findRoleByPk(authPayload.roleId);
 
         // If not admin and orderId is not employee order
         if (role.name !== RoleEnum.ADMIN && order.employeeId !== authPayload.employeeId) {

@@ -15,19 +15,21 @@ export class ProductController {
     }
 
 
-    async addProduct(req: Request, res: Response, next: NextFunction): Promise<Response<ProductDto> | void> {
+    async addProduct(req: Request, res: Response, next: NextFunction): Promise<void> {
         const transaction = await db.sequelize.transaction();
 
         try {
             const addProductDto = <AddProductDto>req.body
+
             const product = await this._productService.addProduct(addProductDto, { transaction });
-            await transaction.commit();
 
             const responseProduct = plainToInstance(ProductDto, product, {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            await transaction.commit();
+
+            res
                 .status(201)
                 .json(responseProduct)
         } catch (error) {
@@ -37,17 +39,18 @@ export class ProductController {
     }
 
 
-    async getAllProducts(req: Request, res: Response, next: NextFunction): Promise<Response<ProductDto> | void>{
+    async getAllProducts(req: Request, res: Response, next: NextFunction): Promise<void>{
 
         try {
             const filters = req.query;
+
             const products = await this._productService.getProducts();
 
             const responseProducts = plainToInstance(ProductDto, products, {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseProducts)
         } catch (error) {
@@ -56,17 +59,18 @@ export class ProductController {
     }
 
 
-    async getProductItems(req: Request, res: Response, next: NextFunction): Promise<Response<ProductItemsDto> | void> {
+    async getProductItems(req: Request, res: Response, next: NextFunction): Promise<void> {
 
         try {
             const id = parseInt(req.params.id as string, 10);
+
             const productItems = await this._productService.getProductItems(id);
 
             const responseProductItems = plainToInstance(ProductItemsDto, productItems, {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseProductItems)
         } catch (error) {
@@ -75,7 +79,7 @@ export class ProductController {
     }
 
 
-    async getProductByPk(req: Request, res: Response, next: NextFunction): Promise<Response<ProductDto> | void> {
+    async getProductByPk(req: Request, res: Response, next: NextFunction): Promise<void> {
 
         try {
             const id = parseInt(req.params.id as string, 10);
@@ -86,7 +90,7 @@ export class ProductController {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseProduct)
         } catch (error) {

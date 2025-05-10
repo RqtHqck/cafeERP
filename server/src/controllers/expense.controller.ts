@@ -13,7 +13,7 @@ export class ExpenseController {
         this._expenseService = expenseService;
     }
 
-    async getAllExpenses(req: Request, res: Response, next: NextFunction): Promise<Response<ExpenseDto[]> | void>  {
+    async getAllExpenses(req: Request, res: Response, next: NextFunction): Promise<void>  {
         logger.info("ExpenseController::getAllExpenses");
 
         try {
@@ -24,7 +24,7 @@ export class ExpenseController {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseExpenses)
         } catch (error) {
@@ -33,7 +33,7 @@ export class ExpenseController {
     }
 
 
-    async printCheck(req: Request, res: Response, next: NextFunction): Promise<Response<ExpenseCheckDto> | void> {
+    async printCheck(req: Request, res: Response, next: NextFunction): Promise<void> {
         logger.info("ExpenseController::printCheck");
 
         try {
@@ -45,7 +45,7 @@ export class ExpenseController {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseCheck);
         } catch (error) {

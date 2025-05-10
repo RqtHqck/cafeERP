@@ -16,7 +16,7 @@ export class ExpenseService {
     }
 
 
-    async recordItemPurchase(itemDto: IItemCreatedDto, options: {transaction: Transaction}) {
+    async recordItemPurchase(itemDto: IItemCreatedDto, options: {transaction: Transaction}): Promise<void> {
         logger.info("ExpenseService::recordItemPurchase")
 
         const record: IExpense = {
@@ -29,7 +29,7 @@ export class ExpenseService {
     }
 
 
-    async recordItemsPurchases(itemDtos: IItemCreatedDto[], options: {transaction: Transaction}) {
+    async recordItemsPurchases(itemDtos: IItemCreatedDto[], options: {transaction: Transaction}): Promise<void> {
         logger.info("ExpenseService::recordItemPurchase")
 
         const records: IExpense[] = itemDtos.map((item: IItemCreatedDto) => ({
@@ -52,7 +52,7 @@ export class ExpenseService {
     async printCheck(id: number): Promise<IExpenseCheck> {
         logger.info(`ExpenseService::printCheck`)
 
-        const expenseWithItem: IExpense = await this._expenseRepository.findOne({
+        const expenseWithItem = await this._expenseRepository.findOne({
             where: { id },
             include: [{ model: Item }]
         });

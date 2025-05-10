@@ -14,20 +14,21 @@ export class ItemController {
     }
 
 
-    async addOneItem(req: Request, res: Response, next: NextFunction): Promise<Response<ItemDto> | void>  {
+    async addOneItem(req: Request, res: Response, next: NextFunction): Promise<void>  {
         const transaction = await db.sequelize.transaction();
 
         try {
             const addItemDto = <AddItemDto>req.body
             const item = await this._itemService.addItems(addItemDto, { transaction });
 
-            await transaction.commit();
 
             const responseItem = plainToInstance(ItemDto, item, {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            await transaction.commit();
+
+            res
                 .status(201)
                 .json(responseItem)
         } catch (error) {
@@ -37,20 +38,21 @@ export class ItemController {
     }
 
 
-    async addManyItems(req: Request, res: Response, next: NextFunction): Promise<Response<ItemDto[]> | void>  {
+    async addManyItems(req: Request, res: Response, next: NextFunction): Promise<void>   {
         const transaction = await db.sequelize.transaction();
 
         try {
             const addItemDto = <AddItemDto[]>req.body
             const items = await this._itemService.addManyItems(addItemDto, {transaction});
 
-            await transaction.commit();
 
             const responseItems = plainToInstance(ItemDto, items, {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            await transaction.commit();
+
+            res
                 .status(201)
                 .json(responseItems)
         } catch (error) {
@@ -60,7 +62,7 @@ export class ItemController {
     }
 
 
-    async patchUpdateItem(req: Request, res: Response, next: NextFunction): Promise<Response<ItemDto> | void>  {
+    async patchUpdateItem(req: Request, res: Response, next: NextFunction): Promise<void>   {
         try {
             const id = parseInt(req.params.id as string, 10);
 
@@ -71,7 +73,7 @@ export class ItemController {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseItem)
         } catch (error) {
@@ -80,7 +82,7 @@ export class ItemController {
     }
 
 
-    async getAllItems(req: Request, res: Response, next: NextFunction): Promise<Response<ItemDto[]> | void> {
+    async getAllItems(req: Request, res: Response, next: NextFunction): Promise<void>  {
 
         try {
             const filters = req.query;
@@ -90,7 +92,7 @@ export class ItemController {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseItems)
         } catch (error) {
@@ -99,7 +101,7 @@ export class ItemController {
     }
 
 
-    async getItemByPk(req: Request, res: Response, next: NextFunction): Promise<Response<ItemDto> | void> {
+    async getItemByPk(req: Request, res: Response, next: NextFunction): Promise<void>  {
 
         try {
             const id = parseInt(req.params.id as string, 10);
@@ -110,7 +112,7 @@ export class ItemController {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseItem)
         } catch (error) {

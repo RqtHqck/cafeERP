@@ -14,7 +14,7 @@ export class EmployeeController {
     }
 
 
-    async createEmployee(req: Request, res: Response, next: NextFunction): Promise<Response<EmployeeDto> | void> {
+    async createEmployee(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const createEmployeeDto = <CreateEmployeeDto>req.body
             const employee = await this._employeeService.createEmployee(createEmployeeDto);
@@ -23,7 +23,7 @@ export class EmployeeController {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(201)
                 .json(responseEmployee)
         } catch (error) {
