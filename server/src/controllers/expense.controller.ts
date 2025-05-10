@@ -13,12 +13,12 @@ export class ExpenseController {
         this._expenseService = expenseService;
     }
 
-    async getAllExpenses(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getAllExpenses(req: Request, res: Response, next: NextFunction): Promise<Response<ExpenseDto[]> | void>  {
         logger.info("ExpenseController::getAllExpenses");
 
         try {
             const filters = req.query;
-            const expenses: IExpense[] = await this._expenseService.getExpenses();
+            const expenses = await this._expenseService.getExpenses();
 
             const responseExpenses = plainToInstance(ExpenseDto, expenses, {
                 excludeExtraneousValues: true,
@@ -33,7 +33,7 @@ export class ExpenseController {
     }
 
 
-    async printCheck(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async printCheck(req: Request, res: Response, next: NextFunction): Promise<Response<ExpenseCheckDto> | void> {
         logger.info("ExpenseController::printCheck");
 
         try {

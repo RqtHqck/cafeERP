@@ -14,7 +14,7 @@ export class ItemController {
     }
 
 
-    async addOneItem(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async addOneItem(req: Request, res: Response, next: NextFunction): Promise<Response<ItemDto> | void>  {
         const transaction = await db.sequelize.transaction();
 
         try {
@@ -37,7 +37,7 @@ export class ItemController {
     }
 
 
-    async addManyItems(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async addManyItems(req: Request, res: Response, next: NextFunction): Promise<Response<ItemDto[]> | void>  {
         const transaction = await db.sequelize.transaction();
 
         try {
@@ -60,7 +60,7 @@ export class ItemController {
     }
 
 
-    async patchUpdateItem(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async patchUpdateItem(req: Request, res: Response, next: NextFunction): Promise<Response<ItemDto> | void>  {
         try {
             const id = parseInt(req.params.id as string, 10);
 
@@ -72,7 +72,7 @@ export class ItemController {
             });
 
             return res
-                .status(201)
+                .status(200)
                 .json(responseItem)
         } catch (error) {
             next(error);
@@ -80,7 +80,7 @@ export class ItemController {
     }
 
 
-    async getAllItems(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getAllItems(req: Request, res: Response, next: NextFunction): Promise<Response<ItemDto[]> | void> {
 
         try {
             const filters = req.query;
@@ -99,7 +99,7 @@ export class ItemController {
     }
 
 
-    async getItemByPk(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getItemByPk(req: Request, res: Response, next: NextFunction): Promise<Response<ItemDto> | void> {
 
         try {
             const id = parseInt(req.params.id as string, 10);

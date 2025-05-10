@@ -3,6 +3,7 @@ import {plainToInstance} from "class-transformer";
 import {AddProductDto, ProductDto, ProductItemsDto} from "@entities/dto/product.dto";
 import {ProductService} from "@services/product.service";
 import db from "@utils/sequelize.utility";
+import {OrderDto} from "@entities/dto/order.dto";
 
 
 export class ProductController {
@@ -14,7 +15,7 @@ export class ProductController {
     }
 
 
-    async addProduct(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async addProduct(req: Request, res: Response, next: NextFunction): Promise<Response<ProductDto> | void> {
         const transaction = await db.sequelize.transaction();
 
         try {
@@ -36,7 +37,7 @@ export class ProductController {
     }
 
 
-    async getAllProducts(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getAllProducts(req: Request, res: Response, next: NextFunction): Promise<Response<ProductDto> | void>{
 
         try {
             const filters = req.query;
@@ -55,7 +56,7 @@ export class ProductController {
     }
 
 
-    async getProductItems(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getProductItems(req: Request, res: Response, next: NextFunction): Promise<Response<ProductItemsDto> | void> {
 
         try {
             const id = parseInt(req.params.id as string, 10);
@@ -74,7 +75,7 @@ export class ProductController {
     }
 
 
-    async getProductByPk(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getProductByPk(req: Request, res: Response, next: NextFunction): Promise<Response<ProductDto> | void> {
 
         try {
             const id = parseInt(req.params.id as string, 10);

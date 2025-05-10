@@ -13,7 +13,7 @@ export class AuthController {
     }
 
 
-    async login(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         logger.info("AuthController::login");
         const transaction = await db.sequelize.transaction();
 
@@ -36,7 +36,7 @@ export class AuthController {
     }
 
 
-    async logout(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async logout(req: Request, res: Response, next: NextFunction): Promise<Response<void> | void>  {
         logger.info("AuthController::logout");
         const transaction = await db.sequelize.transaction();
 
@@ -47,7 +47,7 @@ export class AuthController {
             return res
                 .status(204)
                 .cookie('refreshToken', '', { maxAge: 0 })
-                .json()
+                .end()
         } catch (error) {
             await transaction.rollback();
             next(error);
@@ -55,7 +55,7 @@ export class AuthController {
     }
 
 
-    async refresh(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async refresh(req: Request, res: Response, next: NextFunction): Promise<Response | void>  {
         logger.info("AuthController::refresh");
         const transaction = await db.sequelize.transaction();
 

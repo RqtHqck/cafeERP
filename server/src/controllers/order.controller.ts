@@ -18,7 +18,7 @@ export class OrderController {
     }
 
 
-    async createOrder(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async createOrder(req: Request, res: Response, next: NextFunction): Promise<Response<OrderDto> | void> {
         const transaction = await db.sequelize.transaction();
 
         try {
@@ -43,7 +43,7 @@ export class OrderController {
     }
 
 
-    async getAllOrders(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getAllOrders(req: Request, res: Response, next: NextFunction): Promise<Response<OrderDto[]> | void> {
 
         try {
             const filters = req.query;
@@ -62,7 +62,7 @@ export class OrderController {
     }
 
 
-    async getEmployeeOrders(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getEmployeeOrders(req: Request, res: Response, next: NextFunction): Promise<Response<OrderDto[]> | void> {
 
         try {
             const authPayload = <IAuthPayload>req.user;
@@ -82,7 +82,7 @@ export class OrderController {
     }
 
 
-    async getOrderByPk(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getOrderByPk(req: Request, res: Response, next: NextFunction): Promise<Response<OrderDto> | void> {
 
         try {
             const id = parseInt(req.params.id as string, 10);

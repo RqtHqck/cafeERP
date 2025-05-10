@@ -14,7 +14,7 @@ export class EmployeeController {
     }
 
 
-    async createEmployee(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async createEmployee(req: Request, res: Response, next: NextFunction): Promise<Response<EmployeeDto> | void> {
         try {
             const createEmployeeDto = <CreateEmployeeDto>req.body
             const employee = await this._employeeService.createEmployee(createEmployeeDto);
