@@ -10,7 +10,7 @@ export class RoleRepository {
 
 
     async findByPk(id: number): Promise<IRole> {
-        logger.info(`RoleRepository::findByPk id: ${JSON.stringify(id)}`)
+        logger.info(`RoleRepository::findByPk id: ${id}`)
 
         try{
             const role = await this._db.Role.findByPk(id);

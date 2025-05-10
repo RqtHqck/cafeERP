@@ -19,7 +19,7 @@ export class ProductItemRepository {
             if (err instanceof ApiError) {
                 throw err;
             }
-            throw ApiError.databaseError("Error find role", err);
+            throw ApiError.databaseError("Error find product items", err);
         }
     }
 
@@ -37,7 +37,7 @@ export class ProductItemRepository {
             if (err instanceof ForeignKeyConstraintError && err.name === 'SequelizeForeignKeyConstraintError') {
                 throw ApiError.badRequestError("One or more itemIds do not exist in the database")
             }
-            throw ApiError.databaseError("Error create productItems", err);
+            throw ApiError.databaseError("Error create product items", err);
         }
     }
 }

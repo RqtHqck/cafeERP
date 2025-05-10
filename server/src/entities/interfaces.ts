@@ -122,7 +122,7 @@ export interface IProductItem {
     id?: number;
     productId: number;
     itemId: number;
-    amount: number;
+    quantity: number;
     item?: IItem;
     product?: IProduct;
 }

@@ -101,8 +101,8 @@ export class ItemService {
     }
 
 
-    async getByPk(id: number) {
-        logger.info(`ItemService::getById`)
+    async findItemByPk(id: number) {
+        logger.info(`ItemService::findItemByPk`)
 
         return await this._itemRepository.findByPk(id);
     }

@@ -75,21 +75,21 @@ export class ProductService {
         const productItems = items.map((item: any): IProductItem => ({
             productId,
             itemId: item.itemId,
-            amount: item.amount
+            quantity: item.quantity
         }))
 
         await this._productItemRepository.createMany(productItems, options)
     }
 
 
-    async getProductItems(id: number): Promise<{ productId: number, items: { amount: number, item: IItem }[] }> {
+    async getProductItems(id: number): Promise<{ productId: number, items: { quantity: number, item: IItem }[] }> {
         logger.info("ProductService::getProductItems")
 
         const resProductItems = { productId: id, items: [] };
 
         let productItems: any = await this._productItemRepository.findAll({
             where: { productId: id },
-            attributes: ['amount'],
+            attributes: ['quantity'],
             include: [
                 {
                     model: Item,
@@ -101,16 +101,16 @@ export class ProductService {
             return resProductItems
         }
 
-        productItems = productItems.map((productItem: IProductItem): {amount: number, item: IItem} => (
+        productItems = productItems.map((productItem: IProductItem): {quantity: number, item: IItem} => (
             {
-                amount: productItem.amount,
+                quantity: productItem.quantity,
                 item: productItem.item!
             }
         ))
 
         resProductItems.items = productItems;
 
-        return productItems;
+        return resProductItems;
     }
 
 

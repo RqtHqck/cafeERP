@@ -106,7 +106,7 @@ export class ItemController {
         try {
             const id = parseInt(req.params.id as string, 10);
 
-            const item = await this._itemService.getByPk(id);
+            const item = await this._itemService.findItemByPk(id);
 
             const responseItem = plainToInstance(ItemDto, item, {
                 excludeExtraneousValues: true,

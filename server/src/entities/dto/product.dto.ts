@@ -27,7 +27,7 @@ export class AddProductDto {
 
 export class AddProductItemDto {
     @IsNumber()
-    amount!: number;
+    quantity!: number;
 
     @IsNumber()
     itemId!: number;
@@ -71,7 +71,7 @@ export class ProductItemsDto {
 
     @Expose()
     @IsNumber()
-    amount!: number;
+    quantity!: number;
 
     @Expose()
     @IsOptional()
