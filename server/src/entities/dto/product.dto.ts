@@ -64,7 +64,7 @@ export class ProductDto {
 }
 
 
-export class ProductItemsDto {
+export class ProductItemDto {
     @Expose()
     @IsNumber()
     productId!: number;

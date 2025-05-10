@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import {plainToInstance} from "class-transformer";
-import {AddProductDto, ProductDto, ProductItemsDto} from "@entities/dto/product.dto";
+import {AddProductDto, ProductDto, ProductItemDto} from "@entities/dto/product.dto";
 import {ProductService} from "@services/product.service";
 import db from "@utils/sequelize.utility";
 import {OrderDto} from "@entities/dto/order.dto";
@@ -66,7 +66,7 @@ export class ProductController {
 
             const productItems = await this._productService.getProductItems(id);
 
-            const responseProductItems = plainToInstance(ProductItemsDto, productItems, {
+            const responseProductItems = plainToInstance(ProductItemDto, productItems, {
                 excludeExtraneousValues: true,
             });
 

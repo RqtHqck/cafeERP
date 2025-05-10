@@ -49,7 +49,7 @@ class ProductItems extends Model<InferAttributes<ProductItems>, InferCreationAtt
 
 
     @BelongsTo(() => Product)
-    product!: NonAttribute<Product>;
+    declare product: NonAttribute<Product>;
 
     @BelongsTo(() => Item)
     declare item: NonAttribute<Item>;

@@ -82,10 +82,13 @@ export class ProductService {
     }
 
 
-    async getProductItems(id: number): Promise<{ productId: number, items: { quantity: number, item: IItem }[] }> {
+    async getProductItems(id: number): Promise<IProductItem[]> {
         logger.info("ProductService::getProductItems")
 
-        const resProductItems = { productId: id, items: [] };
+        const product = await this._productRepository.findByPk(id);
+        if (!product) {
+            throw ApiError.notFoundError("Product not found")
+        }
 
         let productItems: any = await this._productItemRepository.findAll({
             where: { productId: id },
@@ -98,19 +101,18 @@ export class ProductService {
         })
 
         if (productItems.length === 0) {
-            return resProductItems
+            return []
         }
 
-        productItems = productItems.map((productItem: IProductItem): {quantity: number, item: IItem} => (
+        productItems = productItems.map((productItem: IProductItem) => (
             {
+                productId: id,
                 quantity: productItem.quantity,
                 item: productItem.item!
             }
         ))
 
-        resProductItems.items = productItems;
-
-        return resProductItems;
+        return productItems;
     }
 
 
