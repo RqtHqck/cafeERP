@@ -42,7 +42,7 @@ export class PaymentRepository {
     }
 
 
-    async findByPk(id: number) {
+    async findByPk(id: number): Promise<IPayment | null> {
         logger.info(`PaymentsRepository::findByPk`);
 
         try{

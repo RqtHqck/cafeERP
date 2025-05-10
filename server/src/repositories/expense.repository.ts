@@ -9,7 +9,7 @@ export class ExpenseRepository {
     constructor(private _db: any = db) {
     }
 
-    async findOne(options: object = {}): Promise<IExpense> {
+    async findOne(options: object = {}): Promise<IExpense | null> {
         logger.info(`ExpenseRepository::findOne options: ${JSON.stringify(options)}`)
 
         try{
@@ -31,7 +31,7 @@ export class ExpenseRepository {
     }
 
 
-    async createMany(objArr: IExpense[], options: object = {}) {
+    async createMany(objArr: IExpense[], options: object = {}): Promise<void> {
         logger.info(`ExpenseRepository::createMany dto ${objArr}`);
 
         try{
@@ -53,7 +53,7 @@ export class ExpenseRepository {
     }
 
 
-    async findByPk(id: number) {
+    async findByPk(id: number): Promise<IExpense | null> {
         logger.info(`ExpenseRepository::findByPk`);
 
         try{

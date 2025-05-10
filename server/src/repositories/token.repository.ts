@@ -23,7 +23,7 @@ export class TokenRepository {
     }
 
 
-    async create(obj: IToken, options?: {transaction: Transaction}): Promise<any> {
+    async create(obj: IToken, options?: {transaction: Transaction}): Promise<IToken> {
         logger.info(`TokenRepository::create`);
 
         try{
@@ -37,11 +37,11 @@ export class TokenRepository {
     }
 
 
-    async destroy(options: object): Promise<any> {
+    async destroy(options: object): Promise<void> {
         logger.info(`TokenRepository::destroy`);
 
         try{
-            return await this._db.Token.destroy(options);
+            await this._db.Token.destroy(options);
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;
@@ -51,7 +51,7 @@ export class TokenRepository {
     }
 
 
-    async update(updateObj: IToken, filter?: object, options?: {transaction: Transaction}): Promise<any> {
+    async update(updateObj: IToken, filter?: object, options?: {transaction: Transaction}): Promise<void> {
         logger.info(`TokenRepository::update dto: ${JSON.stringify(updateObj)}, filters: ${JSON.stringify(filter)}`);
 
         try{

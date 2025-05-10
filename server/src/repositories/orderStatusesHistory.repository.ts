@@ -1,7 +1,7 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
-import {IOrder, IOrderStatusHistory} from "@entities/interfaces";
+import {IOrderStatusHistory} from "@entities/interfaces";
 
 
 export class OrderStatusesHistoryRepository {
@@ -9,7 +9,7 @@ export class OrderStatusesHistoryRepository {
     constructor(private _db: any = db) { }
 
 
-    async create(obj: IOrderStatusHistory, options: object): Promise<IOrder> {
+    async create(obj: IOrderStatusHistory, options: object): Promise<IOrderStatusHistory> {
         logger.info(`OrderStatusesHistoryRepository::create options ${options}`);
 
         try{
@@ -20,7 +20,7 @@ export class OrderStatusesHistoryRepository {
     }
 
 
-    async findAll(filters: object = {}) {
+    async findAll(filters: object = {}): Promise<IOrderStatusHistory[]> {
         logger.info(`OrderStatusesHistoryRepository::findAll ${JSON.stringify(filters)}`);
 
         try{

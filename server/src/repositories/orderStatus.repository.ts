@@ -25,7 +25,7 @@ export class OrderStatusRepository {
     }
 
 
-    async createMany(orderStatuses: IOrderStatus[]) {
+    async createMany(orderStatuses: IOrderStatus[]): Promise<void> {
         logger.info(`OrderStatusRepository::createMany dto ${JSON.stringify(orderStatuses)}`);
 
         try{

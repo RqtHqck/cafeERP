@@ -1,6 +1,7 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
+import {IProduct} from "@entities/interfaces";
 
 
 export class ProductRepository {
@@ -8,7 +9,7 @@ export class ProductRepository {
     constructor(private _db: any = db) { }
 
 
-    async add(options: object) {
+    async add(options: object): Promise<IProduct> {
         logger.info(`ProductRepository::add`);
 
         try{
@@ -25,7 +26,7 @@ export class ProductRepository {
     }
 
 
-    async findAll(filters: object = {}) {
+    async findAll(filters: object = {}): Promise<IProduct[]> {
         logger.info(`ProductRepository::findAll ${JSON.stringify(filters)}`);
 
         try{
@@ -37,7 +38,7 @@ export class ProductRepository {
     }
 
 
-    async findByPk(id: number) {
+    async findByPk(id: number): Promise<IProduct | null> {
         logger.info(`ProductRepository::findByPk id: ${id}`);
 
         try{

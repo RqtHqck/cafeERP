@@ -3,12 +3,13 @@ import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
 import {IEmployee} from "@entities/interfaces";
 
+
 export class EmployeeRepository {
 
     constructor(private _db: any = db) { }
 
 
-    async findOrCreate(options: object) {
+    async findOrCreate(options: object): Promise<IEmployee | null> {
         logger.info(`EmployeeRepository::create options: ${JSON.stringify(options)}`);
 
         try{
@@ -33,9 +34,6 @@ export class EmployeeRepository {
         try{
             return await this._db.Employee.findOne(filter);
         } catch(err) {
-            if (err instanceof ApiError) {
-                throw err;
-            }
             throw ApiError.databaseError("Error find status", err);
         }
     }

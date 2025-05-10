@@ -10,7 +10,7 @@ export class ProductItemRepository {
     constructor(private _db: any = db) { }
 
 
-    async findAll(options: object = {}): Promise<any[]> {
+    async findAll(options: object = {}): Promise<IProductItem[]> {
         logger.info(`ProductItemRepository::findAll options: ${JSON.stringify(options)}`)
 
         try{
@@ -24,7 +24,7 @@ export class ProductItemRepository {
     }
 
 
-    async createMany(createObj: IProductItem[], options: object = {}) {
+    async createMany(createObj: IProductItem[], options: object = {}): Promise<void> {
         logger.info(`ProductItemRepository::createMany dto ${JSON.stringify(createObj)}`);
 
         try{

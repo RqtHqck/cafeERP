@@ -10,7 +10,7 @@ export class ItemRepository {
     constructor(private _db: any = db) { }
 
 
-    async add(options: object) {
+    async add(options: object): Promise<IItem | null> {
         logger.info(`ItemRepository::add dto ${options}`);
 
         try{
@@ -33,7 +33,7 @@ export class ItemRepository {
     }
 
 
-    async addMany(items: IItem[], options: object = {}) {
+    async addMany(items: IItem[], options: object = {}): Promise<IItem[] | null>  {
         logger.info(`ItemRepository::addMany dto ${JSON.stringify(items)}`);
 
         try{
@@ -49,7 +49,7 @@ export class ItemRepository {
     }
 
 
-    async update(updateObj: IItemUpdate,  options: object = {}) {
+    async update(updateObj: IItemUpdate,  options: object = {}): Promise<IItem | null>  {
         logger.info(`ItemRepository::update dto: ${JSON.stringify(updateObj)}`)
 
         try{
@@ -71,7 +71,7 @@ export class ItemRepository {
     }
 
 
-    async findAll(filters: object = {}) {
+    async findAll(filters: object = {}): Promise<IItem[]>  {
         logger.info(`ItemRepository::findAll ${JSON.stringify(filters)}`);
 
         try{
@@ -82,7 +82,7 @@ export class ItemRepository {
     }
 
 
-    async findByPk(id: number) {
+    async findByPk(id: number): Promise<IItem | null>  {
         logger.info(`ItemRepository::findByPk`);
 
         try{

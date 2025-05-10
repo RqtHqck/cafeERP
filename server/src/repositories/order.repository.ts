@@ -1,7 +1,7 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
-import {IOrder} from "@entities/interfaces";
+import {IItem, IOrder} from "@entities/interfaces";
 
 
 export class OrderRepository {
@@ -20,7 +20,7 @@ export class OrderRepository {
     }
 
 
-    async findAll(filters: object = {}) {
+    async findAll(filters: object = {}): Promise<IOrder[]>  {
         logger.info(`OrderRepository::findAll ${JSON.stringify(filters)}`);
 
         try{
@@ -31,7 +31,7 @@ export class OrderRepository {
     }
 
 
-    async findByPk(id: number) {
+    async findByPk(id: number): Promise<IOrder | null>  {
         logger.info(`OrderRepository::findByPk`);
 
         try{

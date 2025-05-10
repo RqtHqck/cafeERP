@@ -1,7 +1,7 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
-import {IProductCategory, IRole} from "@entities/interfaces";
+import {IProductCategory, IProductItem, IRole} from "@entities/interfaces";
 
 
 export class RoleRepository {
@@ -37,7 +37,7 @@ export class RoleRepository {
     }
 
 
-    async createMany(createRoles: IRole[]) {
+    async createMany(createRoles: IRole[]): Promise<void> {
         logger.info(`RoleRepository::createMany dto ${JSON.stringify(createRoles)}`);
 
         try{
