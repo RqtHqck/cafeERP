@@ -1,13 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import {plainToInstance} from "class-transformer";
-import {AddItemDto, ItemDto} from "@entities/dto/item.dto";
-import {ItemService} from "@services/item.service";
-import {ProductDto} from "@entities/dto/product.dto";
 import db from "@utils/sequelize.utility";
-import {CreateOrderDto, OrderDto} from "@entities/dto/order.dto";
+import {CreateOrderDto, OrderDto, OrderProductDto, UpdateOrderDto} from "@entities/dto/order.dto";
 import {OrderService} from "@services/order.service";
 import {IAuthPayload} from "@entities/interfaces";
-import ApiError from "@errors/ApiError";
+
 
 export class OrderController {
 
@@ -97,6 +94,48 @@ export class OrderController {
             res
                 .status(200)
                 .json(responseOrder)
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+    async changeOrderStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const transaction = await db.sequelize.transaction();
+
+        try {
+            const orderId = parseInt(req.params.id as string, 10);
+            const statusId = parseInt(req.body.statusId as string, 10);
+
+            await this._orderService.changeOrderStatus(orderId, statusId, {transaction});
+
+            await transaction.commit();
+
+            res
+                .status(204)
+                .end()
+        } catch (error) {
+            await transaction.rollback();
+            next(error);
+        }
+    }
+
+
+
+    async getOrderProducts(req: Request, res: Response, next: NextFunction): Promise<void> {
+
+        try {
+            const id = parseInt(req.params.id as string, 10);
+
+            const orderProducts = await this._orderService.getOrderProducts(id);
+
+            const responseOrderProducts = plainToInstance(OrderProductDto, orderProducts, {
+                excludeExtraneousValues: true,
+            });
+
+            res
+                .status(200)
+                .json(responseOrderProducts)
         } catch (error) {
             next(error);
         }

@@ -4,7 +4,7 @@ import {validateBodyDto} from "@middlewares/validation/validateDto.middleware";
 import {roleAccessMiddleware} from "@middlewares/availability/roleAccess.middleware";
 import {RoleEnum} from "@entities/enums";
 import {validateParamsId} from "@middlewares/validation/validateId.middleware";
-import {CreateOrderDto} from "@entities/dto/order.dto";
+import {CreateOrderDto, PatchChangeOrderStatusDto, UpdateOrderDto} from "@entities/dto/order.dto";
 import {OrderController} from "@controllers/order.controller";
 import {OrderService} from "@services/order.service";
 
@@ -36,6 +36,14 @@ orderRoutes.get('/employee',
     orderController.getEmployeeOrders.bind(orderController)
 );
 
+// PUT /orders/:id/products
+orderRoutes.get('/:id/products',
+    passport.authenticate("jwt", { session: false }),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER, RoleEnum.CASHIER]),
+    validateParamsId(),
+    orderController.getOrderProducts.bind(orderController)
+);
+
 // GET /orders/:id
 orderRoutes.get('/:id',
     passport.authenticate("jwt", { session: false }),
@@ -45,14 +53,13 @@ orderRoutes.get('/:id',
 );
 
 // PUT /orders/:id/status
-orderRoutes.put('/:id/status',
+orderRoutes.patch('/:id/status',
     passport.authenticate("jwt", { session: false }),
-    roleAccessMiddleware([RoleEnum.ADMIN]),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER, RoleEnum.CASHIER]),
     validateParamsId(),
-    validateBodyDto(CreateOrderDto),
-    orderController.getAllOrders.bind(orderController)
+    validateBodyDto(PatchChangeOrderStatusDto),
+    orderController.changeOrderStatus.bind(orderController)
 );
-
 
 export default orderRoutes;
 

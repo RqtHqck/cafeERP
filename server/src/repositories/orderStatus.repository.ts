@@ -37,5 +37,25 @@ export class OrderStatusRepository {
             throw ApiError.databaseError("Error create order statuses", err);
         }
     }
+
+
+    async findByPk(id: number): Promise<IOrderStatus> {
+        logger.info(`OrderStatusRepository::findByPk id: ${id}`)
+
+        try{
+            const orderStatus = await this._db.OrderStatus.findByPk(id);
+
+            if (!orderStatus) {
+                throw ApiError.notFoundError("Order status not found")
+            }
+
+            return orderStatus
+        } catch(err) {
+            if (err instanceof ApiError) {
+                throw err;
+            }
+            throw ApiError.databaseError("Error find role by id", err);
+        }
+    }
 }
 

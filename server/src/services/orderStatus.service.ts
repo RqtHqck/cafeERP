@@ -27,4 +27,10 @@ export class OrderStatusService {
 
         return await this._orderStatusRepository.findByName(name);
     }
+
+    async findOneByPk(id: number): Promise<IOrderStatus>  {
+        logger.info(`OrderStatusService::findOneByPk`)
+
+        return await this._orderStatusRepository.findByPk(id);
+    }
 }

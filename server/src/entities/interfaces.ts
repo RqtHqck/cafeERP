@@ -128,9 +128,13 @@ export interface IProductItem {
     product?: IProduct;
 }
 
-export interface IOrderProductsDto {
+export interface IOrderProduct {
+    id?: number;
     productId: number;
-    amount: number;
+    orderId: number;
+    quantity: number;
+    order?: IOrder;
+    product?: IProduct;
 }
 
 export interface IOrderStatusHistory {

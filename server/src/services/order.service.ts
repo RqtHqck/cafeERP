@@ -1,7 +1,15 @@
 import logger from "@utils/logger";
-import {IAuthPayload, IOrder, IOrderStatusHistory, IPayment, IProduct, IRole} from "@entities/interfaces";
+import {
+    IAuthPayload,
+    IItem,
+    IOrder, IOrderProduct,
+    IOrderStatusHistory,
+    IPayment,
+    IProduct,
+    IProductItem
+} from "@entities/interfaces";
 import {Transaction} from "sequelize";
-import {CreateOrderDto} from "@entities/dto/order.dto";
+import {CreateOrderDto, UpdateOrderDto} from "@entities/dto/order.dto";
 import {OrderRepository} from "@repositories/order.repository";
 import {ProductService} from "@services/product.service";
 import {OrderStatusService} from "@services/orderStatus.service";
@@ -10,12 +18,16 @@ import ApiError from "@errors/ApiError";
 import {OrderStatusesHistoryRepository} from "@repositories/orderStatusesHistory.repository";
 import {PaymentRepository} from "@repositories/payment.repository";
 import {RoleService} from "@services/role.service";
+import Item from "@models/item.model";
+import {OrderProductRepository} from "@repositories/orderProduct.repository";
+import Product from "@models/product.model";
 
 
 export class OrderService {
 
     private _orderRepository: OrderRepository;
     private _paymentRepository: PaymentRepository;
+    private _orderProductRepository: OrderProductRepository;
     private _orderStatusesHistoryRepository: OrderStatusesHistoryRepository;
     private _roleService: RoleService;
 
@@ -25,6 +37,8 @@ export class OrderService {
 
     constructor() {
         this._orderRepository = new OrderRepository();
+        this._orderProductRepository = new OrderProductRepository();
+
         this._orderStatusesHistoryRepository = new OrderStatusesHistoryRepository();
         this._paymentRepository = new PaymentRepository();
         this._roleService = new RoleService();
@@ -37,29 +51,49 @@ export class OrderService {
     async createOrder(createOrderDto: CreateOrderDto, employeeId: number, options: { transaction: Transaction }): Promise<IOrder> {
         logger.info("OrderService::createOrder")
 
-        // Find products and calculate total price
+        // Find available products by id
         const productIds: number[] = createOrderDto.products.map(product => product.productId)
-        const dbProducts: IProduct[] = await this._productService.getProducts({
-            where: { id: productIds }
+        // Get products with availability
+        const dbAvailableProducts: IProduct[] = await this._productService.getProductsWithAvailability({
+            where: { productId: productIds }
         })
 
-        if (!dbProducts) {
-            throw ApiError.badRequestError("Products not found");
+        // check if all products found
+        if (dbAvailableProducts.length !== productIds.length) {
+            const foundIds = dbAvailableProducts.map(p => p.id);
+            const missingIds = productIds.filter(id => !foundIds.includes(id));
+            throw ApiError.badRequestError(`Products not found: ${missingIds.join(', ')}`);
+        }
+        // check if all products are available
+        if (!dbAvailableProducts.every(product => this._productService.isAvailableProduct(product))) {
+            const unavailableProducts = dbAvailableProducts
+                .filter(product => !this._productService.isAvailableProduct(product))
+                .map(p => p.id);
+            throw ApiError.badRequestError(`Products not available: ${unavailableProducts.join(', ')}`);
         }
 
-        const totalProductsPrice = this._productService.calculateProductsTotalPrice(dbProducts);
-
+        // Total products price
+        const totalProductsPrice = this._productService.calculateProductsTotalPrice(dbAvailableProducts);
         // Find status for statusId field
         const orderStatus = await this._orderStatusService.findOneByName(OrderStatusEnum.PROCESSING);
 
         // Create order
         const order: IOrder = {
-            customerName: createOrderDto.customerName,
-            price: totalProductsPrice,
-            employeeId: employeeId,
+            customerName: createOrderDto.customerName!,
+            price: totalProductsPrice!,
+            employeeId: employeeId!,
             statusId: orderStatus.id!
         }
         const newOrder = await this._orderRepository.create(order, options);
+
+        // Create records in OrderProducts table
+        const orderProducts = createOrderDto.products.map((product) => ({
+            orderId: newOrder.id!,
+            productId: product.productId!,
+            quantity: product.quantity!
+
+        }))
+        await this._orderProductRepository.createMany(orderProducts, options);
 
         // Create history of order status
         const orderStatusHistoryDto: IOrderStatusHistory = {
@@ -80,6 +114,81 @@ export class OrderService {
     }
 
 
+    async getOrderProducts(id: number): Promise<IOrderProduct[]>  {
+        logger.info("OrderService::getOrderProducts")
+
+        const order = await this._orderRepository.findByPk(id);
+        if (!order) {
+            throw ApiError.notFoundError("Order not found")
+        }
+
+        let orderProducts: any = await this._orderProductRepository.findAll({
+            where: { orderId: id },
+            attributes: ['quantity'],
+            include: [
+                {
+                    model: Product,
+                }
+            ]
+        })
+
+        if (orderProducts.length === 0) {
+            return []
+        }
+
+        orderProducts = orderProducts.map((orderProduct: IOrderProduct) => (
+            {
+                orderId: id,
+                quantity: orderProduct.quantity,
+                product: orderProduct.product!
+            }
+        ))
+
+        return orderProducts;
+    }
+
+
+    // async updateOrder(orderId: number, updateOrderDto: UpdateOrderDto, options: object = {}) {
+    //     logger.info(`OrderService::updateOrder`)
+    //
+    //     const existingOrder = await this._orderRepository.findByPk(orderId);
+    //     if (!existingOrder) {
+    //         throw ApiError.notFoundError("Order not found");
+    //     }
+    //
+    //     // Create order
+    //     const orderUpdate: any = {}
+    //     const paymentUpdate: any = {}
+    //
+    //     // Set update fields to update objects
+    //     if (updateOrderDto.customerName) {
+    //         orderUpdate.customerName = updateOrderDto.customerName
+    //     }
+    //     if (updateOrderDto.statusId) {
+    //         orderUpdate.statusId = updateOrderDto.statusId
+    //     }
+    //     if (updateOrderDto.paymentMethod) {
+    //         paymentUpdate.paymentMethod = updateOrderDto.paymentMethod
+    //     }
+    //     if (updateOrderDto.products) {
+    //
+    //         const productNewIds: number[] = updateOrderDto.products.map(product => product.productId)
+    //         const dbProducts: IProduct[] = await this._productService.getProducts({
+    //             where: {id: productNewIds }
+    //         })
+    //
+    //         if (!dbProducts) {
+    //             throw ApiError.badRequestError("Products not found");
+    //         }
+    //
+    //         const totalProductsPrice = this._productService.calculateProductsTotalPrice(dbProducts);
+    //
+    //     }
+    //
+    //
+    // }
+
+
     async getOrders(filters: object = {}): Promise<IOrder[]> {
         logger.info(`OrderService::getOrders`)
 
@@ -96,8 +205,28 @@ export class OrderService {
     }
 
 
-    async changeOrderStatus(status: OrderStatusEnum, options: { transaction: Transaction }) {
+    async changeOrderStatus(orderId: number, statusId: number, options: { transaction: Transaction }): Promise<void> {
+        logger.info(`OrderService::changeOrderStatus orderId: ${orderId}, statusId: ${statusId}`)
 
+        // Check if status exists. It will throw error, if not exists
+        await this._orderStatusService.findOneByPk(statusId);
+
+        const order = await this._orderRepository.findByPk(orderId);
+        if (!order) {
+            throw ApiError.notFoundError("Order not found");
+        }
+
+        // Create history of order status
+        const orderStatusHistoryDto: IOrderStatusHistory = {
+            orderId,
+            statusId
+        }
+        await this._orderStatusesHistoryRepository.create(orderStatusHistoryDto, options)
+
+        await this._orderRepository.update({statusId}, {
+            where: { id: orderId },
+            transaction: options.transaction
+        })
     }
 
 
