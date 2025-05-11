@@ -64,7 +64,7 @@ export class ProductController {
         try {
             const filters = req.query;
 
-            const availableProducts = await this._productService.getAvailableProducts();
+            const availableProducts = await this._productService.getProductsWithAvailability();
 
             const responseProducts = plainToInstance(ProductDto, availableProducts, {
                 excludeExtraneousValues: true,

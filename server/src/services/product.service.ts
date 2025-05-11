@@ -24,7 +24,7 @@ export class ProductService {
 
 
     calculateProductsTotalPrice(products: IProduct[]): number {
-        return products.reduce((sum, product) => {
+        return products.reduce((sum: number, product: IProduct) => {
             sum += product.price;
             return sum;
         }, 0)
@@ -32,10 +32,10 @@ export class ProductService {
 
 
     setProductsAvailableForOrder(productItems: IProductItem[]): IProductItem[] {
-        // Группируем productItems по productId
+        // Group productItems with productId
         const productsMap = new Map<number, IProductItem[]>();
 
-        // 1. Собираем все items для каждого продукта
+        // 1. Collect items for each product
         for (const productItem of productItems) {
             if (!productsMap.has(productItem.productId)) {
                 productsMap.set(productItem.productId, []);
@@ -43,25 +43,30 @@ export class ProductService {
             productsMap.get(productItem.productId)!.push(productItem);
         }
 
-        // 2. Проверяем availability для каждого продукта
+        // 2. Check availability for each product
         for (const [productId, items] of productsMap) {
             let isAvailable = true;
 
-            // Проверяем все items продукта
+            // Check all product items
             for (const item of items) {
                 if (item.quantity >= item.item!.quantity) {
                     isAvailable = false;
-                    break; // Хотя бы одного не хватает → продукт недоступен
+                    break; // Unavailable if just one is not available
                 }
             }
 
-            // Обновляем available для всех items продукта
+            // Update available for all product items
             for (const item of items) {
                 item.product!.available = isAvailable;
             }
         }
 
         return productItems;
+    }
+
+
+    isAvailableProduct(product: IProduct): boolean {
+        return product.available!;
     }
 
 
@@ -151,22 +156,16 @@ export class ProductService {
     }
 
 
-    async getProducts(filters: object = {}): Promise<IProduct[]> {
-        logger.info(`ProductService::getProducts`)
-
-        return await this._productRepository.findAll(filters);
-    }
-
-
-    async getAvailableProducts(filters: object = {}): Promise<IProduct[]> {
+    async getProductsWithAvailability(filters: object = {}): Promise<IProduct[]> {
         logger.info(`ProductService::getAvailableProducts`)
 
         let productItems: any = await this._productItemRepository.findAll(
             {
+                ...filters,
                 include: [
                     { model: Item }, { model: Product }
                 ],
-                raw: true,
+                raw: false,
                 nest: true
             }
         );
@@ -190,6 +189,12 @@ export class ProductService {
         return uniqueProducts
     }
 
+
+    async getProducts(filters: object = {}): Promise<IProduct[]> {
+        logger.info(`ProductService::getProducts`)
+
+        return await this._productRepository.findAll(filters);
+    }
 
 
     async getProductByPk(id: number): Promise<IProduct> {
