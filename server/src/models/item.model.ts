@@ -49,6 +49,10 @@ class Item extends Model<InferAttributes<Item>, InferCreationAttributes<Item>> {
     @AllowNull(false)
     @Column({
         type: DataType.DECIMAL(10, 2),
+        get(): number {
+            const value = this.getDataValue('unitPrice');
+            return typeof value === 'string' ? parseFloat(value) : value;
+        }
     })
     declare unitPrice: number;
 

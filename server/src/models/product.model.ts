@@ -56,6 +56,10 @@ class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Pr
         type: DataType.DECIMAL(10, 2),
         validate: {
             min: 0.01
+        },
+        get(): number {
+            const value = this.getDataValue('price');
+            return typeof value === 'string' ? parseFloat(value) : value;
         }
     })
     declare price: number;

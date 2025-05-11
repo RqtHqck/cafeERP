@@ -3,11 +3,11 @@ import {
     Column,
     Model,
     AllowNull,
-    ForeignKey, PrimaryKey, AutoIncrement, DataType, Default,
+    ForeignKey, PrimaryKey, AutoIncrement, DataType, BelongsTo,
 } from "sequelize-typescript";
 import Order from "@models/order.model";
 import Product from "@models/product.model";
-import {InferAttributes, InferCreationAttributes} from "sequelize";
+import {InferAttributes, InferCreationAttributes, NonAttribute} from "sequelize";
 
 
 @Table({
@@ -45,6 +45,12 @@ class OrderProduct extends Model<InferAttributes<OrderProduct>, InferCreationAtt
         defaultValue: 1
     })
     declare quantity: number;
+
+    @BelongsTo(() => Product)
+    declare product: NonAttribute<Product>;
+
+    @BelongsTo(() => Order)
+    declare order: NonAttribute<Order>;
 }
 
 export default OrderProduct;
