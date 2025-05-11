@@ -1,4 +1,4 @@
-import {IsArray, IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
+import {IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested} from "class-validator";
 import {Exclude, Expose, Type} from "class-transformer";
 import {ItemDto} from "@entities/dto/item.dto";
 
@@ -22,6 +22,8 @@ export class AddProductDto {
 
     @IsArray()
     @IsOptional()
+    @ValidateNested({ each: true })
+    @Type(() => AddProductItemDto)
     items?: AddProductItemDto[]
 }
 
@@ -61,6 +63,10 @@ export class ProductDto {
     @Exclude()
     @IsNumber()
     category_id!: string;
+
+    @Expose()
+    @IsBoolean()
+    available!: boolean;
 }
 
 

@@ -21,6 +21,13 @@ productRoutes.post('/',
     productController.addProduct.bind(productController)
 );
 
+// GET /products/available
+productRoutes.get('/available',
+    passport.authenticate("jwt", { session: false }),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER]),
+    productController.getAvailableProducts.bind(productController)
+);
+
 // GET /products/:id
 productRoutes.get('/:id',
     passport.authenticate("jwt", { session: false }),

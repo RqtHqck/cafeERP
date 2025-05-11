@@ -59,6 +59,26 @@ export class ProductController {
     }
 
 
+    async getAvailableProducts(req: Request, res: Response, next: NextFunction): Promise<void>{
+
+        try {
+            const filters = req.query;
+
+            const availableProducts = await this._productService.getAvailableProducts();
+
+            const responseProducts = plainToInstance(ProductDto, availableProducts, {
+                excludeExtraneousValues: true,
+            });
+
+            res
+                .status(200)
+                .json(responseProducts)
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
     async getProductItems(req: Request, res: Response, next: NextFunction): Promise<void> {
 
         try {

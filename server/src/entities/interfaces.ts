@@ -116,6 +116,7 @@ export interface IProduct {
     description: string;
     price: number;
     categoryId: number;
+    available?: boolean;
 }
 
 export interface IProductItem {

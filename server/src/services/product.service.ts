@@ -7,6 +7,7 @@ import {ProductItemRepository} from "@repositories/productItem.repository";
 import {ProductCategoryRepository} from "@repositories/productCategory.repository";
 import ApiError from "@errors/ApiError";
 import Item from "@models/item.model";
+import Product from "@models/product.model";
 
 
 export class ProductService {
@@ -27,6 +28,40 @@ export class ProductService {
             sum += product.price;
             return sum;
         }, 0)
+    }
+
+
+    setProductsAvailableForOrder(productItems: IProductItem[]): IProductItem[] {
+        // Группируем productItems по productId
+        const productsMap = new Map<number, IProductItem[]>();
+
+        // 1. Собираем все items для каждого продукта
+        for (const productItem of productItems) {
+            if (!productsMap.has(productItem.productId)) {
+                productsMap.set(productItem.productId, []);
+            }
+            productsMap.get(productItem.productId)!.push(productItem);
+        }
+
+        // 2. Проверяем availability для каждого продукта
+        for (const [productId, items] of productsMap) {
+            let isAvailable = true;
+
+            // Проверяем все items продукта
+            for (const item of items) {
+                if (item.quantity >= item.item!.quantity) {
+                    isAvailable = false;
+                    break; // Хотя бы одного не хватает → продукт недоступен
+                }
+            }
+
+            // Обновляем available для всех items продукта
+            for (const item of items) {
+                item.product!.available = isAvailable;
+            }
+        }
+
+        return productItems;
     }
 
 
@@ -121,6 +156,35 @@ export class ProductService {
 
         return await this._productRepository.findAll(filters);
     }
+
+
+    async getAvailableProducts(filters: object = {}): Promise<IProduct[]> {
+        logger.info(`ProductService::getAvailableProducts`)
+
+        let productItems: any = await this._productItemRepository.findAll(
+            {
+                include: [
+                    { model: Item }, { model: Product }
+                ],
+                raw: true,
+                nest: true
+            }
+        );
+
+        productItems = this.setProductsAvailableForOrder(productItems);
+
+        const products: IProduct[] = productItems.map((productItem: IProductItem) => ({
+            id: productItem.product?.id,          // опционально
+            name: productItem.product?.name || "", // защита от undefined
+            description: productItem.product?.description || "",
+            price: productItem.product?.price || 0,
+            categoryId: productItem.product?.categoryId || 0,
+            available: productItem.product?.available || false,
+        }));
+
+        return products
+    }
+
 
 
     async getProductByPk(id: number): Promise<IProduct> {
