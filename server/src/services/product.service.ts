@@ -174,15 +174,20 @@ export class ProductService {
         productItems = this.setProductsAvailableForOrder(productItems);
 
         const products: IProduct[] = productItems.map((productItem: IProductItem) => ({
-            id: productItem.product?.id,          // опционально
-            name: productItem.product?.name || "", // защита от undefined
-            description: productItem.product?.description || "",
-            price: productItem.product?.price || 0,
-            categoryId: productItem.product?.categoryId || 0,
-            available: productItem.product?.available || false,
+            id: productItem.product!.id,
+            name: productItem.product!.name,
+            description: productItem.product!.description,
+            price: productItem.product!.price,
+            categoryId: productItem.product!.categoryId,
+            available: productItem.product!.available,
         }));
 
-        return products
+        // Delete duplicates
+        const uniqueProducts = Array.from(
+            new Map(products.map(product => [product.id, product])).values()
+        );
+
+        return uniqueProducts
     }
 
 
