@@ -1,7 +1,7 @@
 import jwt, {JwtPayload} from 'jsonwebtoken';
 import ApiError from "@errors/ApiError";
 import {Transaction} from "sequelize";
-import {AuthPayload, IToken} from "@entities/interfaces";
+import {IAuthPayload} from "@entities/interfaces";
 import {TokenRepository} from "@repositories/token.repository";
 import logger from "@utils/logger";
 
@@ -13,7 +13,7 @@ export class TokenService {
         this._tokenRepository = new TokenRepository();
     }
 
-    async generateToken(payload: object, expiresIn:  number) {
+    async generateToken(payload: object, expiresIn:  number): Promise<string> {
         logger.info("TokenService::generateToken");
 
         const options: jwt.SignOptions = { expiresIn };
@@ -25,14 +25,14 @@ export class TokenService {
     }
 
 
-    async verifyToken(token: string): Promise<AuthPayload> {
+    async verifyToken(token: string): Promise<IAuthPayload> {
         let decoded;
         try {
             decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
         } catch (err) {
             throw ApiError.tokenError(`Error when trying to decode token: ${token}`, err);
         }
-        const payload: AuthPayload = {
+        const payload: IAuthPayload = {
             employeeId: decoded.employeeId,
             email: decoded.email,
             roleId: decoded.roleId,
@@ -41,7 +41,7 @@ export class TokenService {
     }
     
 
-    async generateAndSaveAuthTokens(payload: AuthPayload, options?: {transaction: Transaction}): Promise<{ accessToken: string, refreshToken: string }>  {
+    async generateAndSaveAuthTokens(payload: IAuthPayload, options?: {transaction: Transaction}): Promise<{ accessToken: string, refreshToken: string }>  {
         const accessToken = await this.generateToken(payload, parseInt(process.env.JWT_EXPIRESIN_ACCESS as string, 10));
         const refreshToken = await this.generateToken(payload, parseInt(process.env.JWT_EXPIRESIN_REFRESH as string, 10));
         await this.saveToken(payload.employeeId, refreshToken, options);
@@ -53,16 +53,14 @@ export class TokenService {
         logger.info("TokenService::saveToken")
 
         const employeeToken = await this._tokenRepository.findOne({ where: { employeeId } })
-        console.log(employeeToken)
+
         if (!employeeToken) {
             await this._tokenRepository.create({
                 employeeId,
                 refreshToken
             }, options)
         } else {
-
-            await this._tokenRepository.update(
-                {
+            await this._tokenRepository.update({
                     employeeId,
                     refreshToken
                 },

@@ -43,6 +43,7 @@ itemsRoutes.patch('/:id',
 // GET /items/:id
 itemsRoutes.get('/:id',
     passport.authenticate("jwt", { session: false }),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER, RoleEnum.CASHIER, RoleEnum.COOK]),
     validateParamsId(),
     itemController.getItemByPk.bind(itemController)
 );
@@ -50,6 +51,7 @@ itemsRoutes.get('/:id',
 // GET /items/
 itemsRoutes.get('/',
     passport.authenticate("jwt", { session: false }),
+    roleAccessMiddleware([RoleEnum.ADMIN, RoleEnum.MANAGER, RoleEnum.CASHIER, RoleEnum.COOK]),
     itemController.getAllItems.bind(itemController)
 );
 

@@ -14,7 +14,7 @@ export class AddItemDto {
 
     @IsNumber()
     @IsNotEmpty()
-    price!: number;
+    unitPrice!: number;
 
     @IsNumber()
     @IsNotEmpty()
@@ -54,7 +54,7 @@ export class ItemDto {
 
     @Expose()
     @IsNumber()
-    price!: number;
+    unitPrice!: number;
 
     @Expose()
     @IsNumber()

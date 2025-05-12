@@ -1,7 +1,7 @@
 import passport from 'passport';
 import {Strategy as JwtStrategy, ExtractJwt, StrategyOptions, VerifiedCallback} from 'passport-jwt';
 import logger from '@utils/logger';
-import {AuthPayload} from "@entities/interfaces";
+import {IAuthPayload} from "@entities/interfaces";
 import {EmployeeRepository} from "@repositories/employee.repository";
 
 const options: StrategyOptions = {
@@ -13,10 +13,10 @@ const employeeRepository = new EmployeeRepository();
 
 passport.use(
     new JwtStrategy(options, async (payloads: any, done: any ) => {
-        try {
-            logger.info('JwtStrategyMiddleware...');
-            logger.info(`Payload: ${JSON.stringify(payloads)}`);
+        logger.info('JwtStrategyMiddleware...');
+        logger.info(`Payload: ${JSON.stringify(payloads)}`);
 
+        try {
             const employeeCandidate = await employeeRepository.findOne({
                 where: { email: payloads.email }
             });
@@ -29,7 +29,7 @@ passport.use(
                 return done(null, false, { message: 'Access denied' });
             }
 
-            const payload: AuthPayload = {
+            const payload: IAuthPayload = {
                 employeeId: employeeCandidate.id!,
                 email: employeeCandidate.email!,
                 roleId: employeeCandidate.roleId!

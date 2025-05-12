@@ -14,20 +14,21 @@ export class ItemController {
     }
 
 
-    async addOneItem(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async addOneItem(req: Request, res: Response, next: NextFunction): Promise<void>  {
         const transaction = await db.sequelize.transaction();
 
         try {
             const addItemDto = <AddItemDto>req.body
             const item = await this._itemService.addItems(addItemDto, { transaction });
 
-            await transaction.commit();
 
             const responseItem = plainToInstance(ItemDto, item, {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            await transaction.commit();
+
+            res
                 .status(201)
                 .json(responseItem)
         } catch (error) {
@@ -37,20 +38,21 @@ export class ItemController {
     }
 
 
-    async addManyItems(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async addManyItems(req: Request, res: Response, next: NextFunction): Promise<void>   {
         const transaction = await db.sequelize.transaction();
 
         try {
             const addItemDto = <AddItemDto[]>req.body
             const items = await this._itemService.addManyItems(addItemDto, {transaction});
 
-            await transaction.commit();
 
             const responseItems = plainToInstance(ItemDto, items, {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            await transaction.commit();
+
+            res
                 .status(201)
                 .json(responseItems)
         } catch (error) {
@@ -60,7 +62,7 @@ export class ItemController {
     }
 
 
-    async patchUpdateItem(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async patchUpdateItem(req: Request, res: Response, next: NextFunction): Promise<void>   {
         try {
             const id = parseInt(req.params.id as string, 10);
 
@@ -71,8 +73,8 @@ export class ItemController {
                 excludeExtraneousValues: true,
             });
 
-            return res
-                .status(201)
+            res
+                .status(200)
                 .json(responseItem)
         } catch (error) {
             next(error);
@@ -80,7 +82,7 @@ export class ItemController {
     }
 
 
-    async getAllItems(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getAllItems(req: Request, res: Response, next: NextFunction): Promise<void>  {
 
         try {
             const filters = req.query;
@@ -90,7 +92,7 @@ export class ItemController {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseItems)
         } catch (error) {
@@ -99,18 +101,18 @@ export class ItemController {
     }
 
 
-    async getItemByPk(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async getItemByPk(req: Request, res: Response, next: NextFunction): Promise<void>  {
 
         try {
             const id = parseInt(req.params.id as string, 10);
 
-            const item = await this._itemService.getByPk(id);
+            const item = await this._itemService.findItemByPk(id);
 
             const responseItem = plainToInstance(ItemDto, item, {
                 excludeExtraneousValues: true,
             });
 
-            return res
+            res
                 .status(200)
                 .json(responseItem)
         } catch (error) {

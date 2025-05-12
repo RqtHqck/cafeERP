@@ -45,11 +45,11 @@ class ProductItems extends Model<InferAttributes<ProductItems>, InferCreationAtt
     @Column({
         type: DataTypes.INTEGER,
     })
-    declare amount: number;
+    declare quantity: number;
 
 
     @BelongsTo(() => Product)
-    product!: NonAttribute<Product>;
+    declare product: NonAttribute<Product>;
 
     @BelongsTo(() => Item)
     declare item: NonAttribute<Item>;

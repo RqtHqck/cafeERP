@@ -1,7 +1,7 @@
 import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
-import {IProductCategory, IRole} from "@entities/interfaces";
+import {IProductCategory, IProductItem, IRole} from "@entities/interfaces";
 
 
 export class RoleRepository {
@@ -9,11 +9,15 @@ export class RoleRepository {
     constructor(private _db: any = db) { }
 
 
-    async findByPk(id: number): Promise<IRole | null> {
-        logger.info(`RoleRepository::findByPk id: ${JSON.stringify(id)}`)
+    async findByPk(id: number): Promise<IRole> {
+        logger.info(`RoleRepository::findByPk id: ${id}`)
 
         try{
-            return await this._db.Category.findByPk(id);
+            const role = await this._db.Role.findByPk(id);
+            if (!role) {
+                throw ApiError.notFoundError("Role not found")
+            }
+            return role
         } catch(err) {
             if (err instanceof ApiError) {
                 throw err;
@@ -37,7 +41,7 @@ export class RoleRepository {
     }
 
 
-    async createMany(createRoles: IRole[]) {
+    async createMany(createRoles: IRole[]): Promise<void> {
         logger.info(`RoleRepository::createMany dto ${JSON.stringify(createRoles)}`);
 
         try{

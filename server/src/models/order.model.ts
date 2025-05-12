@@ -45,6 +45,10 @@ class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>
     @AllowNull(false)
     @Column({
         type: DataType.DECIMAL(10, 2),
+        get(): number {
+            const value = this.getDataValue('price');
+            return typeof value === 'string' ? parseFloat(value) : value;
+        }
     })
     declare price: number;
 

@@ -46,7 +46,7 @@ export interface IProductCategory {
     name: ProductCategoryEnum;
 }
 
-export interface AuthPayload {
+export interface IAuthPayload {
     employeeId: number;
     email: string;
     roleId: number;
@@ -62,18 +62,18 @@ export interface IItem {
     id?: number;
     name: string;
     unit: ItemUnitEnum;
-    price: number;
+    unitPrice: number;
     quantity: number;
 }
 
 export interface IFeePayload {
+    id?: number;
     totalPrice: number,
     paymentMethod: PaymentMethodEnum,
     transactionDate?: Date
 }
 
 export interface IExpense extends IFeePayload {
-    id?: number;
     itemId: number,
     item?: IItem;
 }
@@ -86,11 +86,10 @@ export interface IExpenseCheck extends IFeePayload {
 }
 
 
-// export interface IPayment extends IFeePayload {
-//     id?: number;
-//     orderId: number,
-//     order?: IOrder,
-// }
+export interface IPayment extends IFeePayload {
+    orderId: number,
+    order?: IOrder,
+}
 
 // export interface IPaymentCheck extends IFeePayload {
 //
@@ -98,9 +97,17 @@ export interface IExpenseCheck extends IFeePayload {
 
 export interface IItemCreatedDto {
     itemId: number,
-    price: number;
+    unitPrice: number;
     quantity: number;
     paymentMethod: PaymentMethodEnum,
+}
+
+export interface IOrder {
+    id?: number;
+    customerName: string;
+    price: number;
+    employeeId: number;
+    statusId: number;
 }
 
 export interface IProduct {
@@ -109,24 +116,30 @@ export interface IProduct {
     description: string;
     price: number;
     categoryId: number;
+    available?: boolean;
 }
 
 export interface IProductItem {
     id?: number;
     productId: number;
     itemId: number;
-    amount: number;
+    quantity: number;
+    item?: IItem;
+    product?: IProduct;
 }
 
-export interface IProductItemDto {
-    itemId: number;
-    amount: number;
-}
-
-export interface IProductItemsResponse {
+export interface IOrderProduct {
+    id?: number;
     productId: number;
-    amount: number;
-    item: IItem;
+    orderId: number;
+    quantity: number;
+    order?: IOrder;
+    product?: IProduct;
+}
+
+export interface IOrderStatusHistory {
+    orderId: number;
+    statusId: number;
 }
 
 export interface IItemUpdate extends Partial<IItem> {}

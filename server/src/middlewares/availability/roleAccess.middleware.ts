@@ -1,9 +1,10 @@
 import {NextFunction, Request, Response} from 'express'
-import {AuthPayload} from "@entities/interfaces";
+import {IAuthPayload} from "@entities/interfaces";
 import {RoleRepository} from "@repositories/role.repository";
 import ApiError from "@errors/ApiError";
 import {RoleEnum} from "@entities/enums";
 import logger from "@utils/logger";
+import {RoleService} from "@services/role.service";
 
 
 export const roleAccessMiddleware = (allowedRoles: RoleEnum[]) => {
@@ -11,14 +12,15 @@ export const roleAccessMiddleware = (allowedRoles: RoleEnum[]) => {
         try {
             logger.info('roleAccessMiddleware...')
             logger.info(`allowedRoles: [${Object.values(allowedRoles)}]`)
-            const userPayload = req.user as AuthPayload;
-            const roleRepository = new RoleRepository();
+            const userPayload = req.user as IAuthPayload;
+            const roleService = new RoleService();
 
-            const role = await roleRepository.findOne({ where: { id: userPayload.roleId } })
+            const role = await roleService.findRoleByPk(userPayload.roleId)
 
             if (!role) {
                 throw ApiError.badRequestError(`Role with id ${userPayload.roleId} not found`);
             }
+
             if (allowedRoles.includes(role.name as RoleEnum)) {
                 return next();
             }

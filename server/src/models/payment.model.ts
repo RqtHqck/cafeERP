@@ -37,7 +37,11 @@ class Payment extends Model<InferAttributes<Payment>, InferCreationAttributes<Pa
     @AllowNull(false)
     @Column({
         type: DataType.DECIMAL(10, 2),
-        field: "total_price"
+        field: "total_price",
+        get(): number {
+            const value = this.getDataValue('totalPrice');
+            return typeof value === 'string' ? parseFloat(value) : value;
+        }
     })
     declare totalPrice: number;
 
