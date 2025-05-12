@@ -5,6 +5,7 @@ import itemRoutes from "@routes/items.routes";
 import productRoutes from "@routes/products.routes";
 import expenseRoutes from "@routes/expenses.routes";
 import orderRoutes from "@routes/orders.routes";
+import paymentRoutes from "@routes/payments.routes";
 
 const router = Router();
 
@@ -15,5 +16,7 @@ router
     .use('/products', productRoutes)
     .use('/orders', orderRoutes )
     .use('/expenses', expenseRoutes)
+    .use('/payments', paymentRoutes)
+
 
 export default router;

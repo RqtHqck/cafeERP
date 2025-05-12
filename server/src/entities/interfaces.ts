@@ -2,6 +2,7 @@ import {ItemUnitEnum, OrderStatusEnum, PaymentMethodEnum, ProductCategoryEnum, R
 import {Dialect} from "sequelize";
 import pg from "pg";
 
+
 export interface IDbConfig {
     database: string;
     user: string;
@@ -19,6 +20,12 @@ export interface IDbConfig {
     };
     logging: (msg: string) => any;
     models: string[];
+}
+
+export interface IAuthPayload {
+    employeeId: number;
+    email: string;
+    roleId: number;
 }
 
 export interface IEmployee {
@@ -44,12 +51,6 @@ export interface IRole {
 export interface IProductCategory {
     id?: number;
     name: ProductCategoryEnum;
-}
-
-export interface IAuthPayload {
-    employeeId: number;
-    email: string;
-    roleId: number;
 }
 
 export interface IToken {
@@ -131,9 +132,7 @@ export interface IExpenseCheck extends IFeePayload {
 }
 
 export interface IPaymentCheck extends IFeePayload {
-    productName: string,
-    productQuantity: number,
-    productUnitPrice: number,
+    orderProducts: IOrderProduct[]
 }
 
 export interface IItemUpdate extends Partial<IItem> {}
