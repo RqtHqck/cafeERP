@@ -8,6 +8,7 @@ import {ItemUnitEnum, PaymentMethodEnum} from "@entities/enums";
 import {AddOrderProductDto} from "@entities/dto/order.dto";
 import ApiError from "@errors/ApiError";
 
+
 export class ItemService {
 
     private _itemRepository: ItemRepository;
@@ -51,7 +52,7 @@ export class ItemService {
     }
 
 
-    async deductFromItemsQuantity(productsInput: AddOrderProductDto[], productItems: IProductItem[]): Promise<void> {
+    async deductFromItemsQuantity(productsInput: AddOrderProductDto[], productItems: IProductItem[], options: { transaction: Transaction }): Promise<void> {
         logger.info("ItemService::deductFromItemsQuantity")
 
         //
@@ -72,6 +73,8 @@ export class ItemService {
             logger.info(`itemQty: ${item!.quantity}`)
         }
 
+        const items = productItems.map((pi)=>(pi.item!))
+        await this.updateManyItems(items, options);
     }
 
 
@@ -85,7 +88,10 @@ export class ItemService {
             quantity: item.quantity
         }))
 
-        const newItems = await this._itemRepository.addMany(items, {validate: true});
+        const newItems = await this._itemRepository.addMany(items, {
+            validate: true,
+            transaction: options.transaction
+        });
 
         // add more then one only with card
         const expenseRecords: IItemCreatedDto[] = newItems.map((item: IItem) => ({
@@ -116,8 +122,27 @@ export class ItemService {
             item,
             {
                 where: { id },
-                returning: true, },
+                returning: true,
+            },
         );
+    }
+
+    async updateManyItems(items: IItem[], options: { transaction: Transaction }): Promise<void> {
+        await Promise.all(items.map(async item => {
+
+            const itemUpdate: IItemUpdate = {
+                quantity: item.quantity,
+            }
+
+            await this._itemRepository.update(
+                itemUpdate,
+                {
+                    where: {id: item.id},
+                    returning: true,
+                    transaction: options.transaction
+                },
+            );
+        }))
     }
 
     async getItems(filters: object = {}) {

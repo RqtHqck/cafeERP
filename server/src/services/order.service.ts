@@ -111,7 +111,7 @@ export class OrderService {
         const newOrder = await this._orderRepository.create(order, options);
 
         // Decrement each item quantity
-        await this._itemService.deductFromItemsQuantity(createOrderDto.products, productItems);
+        await this._itemService.deductFromItemsQuantity(createOrderDto.products, productItems, options);
 
         // Create records in OrderProducts table
         const orderProducts = createOrderDto.products.map((product) => ({
