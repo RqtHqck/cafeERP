@@ -1,15 +1,13 @@
 import logger from "@utils/logger";
 import {
     IAuthPayload,
-    IItem,
     IOrder, IOrderProduct,
     IOrderStatusHistory,
     IPayment,
-    IProduct,
     IProductItem
 } from "@entities/interfaces";
 import {Transaction} from "sequelize";
-import {CreateOrderDto, UpdateOrderDto} from "@entities/dto/order.dto";
+import {CreateOrderDto} from "@entities/dto/order.dto";
 import {OrderRepository} from "@repositories/order.repository";
 import {ProductService} from "@services/product.service";
 import {OrderStatusService} from "@services/orderStatus.service";
@@ -141,7 +139,7 @@ export class OrderService {
     }
 
 
-    async getOrderProducts(id: number): Promise<IOrderProduct[]>  {
+    async getProductsByOrderId(id: number): Promise<IOrderProduct[]>  {
         logger.info("OrderService::getOrderProducts")
 
         const order = await this._orderRepository.findByPk(id);

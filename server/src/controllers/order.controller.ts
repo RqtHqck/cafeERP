@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import {plainToInstance} from "class-transformer";
 import db from "@utils/sequelize.utility";
-import {CreateOrderDto, OrderDto, OrderProductDto, UpdateOrderDto} from "@entities/dto/order.dto";
+import {CreateOrderDto, OrderDto, OrderProductDto} from "@entities/dto/order.dto";
 import {OrderService} from "@services/order.service";
 import {IAuthPayload} from "@entities/interfaces";
 
@@ -127,7 +127,7 @@ export class OrderController {
         try {
             const id = parseInt(req.params.id as string, 10);
 
-            const orderProducts = await this._orderService.getOrderProducts(id);
+            const orderProducts = await this._orderService.getProductsByOrderId(id);
 
             const responseOrderProducts = plainToInstance(OrderProductDto, orderProducts, {
                 excludeExtraneousValues: true,

@@ -2,6 +2,7 @@ import {ItemUnitEnum, OrderStatusEnum, PaymentMethodEnum, ProductCategoryEnum, R
 import {Dialect} from "sequelize";
 import pg from "pg";
 
+
 export interface IDbConfig {
     database: string;
     user: string;
@@ -19,6 +20,12 @@ export interface IDbConfig {
     };
     logging: (msg: string) => any;
     models: string[];
+}
+
+export interface IAuthPayload {
+    employeeId: number;
+    email: string;
+    roleId: number;
 }
 
 export interface IEmployee {
@@ -46,12 +53,6 @@ export interface IProductCategory {
     name: ProductCategoryEnum;
 }
 
-export interface IAuthPayload {
-    employeeId: number;
-    email: string;
-    roleId: number;
-}
-
 export interface IToken {
     id?: number;
     employeeId: number;
@@ -64,42 +65,6 @@ export interface IItem {
     unit: ItemUnitEnum;
     unitPrice: number;
     quantity: number;
-}
-
-export interface IFeePayload {
-    id?: number;
-    totalPrice: number,
-    paymentMethod: PaymentMethodEnum,
-    transactionDate?: Date
-}
-
-export interface IExpense extends IFeePayload {
-    itemId: number,
-    item?: IItem;
-}
-
-export interface IExpenseCheck extends IFeePayload {
-    itemName: string,
-    itemUnit: ItemUnitEnum,
-    itemUnitPrice: number,
-    itemQuantity: number,
-}
-
-
-export interface IPayment extends IFeePayload {
-    orderId: number,
-    order?: IOrder,
-}
-
-// export interface IPaymentCheck extends IFeePayload {
-//
-// }
-
-export interface IItemCreatedDto {
-    itemId: number,
-    unitPrice: number;
-    quantity: number;
-    paymentMethod: PaymentMethodEnum,
 }
 
 export interface IOrder {
@@ -140,6 +105,34 @@ export interface IOrderProduct {
 export interface IOrderStatusHistory {
     orderId: number;
     statusId: number;
+}
+
+export interface IFeePayload {
+    id?: number;
+    totalPrice: number,
+    paymentMethod: PaymentMethodEnum,
+    transactionDate?: Date
+}
+
+export interface IExpense extends IFeePayload {
+    itemId: number,
+    item?: IItem;
+}
+
+export interface IPayment extends IFeePayload {
+    orderId: number,
+    order?: IOrder,
+}
+
+export interface IExpenseCheck extends IFeePayload {
+    itemName: string,
+    itemUnit: ItemUnitEnum,
+    itemUnitPrice: number,
+    itemQuantity: number,
+}
+
+export interface IPaymentCheck extends IFeePayload {
+    orderProducts: IOrderProduct[]
 }
 
 export interface IItemUpdate extends Partial<IItem> {}
