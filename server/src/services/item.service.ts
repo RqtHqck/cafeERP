@@ -54,21 +54,24 @@ export class ItemService {
     async deductFromItemsQuantity(productsInput: AddOrderProductDto[], productItems: IProductItem[]): Promise<void> {
         logger.info("ItemService::deductFromItemsQuantity")
 
-        for (const {productId, itemId, item, quantity: productItemQuantity} of productItems) {
-            // find product item quantity needed
-            const inputProductQuantity = productsInput.find(p => p.productId === productId)?.quantity!
+        //
+        const inputProductQuantityMap = new Map(productsInput.map(p => [p.productId, p.quantity]));
+
+        for (const { productId, itemId, item, quantity: productItemQuantity } of productItems) {
+            const inputProductQuantity = inputProductQuantityMap.get(productId);
+            if (inputProductQuantity === undefined) throw new Error("Missing input quantity");
+
             const totalNeeded = productItemQuantity * inputProductQuantity;
 
             logger.info(`prodId: ${productId}, itemId: ${itemId}, inputProductQuantity: ${inputProductQuantity}, 
             productItemQty: ${productItemQuantity}, itemQty: ${item!.quantity}, totalNeeded: ${totalNeeded},` )
 
-            if (item!.quantity < totalNeeded) {
-                throw ApiError.conflictError("Not enough items for product")
-            }
+            if (item!.quantity < totalNeeded) throw ApiError.conflictError("Not enough items");
 
             item!.quantity -= totalNeeded;
             logger.info(`itemQty: ${item!.quantity}`)
         }
+
     }
 
 
