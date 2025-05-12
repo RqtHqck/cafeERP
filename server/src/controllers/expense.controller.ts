@@ -3,7 +3,7 @@ import logger from "@utils/logger";
 import {ExpenseService} from "@services/expense.service";
 import {plainToInstance} from "class-transformer";
 import {ExpenseCheckDto, ExpenseDto} from "@entities/dto/expense.dto";
-import {IExpense, IExpenseCheck} from "@entities/interfaces";
+
 
 export class ExpenseController {
 
@@ -39,7 +39,7 @@ export class ExpenseController {
         try {
             const id = parseInt(req.params.id as string, 10);
 
-            const check: IExpenseCheck = await this._expenseService.printCheck(id);
+            const check = await this._expenseService.printCheck(id);
 
             const responseCheck = plainToInstance(ExpenseCheckDto, check, {
                 excludeExtraneousValues: true,

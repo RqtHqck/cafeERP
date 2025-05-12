@@ -1,8 +1,6 @@
 import logger from "@utils/logger";
 import {IExpense, IExpenseCheck} from "@entities/interfaces";
 import {ExpenseRepository} from "@repositories/expense.repository";
-import {IItemCreatedDto} from "@entities/interfaces";
-import {Transaction} from "sequelize";
 import Item from "@models/item.model";
 import ApiError from "@errors/ApiError";
 import {ItemUnitEnum} from "@entities/enums";
@@ -13,32 +11,6 @@ export class ExpenseService {
 
     constructor() {
         this._expenseRepository = new ExpenseRepository();
-    }
-
-
-    async recordItemPurchase(itemDto: IItemCreatedDto, options: {transaction: Transaction}): Promise<void> {
-        logger.info("ExpenseService::recordItemPurchase")
-
-        const record: IExpense = {
-            itemId: itemDto.itemId,
-            totalPrice: itemDto.unitPrice * itemDto.quantity,
-            paymentMethod: itemDto.paymentMethod,
-        };
-
-        await this._expenseRepository.create(record, options)
-    }
-
-
-    async recordItemsPurchases(itemDtos: IItemCreatedDto[], options: {transaction: Transaction}): Promise<void> {
-        logger.info("ExpenseService::recordItemPurchase")
-
-        const records: IExpense[] = itemDtos.map((item: IItemCreatedDto) => ({
-            itemId: item.itemId,
-            totalPrice: item.unitPrice * item.quantity,
-            paymentMethod: item.paymentMethod,
-        }))
-
-        await this._expenseRepository.createMany(records, options)
     }
 
 

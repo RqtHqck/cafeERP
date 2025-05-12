@@ -1,23 +1,23 @@
 import logger from "@utils/logger";
-import {IItem, IItemCreatedDto, IItemUpdate, IProductItem} from "@entities/interfaces";
+import {IExpense, IItem, IItemUpdate, IProductItem} from "@entities/interfaces";
 import {AddItemDto, UpdateItemDto} from "@entities/dto/item.dto";
 import {ItemRepository} from "@repositories/item.repository";
 import {Transaction} from "sequelize";
-import {ExpenseService} from "@services/expense.service";
 import {ItemUnitEnum, PaymentMethodEnum} from "@entities/enums";
 import {AddOrderProductDto} from "@entities/dto/order.dto";
 import ApiError from "@errors/ApiError";
+import {ExpenseRepository} from "@repositories/expense.repository";
 
 
 export class ItemService {
 
     private _itemRepository: ItemRepository;
-    private _expenseService: ExpenseService;
+    private _expenseRepository: ExpenseRepository;
 
 
     constructor() {
         this._itemRepository = new ItemRepository();
-        this._expenseService = new ExpenseService();
+        this._expenseRepository = new ExpenseRepository();
     }
 
 
@@ -37,14 +37,13 @@ export class ItemService {
             defaults: item
         });
 
-        const expenseRecord: IItemCreatedDto = {
+        const expenseRecord: IExpense = {
             itemId: newItem.id!,
-            unitPrice: newItem.unitPrice,
-            quantity: newItem.quantity,
+            totalPrice: newItem.unitPrice * newItem.quantity,
             paymentMethod: addItemDto.paymentMethod,
-        }
+        };
 
-        await this._expenseService.recordItemPurchase(
+        await this._expenseRepository.create(
             expenseRecord,
             options
         )
@@ -93,15 +92,14 @@ export class ItemService {
             transaction: options.transaction
         });
 
-        // add more then one only with card
-        const expenseRecords: IItemCreatedDto[] = newItems.map((item: IItem) => ({
+        // Add more then one only with card
+        const expenseRecords: IExpense[] = newItems.map((item: IItem) => ({
             itemId: item.id!,
-            unitPrice: item.unitPrice,
-            quantity: item.quantity,
+            totalPrice: item.unitPrice * item.quantity,
             paymentMethod: PaymentMethodEnum.CARD,
         }))
 
-        await this._expenseService.recordItemsPurchases(
+        await this._expenseRepository.createMany(
             expenseRecords,
             options
         )
