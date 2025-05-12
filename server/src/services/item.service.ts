@@ -1,10 +1,12 @@
 import logger from "@utils/logger";
-import {IItem, IItemCreatedDto, IItemUpdate} from "@entities/interfaces";
+import {IItem, IItemCreatedDto, IItemUpdate, IProductItem} from "@entities/interfaces";
 import {AddItemDto, UpdateItemDto} from "@entities/dto/item.dto";
 import {ItemRepository} from "@repositories/item.repository";
 import {Transaction} from "sequelize";
 import {ExpenseService} from "@services/expense.service";
 import {ItemUnitEnum, PaymentMethodEnum} from "@entities/enums";
+import {AddOrderProductDto} from "@entities/dto/order.dto";
+import ApiError from "@errors/ApiError";
 
 export class ItemService {
 
@@ -46,6 +48,27 @@ export class ItemService {
             options
         )
         return newItem;
+    }
+
+
+    async deductFromItemsQuantity(productsInput: AddOrderProductDto[], productItems: IProductItem[]): Promise<void> {
+        logger.info("ItemService::deductFromItemsQuantity")
+
+        for (const {productId, itemId, item, quantity: productItemQuantity} of productItems) {
+            // find product item quantity needed
+            const inputProductQuantity = productsInput.find(p => p.productId === productId)?.quantity!
+            const totalNeeded = productItemQuantity * inputProductQuantity;
+
+            logger.info(`prodId: ${productId}, itemId: ${itemId}, inputProductQuantity: ${inputProductQuantity}, 
+            productItemQty: ${productItemQuantity}, itemQty: ${item!.quantity}, totalNeeded: ${totalNeeded},` )
+
+            if (item!.quantity < totalNeeded) {
+                throw ApiError.conflictError("Not enough items for product")
+            }
+
+            item!.quantity -= totalNeeded;
+            logger.info(`itemQty: ${item!.quantity}`)
+        }
     }
 
 

@@ -84,7 +84,7 @@ export class ProductController {
         try {
             const id = parseInt(req.params.id as string, 10);
 
-            const productItems = await this._productService.getProductItems(id);
+            const productItems = await this._productService.getProductItemsById(id);
 
             const responseProductItems = plainToInstance(ProductItemDto, productItems, {
                 excludeExtraneousValues: true,

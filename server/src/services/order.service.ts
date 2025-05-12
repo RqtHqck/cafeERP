@@ -18,9 +18,11 @@ import ApiError from "@errors/ApiError";
 import {OrderStatusesHistoryRepository} from "@repositories/orderStatusesHistory.repository";
 import {PaymentRepository} from "@repositories/payment.repository";
 import {RoleService} from "@services/role.service";
-import Item from "@models/item.model";
 import {OrderProductRepository} from "@repositories/orderProduct.repository";
 import Product from "@models/product.model";
+import {ItemService} from "@services/item.service";
+import {ProductItemRepository} from "@repositories/productItem.repository";
+import Item from "@models/item.model";
 
 
 export class OrderService {
@@ -28,8 +30,12 @@ export class OrderService {
     private _orderRepository: OrderRepository;
     private _paymentRepository: PaymentRepository;
     private _orderProductRepository: OrderProductRepository;
+    private _productItemRepository: ProductItemRepository;
+
     private _orderStatusesHistoryRepository: OrderStatusesHistoryRepository;
     private _roleService: RoleService;
+    private _itemService: ItemService;
+
 
     private _productService: ProductService;
     private _orderStatusService: OrderStatusService;
@@ -38,6 +44,8 @@ export class OrderService {
     constructor() {
         this._orderRepository = new OrderRepository();
         this._orderProductRepository = new OrderProductRepository();
+        this._itemService = new ItemService();
+        this._productItemRepository = new ProductItemRepository();
 
         this._orderStatusesHistoryRepository = new OrderStatusesHistoryRepository();
         this._paymentRepository = new PaymentRepository();
@@ -53,27 +61,43 @@ export class OrderService {
 
         // Find available products by id
         const productIds: number[] = createOrderDto.products.map(product => product.productId)
+
         // Get products with availability
-        const dbAvailableProducts: IProduct[] = await this._productService.getProductsWithAvailability({
-            where: { productId: productIds }
+        let productItems = await this._productItemRepository.findAll({
+            where: { productId: productIds },
+            include: [
+                { model: Item }, { model: Product }
+            ],
+            raw: false,
+            nest: true
+
         })
+        productItems = this._productService.setProductsAvailableForOrder(productItems);
+
+        const products = this._productService.doUniqueProducts(productItems.map((productItem: IProductItem) => ({
+            id: productItem.product!.id,
+            name: productItem.product!.name,
+            description: productItem.product!.description,
+            price: productItem.product!.price,
+            categoryId: productItem.product!.categoryId,
+            available: productItem.product!.available,
+        })));
 
         // check if all products found
-        if (dbAvailableProducts.length !== productIds.length) {
-            const foundIds = dbAvailableProducts.map(p => p.id);
-            const missingIds = productIds.filter(id => !foundIds.includes(id));
+        if (products.length !== productIds.length) {
+            const missingIds = productIds.filter(id => !products.map(p => p.id).includes(id));
             throw ApiError.badRequestError(`Products not found: ${missingIds.join(', ')}`);
         }
         // check if all products are available
-        if (!dbAvailableProducts.every(product => this._productService.isAvailableProduct(product))) {
-            const unavailableProducts = dbAvailableProducts
+        if (!products.every(product => this._productService.isAvailableProduct(product))) {
+            const unavailableProducts = products
                 .filter(product => !this._productService.isAvailableProduct(product))
                 .map(p => p.id);
             throw ApiError.badRequestError(`Products not available: ${unavailableProducts.join(', ')}`);
         }
 
         // Total products price
-        const totalProductsPrice = this._productService.calculateProductsTotalPrice(dbAvailableProducts);
+        const totalProductsPrice = this._productService.calculateProductsTotalPrice(products);
         // Find status for statusId field
         const orderStatus = await this._orderStatusService.findOneByName(OrderStatusEnum.PROCESSING);
 
@@ -85,6 +109,9 @@ export class OrderService {
             statusId: orderStatus.id!
         }
         const newOrder = await this._orderRepository.create(order, options);
+
+        // Decrement each item quantity
+        await this._itemService.deductFromItemsQuantity(createOrderDto.products, productItems);
 
         // Create records in OrderProducts table
         const orderProducts = createOrderDto.products.map((product) => ({
@@ -146,47 +173,6 @@ export class OrderService {
 
         return orderProducts;
     }
-
-
-    // async updateOrder(orderId: number, updateOrderDto: UpdateOrderDto, options: object = {}) {
-    //     logger.info(`OrderService::updateOrder`)
-    //
-    //     const existingOrder = await this._orderRepository.findByPk(orderId);
-    //     if (!existingOrder) {
-    //         throw ApiError.notFoundError("Order not found");
-    //     }
-    //
-    //     // Create order
-    //     const orderUpdate: any = {}
-    //     const paymentUpdate: any = {}
-    //
-    //     // Set update fields to update objects
-    //     if (updateOrderDto.customerName) {
-    //         orderUpdate.customerName = updateOrderDto.customerName
-    //     }
-    //     if (updateOrderDto.statusId) {
-    //         orderUpdate.statusId = updateOrderDto.statusId
-    //     }
-    //     if (updateOrderDto.paymentMethod) {
-    //         paymentUpdate.paymentMethod = updateOrderDto.paymentMethod
-    //     }
-    //     if (updateOrderDto.products) {
-    //
-    //         const productNewIds: number[] = updateOrderDto.products.map(product => product.productId)
-    //         const dbProducts: IProduct[] = await this._productService.getProducts({
-    //             where: {id: productNewIds }
-    //         })
-    //
-    //         if (!dbProducts) {
-    //             throw ApiError.badRequestError("Products not found");
-    //         }
-    //
-    //         const totalProductsPrice = this._productService.calculateProductsTotalPrice(dbProducts);
-    //
-    //     }
-    //
-    //
-    // }
 
 
     async getOrders(filters: object = {}): Promise<IOrder[]> {

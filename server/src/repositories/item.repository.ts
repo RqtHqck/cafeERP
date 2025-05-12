@@ -2,8 +2,8 @@ import logger from "@utils/logger";
 import ApiError from "@errors/ApiError";
 import db from "@utils/sequelize.utility";
 import {IItem, IItemUpdate} from "@entities/interfaces";
-import {Sequelize} from "sequelize-typescript";
 import {ValidationError} from "sequelize";
+
 
 export class ItemRepository {
 

@@ -65,6 +65,13 @@ export class ProductService {
     }
 
 
+    doUniqueProducts(products: IProduct[]): IProduct[] {
+        return Array.from(
+            new Map(products.map(product => [product.id, product])).values()
+        );
+    }
+
+
     isAvailableProduct(product: IProduct): boolean {
         return product.available!;
     }
@@ -122,7 +129,7 @@ export class ProductService {
     }
 
 
-    async getProductItems(id: number): Promise<IProductItem[]> {
+    async getProductItemsById(id: number): Promise<IProductItem[]> {
         logger.info("ProductService::getProductItems")
 
         const product = await this._productRepository.findByPk(id);
@@ -172,21 +179,17 @@ export class ProductService {
 
         productItems = this.setProductsAvailableForOrder(productItems);
 
-        const products: IProduct[] = productItems.map((productItem: IProductItem) => ({
+        // Products without duplicates
+        const products = this.doUniqueProducts(productItems.map((productItem: IProductItem) => ({
             id: productItem.product!.id,
             name: productItem.product!.name,
             description: productItem.product!.description,
             price: productItem.product!.price,
             categoryId: productItem.product!.categoryId,
             available: productItem.product!.available,
-        }));
+        })));
 
-        // Delete duplicates
-        const uniqueProducts = Array.from(
-            new Map(products.map(product => [product.id, product])).values()
-        );
-
-        return uniqueProducts
+        return products;
     }
 
 
